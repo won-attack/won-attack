@@ -86,7 +86,7 @@ def search(col, claim, company="삼성전자", period=None, k=3, fake=False):
     return col.query(query_embeddings=[q], n_results=k, where=where)
 
 
-def check(col, fake=False):
+def check(col, fake=False, strict=False):
     exp = json.loads((ROOT / "expected_results.json").read_text(encoding="utf-8"))
     hit = total = 0
     for v in exp["videos"]:
@@ -100,6 +100,8 @@ def check(col, fake=False):
             total += 1
             print(f"  [{'O' if ok else 'X'}] {v['video_id']} {c['expected_status']:21s} 기대 {c['expected_sources'][:2]} → Top3 {got}")
     print(f"\n근거 문장 Top3 적중: {hit}/{total}" + ("  (fake 벡터 결과 — 실제 품질은 API 키로 다시 확인)" if fake else ""))
+    if strict and hit < total:
+        raise SystemExit(1)
 
 
 def main():
@@ -107,6 +109,7 @@ def main():
     ap.add_argument("--fake", action="store_true")
     ap.add_argument("--reset", action="store_true")
     ap.add_argument("--no-check", action="store_true")
+    ap.add_argument("--strict", action="store_true", help="기대 근거가 하나라도 Top3에 없으면 실패(CI용)")
     ap.add_argument("--query")
     ap.add_argument("--period")
     a = ap.parse_args()
@@ -116,7 +119,7 @@ def main():
         for i, d, m, dist in zip(res["ids"][0], res["documents"][0], res["metadatas"][0], res["distances"][0]):
             print(f"- {i} (distance {dist:.3f}) [{m['period']}] {d}\n  {m['source_title']} {m['source_url']}")
     elif not a.no_check:
-        check(col, a.fake)
+        check(col, a.fake, a.strict)
 
 
 if __name__ == "__main__":

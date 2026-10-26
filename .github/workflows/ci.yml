@@ -1,0 +1,57 @@
+# PR을 올리거나 main에 push하면 자동으로 검사한다.
+# 결과는 PR 화면 아래 "Checks"에 ✅ / ❌ 로 표시된다.
+# 프론트·백엔드 테스트는 각 담당이 프로젝트를 만든 뒤 job을 추가한다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  commit-message:
+    name: 커밋 메시지 확인
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 커밋 기록 전체가 있어야 범위를 검사할 수 있다
+      # PR: 이 PR에 들어 있는 커밋만 검사한다 (Merge 커밋은 제외)
+      - name: PR 커밋 검사
+        if: github.event_name == 'pull_request'
+        run: bash .github/scripts/check_commits.sh "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"
+      # main: PR을 거치지 않고 바로 올린 커밋도 여기서 ❌로 드러난다
+      - name: main에 새로 올라온 커밋 검사
+        if: github.event_name == 'push'
+        run: bash .github/scripts/check_commits.sh "${{ github.event.before }}" "${{ github.event.after }}"
+
+  secrets:
+    name: 비밀 값·벡터 DB 커밋 방지
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: .env · API 키 · chroma_db 검사
+        run: |
+          set -e
+          bad=0
+          if git ls-files | grep -E '(^|/)\.env$|(^|/)chroma_db/'; then echo "❌ .env 또는 chroma_db가 커밋되었습니다."; bad=1; fi
+          if git grep -nE 'sk-(proj-)?[A-Za-z0-9_-]{20,}' -- . ':!.github/workflows/ci.yml'; then echo "❌ API 키로 보이는 값이 있습니다."; bad=1; fi
+          exit $bad
+
+  data:
+    name: 시연 데이터·벡터 검색 점검
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install chromadb
+      # build_data.py로 다시 만든 JSON이 커밋된 JSON과 같아야 한다 (손으로 JSON만 고치면 ❌)
+      - name: 데이터 생성 결과 일치 확인
+        run: |
+          python data/build_data.py
+          git diff --exit-code -- data/
+      # API 키 없이 해시 벡터로 적재·필터·평가 경로만 점검한다 (검색 품질은 로컬에서 실제 키로 확인)
+      - name: ChromaDB 적재·검색 경로 점검
+        run: python data/init_db.py --fake --reset --strict

@@ -1,0 +1,54 @@
+name: 📋 작업
+description: 버그·기능 외의 작업(데이터 갱신, 설정, 문서, 발표 준비 등)을 등록합니다.
+labels: [task]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        제목에는 작업 내용을 한 줄로 요약합니다. (예: `3분기 확정 실적으로 근거 문장 갱신`, `시연 영상 업로드 후 video_id 교체`)
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 작업 영역
+      options:
+        - 프론트엔드
+        - 백엔드
+        - 데이터·벡터 DB
+        - 문서·설정
+        - 발표·시연 준비
+    validations:
+      required: true
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: 작업 내용
+      placeholder: 예) data/disclosures.json의 samsung_024~026을 확정 실적 수치와 출처로 교체
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 완료 조건
+      description: 아래 항목이 모두 충족되면 이슈를 종료합니다. PR 본문에 `Closes #이슈번호`를 쓰면 병합 시 자동으로 종료됩니다.
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: reference
+    attributes:
+      label: 관련 이슈 및 참고 자료
+      placeholder: 예) #12 해결을 위한 선행 작업
+
+  - type: checkboxes
+    id: check
+    attributes:
+      label: 확인 사항
+      options:
+        - label: API 키 등 비밀 값(`.env` 내용)을 포함하지 않았습니다.
+          required: true

@@ -1,0 +1,87 @@
+name: 🐞 버그 리포트
+description: 기능이 의도대로 동작하지 않는 문제를 보고합니다.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        제목에는 문제 현상을 한 줄로 요약합니다. (예: `3분기 매출 주장이 근거 부족으로 판정됨`)
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 발생 영역
+      options:
+        - 프론트엔드 (유튜브·공유·결과 화면)
+        - 백엔드 API (/api/analyze)
+        - LLM (주장 추출·검증·개인화)
+        - 데이터·벡터 DB (근거 검색)
+        - 실행·설정 (.env, 설치)
+        - 기타
+    validations:
+      required: true
+
+  - type: input
+    id: scenario
+    attributes:
+      label: 재현에 사용한 video_id / user_id
+      placeholder: 예) WCdemoS1A01 / demo_user_03
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 버그 설명
+      placeholder: 예) "3분기 매출 200조 돌파" 주장이 CONTRADICTED가 아니라 INSUFFICIENT_EVIDENCE로 나옴
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 절차
+      description: 다른 사람이 같은 문제를 재현할 수 있도록 순서대로 작성합니다.
+      placeholder: |
+        1. `python data/init_db.py --reset`
+        2. 백엔드 실행
+        3. 유튜브 화면에서 WCdemoS1A01 공유 → demo_user_03으로 분석
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 결과
+      description: 판정 문제라면 `data/expected_results.json`의 기대값을 함께 적습니다.
+      placeholder: 예) CONTRADICTED, 근거 samsung_024 (잠정 매출 약 195조 원)
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 실제 결과
+      placeholder: 예) INSUFFICIENT_EVIDENCE, sources가 비어 있음
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 응답 JSON · 로그 · 스크린샷
+      description: 오류 메시지와 응답 JSON은 이미지 대신 텍스트로 붙여 넣는 것을 권장합니다.
+      render: text
+
+  - type: input
+    id: env
+    attributes:
+      label: 실행 환경
+      placeholder: 예) Windows 11 / Chrome 141 / Python 3.12
+
+  - type: checkboxes
+    id: check
+    attributes:
+      label: 확인 사항
+      options:
+        - label: API 키 등 비밀 값(`.env` 내용)을 포함하지 않았습니다.
+          required: true
+        - label: 동일한 내용의 이슈가 없는지 검색했습니다.

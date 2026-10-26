@@ -1,0 +1,9 @@
+# 템플릿 없이 빈 이슈를 생성하지 못하도록 막는다.
+blank_issues_enabled: false
+contact_links:
+  - name: 📘 기여 가이드 (CONTRIBUTING.md)
+    url: https://github.com/won-check/won-check/blob/main/CONTRIBUTING.md
+    about: 브랜치·커밋·PR 규칙과 문제 발생 시 대응 방법을 안내합니다.
+  - name: 🔌 API 계약 (docs/api)
+    url: https://github.com/won-check/won-check/tree/main/docs/api
+    about: POST /api/analyze 요청·응답·오류 형식의 기준입니다.

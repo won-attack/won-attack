@@ -1,0 +1,72 @@
+name: ✨ 기능 제안
+description: 새 기능 또는 기존 기능의 개선을 제안합니다.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        제목에는 제안하는 기능을 한 줄로 요약합니다. (예: `검증 카드에 잠정 실적 배지 표시`)
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 대상 영역
+      options:
+        - 프론트엔드 (유튜브·공유·결과 화면)
+        - 백엔드 API (/api/analyze)
+        - LLM (주장 추출·검증·개인화)
+        - 데이터·벡터 DB (근거 검색)
+        - 발표·시연
+        - 기타
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 범위
+      description: 해커톤 시연에 꼭 필요한지, 발표에서 확장 계획으로 소개할 것인지 구분합니다.
+      options:
+        - 시연 필수 (수요일 12:30 제출 전)
+        - 있으면 좋음
+        - 추후 확장 (발표 자료에만 반영)
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 배경 및 문제
+      description: 해결 방법보다 현재 어떤 불편이나 한계가 있는지를 먼저 작성합니다.
+      placeholder: 예) 잠정 실적과 확정 실적이 같은 모양으로 보여 사용자가 확정 수치로 오해할 수 있음
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 제안 내용
+      placeholder: 예) is_preliminary가 true인 근거에 '잠정' 배지와 안내 문구 표시
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 검토한 대안
+      placeholder: 예) 판정 사유(reason) 문장에만 잠정치임을 적기
+
+  - type: textarea
+    id: reference
+    attributes:
+      label: 참고 자료
+      description: 유사 서비스 화면, 스케치, 관련 링크 등을 첨부합니다.
+
+  - type: checkboxes
+    id: check
+    attributes:
+      label: 확인 사항
+      options:
+        - label: API 키 등 비밀 값(`.env` 내용)을 포함하지 않았습니다.
+          required: true
+        - label: 동일한 내용의 이슈가 없는지 검색했습니다.
