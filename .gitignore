@@ -1,0 +1,33 @@
+# ---------- 환경 변수 (키는 절대 커밋 금지) ----------
+.env
+.env.*
+!.env.example
+
+# ---------- 벡터 DB (data/init_db.py로 생성) ----------
+data/chroma_db/
+chroma_db/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# ---------- Node / 프론트 ----------
+node_modules/
+dist/
+build/
+.vite/
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- IDE / OS ----------
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

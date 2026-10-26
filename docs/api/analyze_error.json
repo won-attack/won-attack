@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "VIDEO_NOT_SUPPORTED",
+    "message": "시연 대상으로 등록되지 않은 영상입니다."
+  }
+}

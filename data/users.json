@@ -1,0 +1,141 @@
+[
+  {
+    "user_id": "demo_user_01",
+    "name": "박서연(가상)",
+    "risk_tolerance": "공격투자형",
+    "investment_horizon": "단기",
+    "investment_style": "반도체 업황에 집중 투자, 수익 극대화 추구",
+    "scenario": "S2",
+    "holdings": [
+      {
+        "company": "삼성전자",
+        "weight_pct": 60
+      },
+      {
+        "company": "국내 반도체 ETF",
+        "weight_pct": 25
+      },
+      {
+        "company": "현금성 자산",
+        "weight_pct": 15
+      }
+    ],
+    "intent": {
+      "type": "추가 매수 검토",
+      "company": "삼성전자",
+      "amount_krw": 5000000
+    }
+  },
+  {
+    "user_id": "demo_user_02",
+    "name": "김도현(가상)",
+    "risk_tolerance": "적극투자형",
+    "investment_horizon": "중기",
+    "investment_style": "성장주 중심이지만 업종 분산 유지",
+    "scenario": "S2",
+    "holdings": [
+      {
+        "company": "삼성전자",
+        "weight_pct": 15
+      },
+      {
+        "company": "미국 S&P500 ETF",
+        "weight_pct": 45
+      },
+      {
+        "company": "국내 채권형 펀드",
+        "weight_pct": 25
+      },
+      {
+        "company": "현금성 자산",
+        "weight_pct": 15
+      }
+    ],
+    "intent": {
+      "type": "추가 매수 검토",
+      "company": "삼성전자",
+      "amount_krw": 3000000
+    }
+  },
+  {
+    "user_id": "demo_user_03",
+    "name": "이도윤(가상)",
+    "risk_tolerance": "위험중립형",
+    "investment_horizon": "중기",
+    "investment_style": "지수 ETF 위주, 개별 종목은 처음 검토",
+    "scenario": "S1",
+    "holdings": [
+      {
+        "company": "미국 S&P500 ETF",
+        "weight_pct": 50
+      },
+      {
+        "company": "국내 반도체 ETF",
+        "weight_pct": 20
+      },
+      {
+        "company": "국내 채권형 펀드",
+        "weight_pct": 20
+      },
+      {
+        "company": "현금성 자산",
+        "weight_pct": 10
+      }
+    ],
+    "intent": {
+      "type": "신규 매수 검토",
+      "company": "삼성전자",
+      "amount_krw": 3000000
+    }
+  },
+  {
+    "user_id": "demo_user_04",
+    "name": "한지은(가상)",
+    "risk_tolerance": "안정추구형",
+    "investment_horizon": "장기",
+    "investment_style": "원금 손실 최소화, 일부만 우량주 보유",
+    "scenario": "S3",
+    "holdings": [
+      {
+        "company": "삼성전자",
+        "weight_pct": 20
+      },
+      {
+        "company": "국내 채권형 펀드",
+        "weight_pct": 55
+      },
+      {
+        "company": "현금성 자산",
+        "weight_pct": 25
+      }
+    ],
+    "intent": {
+      "type": "보유 점검",
+      "company": "삼성전자",
+      "amount_krw": 0
+    }
+  },
+  {
+    "user_id": "demo_user_05",
+    "name": "정영호(가상)",
+    "risk_tolerance": "안정형",
+    "investment_horizon": "장기",
+    "investment_style": "퇴직금 보전 우선, 예금·채권 중심",
+    "scenario": "S3",
+    "holdings": [
+      {
+        "company": "정기예금·CMA",
+        "weight_pct": 70
+      },
+      {
+        "company": "국내 채권형 펀드",
+        "weight_pct": 30
+      }
+    ],
+    "intent": {
+      "type": "신규 매수 검토(리딩방 권유)",
+      "company": "삼성전자",
+      "amount_krw": 10000000
+    }
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "video": {
+    "video_id": "WCdemoS1A01",
+    "title": "삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다",
+    "url": "https://www.youtube.com/watch?v=WCdemoS1A01",
+    "transcript_source": "PRELOADED_DEMO"
+  },
+  "verification_results": [
+    {
+      "claim_id": "claim_001",
+      "claim": "삼성전자의 2026년 3분기 영업이익은 107조 원을 넘었다.",
+      "claim_type": "FINANCIAL",
+      "status": "SUPPORTED",
+      "reason": "공식 잠정실적의 2026년 3분기 영업이익 약 107.4조 원과 일치합니다. 결산 전 잠정치입니다.",
+      "sources": [
+        {
+          "document_id": "samsung_024",
+          "title": "삼성전자 2026년 3분기 잠정실적 발표",
+          "period": "2026-Q3",
+          "source_url": "https://news.samsungsemiconductor.com/kr/?p=37675"
+        },
+        {
+          "document_id": "samsung_026",
+          "title": "삼성전자 2026년 3분기 잠정실적 발표",
+          "period": "2026-Q3",
+          "source_url": "https://news.samsungsemiconductor.com/kr/?p=37675"
+        }
+      ]
+    },
+    {
+      "claim_id": "claim_002",
+      "claim": "삼성전자의 2026년 3분기 매출은 200조 원을 돌파했다.",
+      "claim_type": "FINANCIAL",
+      "status": "CONTRADICTED",
+      "reason": "공식 잠정실적의 2026년 3분기 매출은 약 195조 원으로 200조 원에 미치지 않습니다.",
+      "sources": [
+        {
+          "document_id": "samsung_024",
+          "title": "삼성전자 2026년 3분기 잠정실적 발표",
+          "period": "2026-Q3",
+          "source_url": "https://news.samsungsemiconductor.com/kr/?p=37675"
+        }
+      ]
+    },
+    {
+      "claim_id": "claim_003",
+      "claim": "삼성전자 주가는 내년에 두 배가 될 것이다.",
+      "claim_type": "PREDICTION",
+      "status": "PREDICTION",
+      "reason": "미래 주가에 대한 전망으로 공식 자료로 사실 여부를 판단할 수 없습니다.",
+      "sources": []
+    }
+  ],
+  "personalized_analysis": {
+    "summary": "현재 삼성전자를 직접 보유하지 않았지만 국내 반도체 ETF를 20% 보유하고 있어, 신규 매수 시 반도체 업종 노출이 함께 늘어납니다. 영상의 매출 주장은 공식 자료와 다르니 수치를 확인한 뒤 판단하세요.",
+    "risk_factors": [
+      "반도체 업종 집중도 증가",
+      "잠정 실적 기준(확정 실적 발표 전)",
+      "영상 속 매출 수치 불일치"
+    ]
+  },
+  "analyzed_at": "2026-10-27T10:00:00+09:00"
+}

@@ -1,0 +1,266 @@
+{
+  "note": "평가·리허설용 정답. 서버에 하드코딩하지 말 것(팀 확정안 7장).",
+  "scenarios": {
+    "S1": {
+      "name": "신규 투자 검토",
+      "users": [
+        "demo_user_03"
+      ],
+      "question": "영상의 근거가 맞고, 내 투자 목적에도 맞을까?"
+    },
+    "S2": {
+      "name": "추가 매수 검토",
+      "users": [
+        "demo_user_01",
+        "demo_user_02"
+      ],
+      "question": "더 사면 자산 구성이 어떻게 달라질까?"
+    },
+    "S3": {
+      "name": "보유 점검 · 리딩방 권유",
+      "users": [
+        "demo_user_04",
+        "demo_user_05"
+      ],
+      "question": "기존 보유 이유를 다시 봐야 할까? 이 권유를 믿어도 될까?"
+    }
+  },
+  "videos": [
+    {
+      "video_id": "WCdemoS1A01",
+      "scenario": "S1",
+      "claims": [
+        {
+          "text": "삼성전자의 2026년 3분기 영업이익은 107조 원을 넘었다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_024"
+          ],
+          "reason": "잠정 영업이익 약 107.4조 원으로 일치. 단, 확정 전 잠정치임을 표시해야 함"
+        },
+        {
+          "text": "삼성전자의 2026년 3분기 매출은 200조 원을 돌파했다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_024"
+          ],
+          "reason": "잠정 매출은 약 195조 원으로 200조 원에 못 미침"
+        },
+        {
+          "text": "삼성전자 주가는 내년에 두 배가 될 것이다",
+          "claim_type": "PREDICTION",
+          "period": null,
+          "expected_status": "PREDICTION",
+          "expected_sources": [],
+          "reason": "미래 주가 전망"
+        }
+      ],
+      "risk_signals": [
+        "매수 재촉(지금 안 사면 늦는다)",
+        "유료 멤버십 매매 신호"
+      ]
+    },
+    {
+      "video_id": "WCdemoS1B02",
+      "scenario": "S1",
+      "claims": [
+        {
+          "text": "삼성전자 DS부문은 2026년 2분기 영업이익 89조 원 이상을 기록해 전사 영업이익의 대부분을 차지했다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q2",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_020",
+            "samsung_019"
+          ],
+          "reason": "DS 영업이익 약 89.2조 원 / 전사 약 89.5조 원(약 99.7%)"
+        },
+        {
+          "text": "삼성전자 DX부문은 2026년 2분기에 적자를 기록했다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q2",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_021"
+          ],
+          "reason": "DX 영업손실 약 0.8조 원"
+        },
+        {
+          "text": "삼성전자가 HBM 시장 점유율 1위를 되찾았다",
+          "claim_type": "DISCLOSURE",
+          "period": null,
+          "expected_status": "INSUFFICIENT_EVIDENCE",
+          "expected_sources": [],
+          "reason": "회사 실적 자료에 시장 점유율 순위 근거가 없음(HBM4 양산·공급 확대 사실과는 별개)"
+        }
+      ],
+      "risk_signals": []
+    },
+    {
+      "video_id": "WCdemoS2A03",
+      "scenario": "S2",
+      "claims": [
+        {
+          "text": "삼성전자의 2026년 1분기 영업이익은 2025년 연간 영업이익보다 많다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q1",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_015",
+            "samsung_002"
+          ],
+          "reason": "2026년 1분기 약 57.2조 원 > 2025년 연간 약 43.6조 원"
+        },
+        {
+          "text": "삼성전자의 2026년 분기 영업이익은 1분기, 2분기, 3분기로 갈 때마다 두 배씩 늘고 있다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q1~Q3",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_015",
+            "samsung_019",
+            "samsung_024"
+          ],
+          "reason": "1→2분기 약 1.56배(57.2→89.5), 2→3분기 약 1.20배(89.5→107.4, 잠정). 증가는 맞지만 두 배는 아님"
+        },
+        {
+          "text": "반도체 호황은 2028년까지 계속될 것이다",
+          "claim_type": "PREDICTION",
+          "period": null,
+          "expected_status": "PREDICTION",
+          "expected_sources": [],
+          "reason": "미래 업황 전망"
+        }
+      ],
+      "risk_signals": [
+        "원금 보장 암시(원금 걱정 없어요)",
+        "추가 매수 재촉",
+        "유료 VIP방 매매 신호"
+      ]
+    },
+    {
+      "video_id": "WCdemoS2B04",
+      "scenario": "S2",
+      "claims": [
+        {
+          "text": "삼성전자의 2025년 연간 영업이익은 약 43조 원이다",
+          "claim_type": "FINANCIAL",
+          "period": "2025-FY",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_002"
+          ],
+          "reason": "2025년 연간 약 43.6조 원"
+        },
+        {
+          "text": "삼성전자의 2026년 3분기 영업이익은 전년 동기보다 10배 늘었다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_025",
+            "samsung_024",
+            "samsung_008"
+          ],
+          "reason": "전년 동기 대비 782.50% 증가 = 약 8.8배(12.2조 → 107.4조, 잠정). 10배는 아님"
+        },
+        {
+          "text": "삼성전자는 4분기에도 사상 최대 실적을 낼 것이다",
+          "claim_type": "PREDICTION",
+          "period": "2026-Q4",
+          "expected_status": "PREDICTION",
+          "expected_sources": [
+            "samsung_023"
+          ],
+          "reason": "아직 발표되지 않은 미래 실적. 회사 전망(하반기 성장 전망)은 확정이 아님"
+        }
+      ],
+      "risk_signals": []
+    },
+    {
+      "video_id": "WCdemoS3A05",
+      "scenario": "S3",
+      "claims": [
+        {
+          "text": "삼성전자의 2026년 3분기 영업이익은 직전 분기보다 줄었다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_025",
+            "samsung_024",
+            "samsung_019"
+          ],
+          "reason": "잠정 영업이익은 직전 분기 대비 20.01% 증가(89.5조 → 107.4조)"
+        },
+        {
+          "text": "삼성전자 DX부문은 2026년에 계속 적자를 냈다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q1~Q2",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_017",
+            "samsung_021"
+          ],
+          "reason": "1분기 영업이익 약 3조 원 흑자, 2분기 약 0.8조 원 적자. '계속 적자'는 사실과 다름"
+        },
+        {
+          "text": "메모리 가격은 곧 폭락할 것이다",
+          "claim_type": "PREDICTION",
+          "period": null,
+          "expected_status": "PREDICTION",
+          "expected_sources": [],
+          "reason": "미래 가격 전망"
+        }
+      ],
+      "risk_signals": [
+        "매도 재촉(지금 파세요)"
+      ]
+    },
+    {
+      "video_id": "WCdemoS3B06",
+      "scenario": "S3",
+      "claims": [
+        {
+          "text": "삼성전자의 2026년 3분기 확정 영업이익은 120조 원으로 이미 정해졌다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "samsung_024",
+            "samsung_026"
+          ],
+          "reason": "공식 잠정 영업이익은 약 107.4조 원이며 확정 실적은 아직 발표 전"
+        },
+        {
+          "text": "삼성전자 반도체 부문의 2025년 4분기 영업이익은 16조 원을 넘었다",
+          "claim_type": "FINANCIAL",
+          "period": "2025-Q4",
+          "expected_status": "SUPPORTED",
+          "expected_sources": [
+            "samsung_010"
+          ],
+          "reason": "DS부문 영업이익 약 16.4조 원. 맞는 사실을 섞어 신뢰를 얻는 수법에 유의"
+        },
+        {
+          "text": "이 리딩방에 들어오면 수익이 보장된다",
+          "claim_type": "PREDICTION",
+          "period": null,
+          "expected_status": "PREDICTION",
+          "expected_sources": [],
+          "reason": "사실 판정 대상이 아닌 수익 보장 표현 — 위험 신호로 별도 표시"
+        }
+      ],
+      "risk_signals": [
+        "미공개 정보 암시",
+        "리딩방 유도",
+        "수익 보장",
+        "인원 제한 재촉"
+      ]
+    }
+  ]
+}
