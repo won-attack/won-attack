@@ -22,7 +22,7 @@ class AnalyzeControllerTest {
             mvc.perform(post("/api/analyze").contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(new AnalyzeRequest("https://www.youtube.com/watch?v=WCdemoS1A01", id))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.video.video_id").value("WCdemoS1A01"))
+                .andExpect(jsonPath("$.video.videoId").value("WCdemoS1A01"))
                 .andExpect(jsonPath("$.verification_results.length()").value(3));
         }
     }

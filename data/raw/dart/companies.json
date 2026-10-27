@@ -1,0 +1,42 @@
+[
+  {
+    "corp_code": "00126380",
+    "expected_name": "삼성전자",
+    "corp_name": "삼성전자(주)",
+    "stock_name": "삼성전자",
+    "stock_code": "005930",
+    "status": "000"
+  },
+  {
+    "corp_code": "00164779",
+    "expected_name": "SK하이닉스",
+    "corp_name": "에스케이하이닉스(주)",
+    "stock_name": "SK하이닉스",
+    "stock_code": "000660",
+    "status": "000"
+  },
+  {
+    "corp_code": "00164742",
+    "expected_name": "현대자동차",
+    "corp_name": "현대자동차(주)",
+    "stock_name": "현대자동차",
+    "stock_code": "005380",
+    "status": "000"
+  },
+  {
+    "corp_code": "00266961",
+    "expected_name": "네이버",
+    "corp_name": "네이버(주)",
+    "stock_name": "NAVER",
+    "stock_code": "035420",
+    "status": "000"
+  },
+  {
+    "corp_code": "00258801",
+    "expected_name": "카카오",
+    "corp_name": "(주)카카오",
+    "stock_name": "카카오",
+    "stock_code": "035720",
+    "status": "000"
+  }
+]

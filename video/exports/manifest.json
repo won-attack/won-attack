@@ -1,0 +1,38 @@
+{
+  "note": "Final demo exports with intentional fictional investment claims. Offline synthetic narration; no paid API generation.",
+  "videos": [
+    {
+      "file": "hynix-30s-v2.mp4",
+      "videoId": "WCdemoS2V02",
+      "presenter": "이채원",
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "videoDurationSeconds": 30,
+      "bytes": 12960702,
+      "sha256": "beeb0755d3a988fbb0516366ac6d65b018b13aa711927964ab60e3d002d6f664"
+    },
+    {
+      "file": "samsung-30s-landscape-v1.mp4",
+      "videoId": "WCdemoS1V01",
+      "presenter": "정대리",
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "videoDurationSeconds": 30,
+      "bytes": 7871675,
+      "sha256": "918799c1df057ed99848515974f54029083ffa4181a22305e26cb91a5266a327"
+    },
+    {
+      "file": "hyundai-30s-landscape-v1.mp4",
+      "videoId": "WCdemoS3V03",
+      "presenter": "이채원",
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "videoDurationSeconds": 30,
+      "bytes": 11270844,
+      "sha256": "2885ef03e98b0fdb26cd35e9bbc4db787a03e5879cd1272ec730ff4cdfa7fe10"
+    }
+  ]
+}

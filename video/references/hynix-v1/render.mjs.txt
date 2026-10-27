@@ -1,0 +1,31 @@
+// Local Remotion render. No OpenAI SDK, network assets or environment-key access.
+import {bundle} from '@remotion/bundler';
+import {renderMedia, renderStill, selectComposition} from '@remotion/renderer';
+import {readFile, mkdir, writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const out=path.join(root,'out');
+await mkdir(path.join(out,'stills'),{recursive:true});
+const timeline=JSON.parse(await readFile(path.join(root,'scenes/hynix.json'),'utf8'));
+const serveUrl=await bundle({entryPoint:path.join(root,'src/index.tsx'),publicDir:path.join(root,'public')});
+const composition=await selectComposition({serveUrl,id:'Hynix30'});
+const options={serveUrl,composition};
+for (const scene of timeline.scenes){
+  const frame=scene.from+Math.min(scene.durationInFrames-12,Math.max(70,Math.floor(scene.durationInFrames*.75)));
+  await renderStill({...options,frame,output:path.join(out,'stills',`hynix-scene-${scene.id+1}.png`),imageFormat:'png'});
+  console.log(`Still ${scene.id+1}/5, frame ${frame}`);
+}
+if(!process.argv.includes('--stills-only')){
+  let reported=-1;
+  await renderMedia({...options,codec:'h264',audioCodec:'aac',pixelFormat:'yuv420p',
+    outputLocation:path.join(out,'hynix-30s-v1.mp4'),crf:19,concurrency:2,
+    onProgress:({progress})=>{const bucket=Math.floor(progress*10);if(bucket>reported){reported=bucket;console.log(`Render ${bucket*10}%`);}}
+  });
+  const report={videoId:timeline.videoId,file:'hynix-30s-v1.mp4',width:1080,height:1920,fps:30,
+    frames:900,seconds:30,voice:timeline.voice,paidApiCalls:0,
+    warning:'Fictional investment video with intentionally false claims for WON Check validation. Not investment advice.'};
+  await writeFile(path.join(out,'render-report.json'),JSON.stringify(report,null,2)+'\n');
+  console.log('MP4 ready: '+path.join(out,'hynix-30s-v1.mp4'));
+}

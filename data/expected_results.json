@@ -17,17 +17,17 @@
       "question": "더 사면 자산 구성이 어떻게 달라질까?"
     },
     "S3": {
-      "name": "보유 점검 · 리딩방 권유",
+      "name": "보유 점검",
       "users": [
         "demo_user_04",
         "demo_user_05"
       ],
-      "question": "기존 보유 이유를 다시 봐야 할까? 이 권유를 믿어도 될까?"
+      "question": "기존에 보유한 이유를 다시 검토해야 할까?"
     }
   },
   "videos": [
     {
-      "video_id": "WCdemoS1A01",
+      "video_id": "WCdemoS1V01",
       "scenario": "S1",
       "companies": [
         "삼성전자"
@@ -71,121 +71,10 @@
           ]
         }
       ],
-      "risk_signals": [
-        "매수 재촉(지금 안 사면 늦는다)",
-        "유료 멤버십 매매 신호"
-      ]
-    },
-    {
-      "video_id": "WCdemoS1B02",
-      "scenario": "S1",
-      "companies": [
-        "삼성전자",
-        "SK하이닉스"
-      ],
-      "claims": [
-        {
-          "text": "SK하이닉스의 2025년 연간 영업이익은 삼성전자보다 많았다",
-          "claim_type": "FINANCIAL",
-          "period": "2025-FY",
-          "companies": [
-            "SK하이닉스",
-            "삼성전자"
-          ],
-          "expected_status": "SUPPORTED",
-          "expected_sources": [
-            "hynix_001",
-            "samsung_002"
-          ],
-          "reason": "SK하이닉스 약 47.2조 원 > 삼성전자 약 43.6조 원. 두 회사 근거를 각각 찾아 비교해야 함"
-        },
-        {
-          "text": "SK하이닉스의 2026년 2분기 영업이익은 삼성전자 반도체(DS)부문 영업이익보다 많았다",
-          "claim_type": "FINANCIAL",
-          "period": "2026-Q2",
-          "companies": [
-            "SK하이닉스",
-            "삼성전자"
-          ],
-          "expected_status": "CONTRADICTED",
-          "expected_sources": [
-            "hynix_005",
-            "samsung_020"
-          ],
-          "reason": "SK하이닉스 약 60.5조 원 < 삼성전자 DS부문 약 89.2조 원"
-        },
-        {
-          "text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다",
-          "claim_type": "FINANCIAL",
-          "period": "2026-Q3",
-          "companies": [
-            "SK하이닉스"
-          ],
-          "expected_status": "INSUFFICIENT_EVIDENCE",
-          "expected_sources": [
-            "hynix_008"
-          ],
-          "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"
-        }
-      ],
       "risk_signals": []
     },
     {
-      "video_id": "WCdemoS2A03",
-      "scenario": "S2",
-      "companies": [
-        "삼성전자"
-      ],
-      "claims": [
-        {
-          "text": "삼성전자의 2026년 1분기 영업이익은 2025년 연간 영업이익보다 많다",
-          "claim_type": "FINANCIAL",
-          "period": "2026-Q1",
-          "expected_status": "SUPPORTED",
-          "expected_sources": [
-            "samsung_015",
-            "samsung_002"
-          ],
-          "reason": "2026년 1분기 약 57.2조 원 > 2025년 연간 약 43.6조 원",
-          "companies": [
-            "삼성전자"
-          ]
-        },
-        {
-          "text": "삼성전자의 2026년 분기 영업이익은 1분기, 2분기, 3분기로 갈 때마다 두 배씩 늘고 있다",
-          "claim_type": "FINANCIAL",
-          "period": "2026-Q1~Q3",
-          "expected_status": "CONTRADICTED",
-          "expected_sources": [
-            "samsung_015",
-            "samsung_019",
-            "samsung_024"
-          ],
-          "reason": "1→2분기 약 1.56배(57.2→89.5), 2→3분기 약 1.20배(89.5→107.4, 잠정). 증가는 맞지만 두 배는 아님",
-          "companies": [
-            "삼성전자"
-          ]
-        },
-        {
-          "text": "반도체 호황은 2028년까지 계속될 것이다",
-          "claim_type": "PREDICTION",
-          "period": null,
-          "expected_status": "PREDICTION",
-          "expected_sources": [],
-          "reason": "미래 업황 전망",
-          "companies": [
-            "삼성전자"
-          ]
-        }
-      ],
-      "risk_signals": [
-        "원금 보장 암시(원금 걱정 없어요)",
-        "추가 매수 재촉",
-        "유료 VIP방 매매 신호"
-      ]
-    },
-    {
-      "video_id": "WCdemoS2B04",
+      "video_id": "WCdemoS2V02",
       "scenario": "S2",
       "companies": [
         "SK하이닉스"
@@ -218,23 +107,23 @@
           ]
         },
         {
-          "text": "SK하이닉스의 2026년 3분기 영업이익은 100조 원에 이를 것이다",
-          "claim_type": "PREDICTION",
+          "text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다",
+          "claim_type": "FINANCIAL",
           "period": "2026-Q3",
-          "expected_status": "PREDICTION",
-          "expected_sources": [],
-          "reason": "미래 실적 전망",
+          "expected_status": "INSUFFICIENT_EVIDENCE",
+          "expected_sources": [
+            "hynix_008"
+          ],
+          "reason": "DART 기업설명회 공시상 3분기 실적은 10월 28일 09:00 발표 예정으로, 영상 게시일(10/21) 기준 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님",
           "companies": [
             "SK하이닉스"
           ]
         }
       ],
-      "risk_signals": [
-        "보유 비중 확대 권유"
-      ]
+      "risk_signals": []
     },
     {
-      "video_id": "WCdemoS3A05",
+      "video_id": "WCdemoS3V03",
       "scenario": "S3",
       "companies": [
         "현대자동차"
@@ -279,62 +168,7 @@
           ]
         }
       ],
-      "risk_signals": [
-        "매도 재촉(지금 파세요)"
-      ]
-    },
-    {
-      "video_id": "WCdemoS3B06",
-      "scenario": "S3",
-      "companies": [
-        "삼성전자"
-      ],
-      "claims": [
-        {
-          "text": "삼성전자의 2026년 3분기 확정 영업이익은 120조 원으로 이미 정해졌다",
-          "claim_type": "FINANCIAL",
-          "period": "2026-Q3",
-          "expected_status": "CONTRADICTED",
-          "expected_sources": [
-            "samsung_024",
-            "samsung_026"
-          ],
-          "reason": "공식 잠정 영업이익은 약 107.4조 원이며 확정 실적은 아직 발표 전",
-          "companies": [
-            "삼성전자"
-          ]
-        },
-        {
-          "text": "삼성전자 반도체 부문의 2025년 4분기 영업이익은 16조 원을 넘었다",
-          "claim_type": "FINANCIAL",
-          "period": "2025-Q4",
-          "expected_status": "SUPPORTED",
-          "expected_sources": [
-            "samsung_010"
-          ],
-          "reason": "DS부문 영업이익 약 16.4조 원. 맞는 사실을 섞어 신뢰를 얻는 수법에 유의",
-          "companies": [
-            "삼성전자"
-          ]
-        },
-        {
-          "text": "이 리딩방에 들어오면 수익이 보장된다",
-          "claim_type": "PREDICTION",
-          "period": null,
-          "expected_status": "PREDICTION",
-          "expected_sources": [],
-          "reason": "사실 판정 대상이 아닌 수익 보장 표현 — 위험 신호로 별도 표시",
-          "companies": [
-            "삼성전자"
-          ]
-        }
-      ],
-      "risk_signals": [
-        "미공개 정보 암시",
-        "리딩방 유도",
-        "수익 보장",
-        "인원 제한 재촉"
-      ]
+      "risk_signals": []
     }
   ]
 }

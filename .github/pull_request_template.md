@@ -45,7 +45,7 @@
 
 <!-- 해당하는 항목만 체크합니다. 필요한 항목은 줄을 추가합니다. -->
 
-- [ ] `python data/init_db.py --reset` 실행 후 근거 Top3 점검 통과 (데이터 변경 시)
+- [ ] `python data/init_db.py --reset` → `python data/check_db.py` 근거 Top3 점검 통과 (데이터 변경 시)
 - [ ] `POST /api/analyze` 응답이 `docs/api/analyze_response.json` 형식과 일치
 - [ ] 시연 시나리오 확인: video_id `________` / user_id `________`
 - [ ] 같은 영상에서 사용자만 바꿨을 때 공통 판정(`status`)이 그대로인지 확인 (개인화 변경 시)
