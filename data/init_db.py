@@ -5,7 +5,7 @@
 
 사용법
     pip install chromadb openai
-    set OPENAI_API_KEY=sk-...            (macOS/Linux: export)
+    루트 .env 에 OPENAI_API_KEY=sk-... 한 줄 추가 (환경 변수로 지정해도 됨)
     python init_db.py                    # ./chroma_db 에 적재 후 평가셋으로 Top3 점검
     python init_db.py --reset            # 컬렉션을 지우고 다시 적재
     python init_db.py --fake             # API 키 없이 파이프라인만 시험(해시 벡터, 품질 무관)
@@ -20,9 +20,27 @@ from pathlib import Path
 
 import chromadb
 
-ROOT = Path(__file__).parent
 import os
-DB_PATH = Path(os.getenv("CHROMA_PATH", ROOT / "chroma_db"))
+
+ROOT = Path(__file__).parent
+REPO = ROOT.parent
+
+
+def load_env(path=REPO / ".env"):
+    """루트 .env 를 읽어 환경 변수로 넣는다(이미 지정된 값은 그대로 둔다)."""
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            if v.strip():
+                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+load_env()
+_db = Path(os.getenv("CHROMA_PATH", ROOT / "chroma_db"))
+DB_PATH = _db if _db.is_absolute() else (REPO / _db).resolve()
 COLLECTION = os.getenv("CHROMA_COLLECTION", "disclosures")
 MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 DIM = 1536
