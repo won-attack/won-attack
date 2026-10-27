@@ -1,43 +1,58 @@
 # WON Check 시연 데이터 · 벡터 DB
 
 팀 확정안(노션 「개발 방향」 → 사전 확정안 v1.0)의 규격을 따릅니다.
-ChromaDB `PersistentClient` · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
+ChromaDB 로컬 서버(`chroma run`) · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
 
 ## 실행
 
 ```bash
-pip install chromadb openai
-set OPENAI_API_KEY=sk-...        # macOS/Linux: export OPENAI_API_KEY=sk-...
-python data/init_db.py --reset        # chroma_db/ 생성 + 평가셋으로 근거 Top3 점검
-python data/init_db.py --query "삼성전자 3분기 매출 200조 돌파" --period 2026-Q3
+pip install -r data/requirements.txt      # chromadb 1.x · openai
+# 루트 .env 에 OPENAI_API_KEY=sk-... 한 줄 추가
 ```
 
-API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관).
-데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
+**시연용 벡터 DB = 로컬 ChromaDB 서버**입니다(배포·Docker 없음). 데이터 담당이 적재하고, 백엔드(Spring Boot)는 HTTP로 검색만 합니다.
+
+```bash
+# 1) 적재 → 점검 (ChromaDB 서버가 꺼진 상태에서)
+python data/init_db.py --reset               # data/chroma_db 에 48문장 적재
+python data/check_db.py                      # 시연 주장 7개의 근거가 Top3에 나오는지 → 7/7이면 정상
+
+# 2) 서버로 띄우기 (켜 둔 채로 백엔드 실행)
+chroma run --path data/chroma_db --port 8000
+```
+
+- 서버가 이미 켜져 있으면 1) 대신 `python data/init_db.py --server --reset` → `python data/check_db.py --server`.
+- 검색 시험: `python data/check_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2`
+- `data/chroma_db/`는 커밋하지 않습니다. **시연 노트북에서 한 번 실행**해 두면 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.
+- 메타데이터에는 백엔드가 읽는 `title`(= `source_title`)도 함께 넣습니다.
+- API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` → `python data/check_db.py --fake` (해시 벡터라 검색 품질과 무관, CI가 사용).
+- 데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
 
 ## 파일
 
 | 파일 | 내용 | 쓰는 쪽 |
 |---|---|---|
-| `disclosures.json` | 근거 문장 26개 (`id`, `document`, `metadata`) | `init_db.py` → ChromaDB |
+| `disclosures.json` | 근거 문장 48개 (`id`, `document`, `metadata`) | `init_db.py` → ChromaDB |
+| `companies.json` | 기업 5곳, DART 고유번호, 회사명 별칭 | 백엔드 회사명 정규화 |
 | `financial_facts.json` | 분기·부문별 매출·영업이익 구조화 수치 | 백엔드 수치 계산 |
 | `transcripts.json` | `video_id` → 제목·채널·대본·구간 | 백엔드 대본 조회 |
 | `users.json` | 가상 사용자 5명(우리투자증권 5단계 성향) | 백엔드 개인화 |
 | `expected_results.json` | 영상별 의도한 판정·기대 근거 | 리허설·평가용 (서버에 하드코딩 금지) |
-| `scripts/*.md` | AI 영상 제작용 대본 6개 | 영상 제작 |
-| `init_db.py` | 적재 + 검색 + 점검. `search()`는 백엔드 `rag.py`로 옮기면 됨 | 데이터·백엔드 |
+| `scripts/*.md` | AI 영상 제작용 대본 3개 | 영상 제작 |
+| `init_db.py` | 근거 문장 임베딩 → ChromaDB 적재 | 데이터(시연 전 1회) |
+| `check_db.py` | 적재된 DB 점검: 시연 주장 7개로 검색해 기대 근거가 Top 3에 나오는지, 다른 회사가 섞이지 않는지. `search()`는 백엔드 검색의 기준 구현 | 데이터·CI |
 
-## 근거 데이터 — 5개 기업, 실적 발표 자료 대조
+## 근거 데이터 — 5개 기업, 공식 출처만
 
-근거 문장 50개. 시연 영상은 앞의 3곳만 다룹니다.
+근거 문장 48개. **출처는 DART 공시 또는 회사 공식 뉴스룸·IR 자료만 씁니다(언론 보도 사용 안 함).** 시연 영상은 앞의 3곳을 1개씩 다룹니다.
 
 | 기업 | 문장 | 기간 | 출처 |
 |---|---|---|---|
 | 삼성전자 | 26 | 2024 연간 ~ 2026 3분기(잠정) | 회사 뉴스룸·IR 자료 |
-| SK하이닉스 | 8 | 2025 연간 ~ 2026 2분기 + 3분기 발표 예정 안내 | 회사 발표를 인용한 언론 보도(연합·뉴시스 등) |
-| 현대자동차 | 8 | 2025 연간·4분기 ~ 2026 2분기 + 2026 가이던스 + 3분기 발표 예정 안내 | 현대자동차그룹 뉴스룸 |
-| 네이버 | 4 | 2025 연간 ~ 2026 2분기 | 네이버 보도자료·IR 자료 |
-| 카카오 | 4 | 2025 연간 ~ 2026 2분기 | 카카오 보도자료 |
+| SK하이닉스 | 7 | 2025 연간·4분기 ~ 2026 2분기 + 3분기 발표 일정 | DART 영업(잠정)실적·기업설명회 공시 |
+| 현대자동차 | 8 | 2025 연간·4분기 ~ 2026 2분기 + 2026 가이던스 + 3분기 발표 일정 | 현대자동차그룹 뉴스룸 · DART 기업설명회 공시 |
+| 네이버 | 4 | 2025 연간 ~ 2026 2분기 | 네이버 공식 IR 자료·회사 발표 |
+| 카카오 | 3 | 2025 연간 ~ 2026 2분기 | DART 영업(잠정)실적 공시 |
 
 | 기업 | 2025 연간 매출 / 영업이익 | 2026 1분기 | 2026 2분기 |
 |---|---|---|---|
@@ -48,39 +63,35 @@ API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시
 | 카카오 | 8.10조 / 0.73조 | 1.94조 / 0.21조 | 2.10조 / 0.28조 |
 
 - 문장 속 금액은 원문 단위(억 원)까지 적고, 메타데이터 `value`와 `financial_facts.json`은 조 원으로 환산했습니다.
-- **3분기 실적:** 삼성전자만 잠정실적이 있습니다(10/8). SK하이닉스·현대자동차는 10월 29일 발표 예정이라 `hynix_008`, `hyundai_008`에 "아직 미발표"라고 적어뒀습니다. 이 문장은 **10/29 이후 실제 실적으로 교체**해야 합니다.
+- **3분기 실적:** 삼성전자만 잠정실적이 있습니다(10/8). DART 기업설명회 공시상 SK하이닉스는 **10월 28일 09:00**, 현대자동차는 10월 29일 14:10 발표라 `hynix_008`, `hyundai_008`에 발표 일정을 적어뒀습니다. 발표 뒤에는 `fetch_dart.py`를 다시 돌려 실제 실적 문장을 추가하세요.
+- **DART 원문 보관:** `data/raw/dart/`에 회사 정보·공시 목록·주요 재무계정과 근거로 쓴 공시 원문(`docs/<접수번호>.txt`)이 있습니다. 메타데이터 `filing_id`가 그 접수번호입니다.
+- **다시 받기:** 루트 `.env`에 `OPENDART_API_KEY=...`를 넣고 `python data/tools/fetch_dart.py` (OpenDART 접속이 되는 PC에서). 키는 절대 커밋하지 마세요.
 - `companies.json`에 회사별 별칭(현대차·하이닉스·삼전 등)이 있습니다. 백엔드는 LLM이 추출한 회사명을 여기서 정규화한 뒤 `company` 필터에 넣으세요.
-- DART 고유번호(`company_code`)는 공시 연동 확장 시 쓰는 값이니, 그때 OpenDART에서 한 번 더 확인하세요.
+- DART 고유번호(`company_code`)는 OpenDART `company.json`으로 5곳 모두 확인했습니다.
 
-## 영상 6개 (시나리오별 2개, 영상당 검증 주장 3개, 기업 3곳)
+## 영상 3개 (기업별 1개, 영상당 검증 주장 3개)
 
 | video_id | 시나리오 | 기업 | 의도한 판정 |
 |---|---|---|---|
-| WCdemoS1A01 | S1 신규 검토 | 삼성전자 | 3Q 영업이익 107조 → 확인 · 매출 200조 돌파 → **불일치**(195조) · 주가 2배 → 예측 |
-| WCdemoS1B02 | S1 신규 검토 | 삼성전자 vs SK하이닉스 | 작년 이익 하이닉스 > 삼성 → 확인 · 2Q 하이닉스 > 삼성 반도체 → **불일치**(60.5조 < 89.2조) · 하이닉스 3Q 77조 확정 → **근거 부족**(미발표) |
-| WCdemoS2A03 | S2 추가 매수 | 삼성전자 | 1Q > 작년 1년치 → 확인 · 분기마다 2배 → **불일치**(1.56배·1.20배) · 2028년까지 호황 → 예측 |
-| WCdemoS2B04 | S2 추가 매수 | SK하이닉스 | 2Q 영업이익 60조·이익률 76% → 확인 · 매출 80조 돌파 → **불일치**(79.3조) · 3Q 100조 → 예측 |
-| WCdemoS3A05 | S3 보유 점검 | 현대자동차 | 1Q 영업이익 30% 넘게 감소 → 확인 · 2Q 적자 → **불일치**(2.85조 흑자) · 내년 반토막 → 예측 |
-| WCdemoS3B06 | S3 리딩방 권유 | 삼성전자 | 확정 영업이익 120조 → **불일치**(잠정 107.4조) · 작년 4Q 반도체 16조 → 확인 · 수익 보장 → 위험 신호 |
+| WCdemoS1V01 | S1 신규 검토 | 삼성전자 | 3Q 영업이익 107조 → 확인 · 매출 200조 돌파 → **불일치**(195조) · 주가 2배 → 예측 |
+| WCdemoS2V02 | S2 추가 매수 | SK하이닉스 | 2Q 영업이익 60조·이익률 76% → 확인 · 매출 80조 돌파 → **불일치**(79.3조) · 3Q 77조 확정 → **근거 부족**(10/28 09:00 발표 전, 영상 게시일 기준) |
+| WCdemoS3V03 | S3 보유 점검 | 현대자동차 | 1Q 영업이익 30% 넘게 감소 → 확인 · 2Q 적자 → **불일치**(2.85조 흑자) · 내년 반토막 → 예측 |
 
-**어제 대본에서 바뀐 영상: `WCdemoS1B02`, `WCdemoS2B04`, `WCdemoS3A05`.** 이미 제작을 시작했다면 이 3개는 `scripts/`의 새 대본으로 다시 만들어야 합니다.
-
-4가지 상태(SUPPORTED·CONTRADICTED·INSUFFICIENT_EVIDENCE·PREDICTION)가 모두 나옵니다.
-`video_id`는 임시값입니다. 영상을 올린 뒤 실제 ID로 바꾸세요.
+판정 4종이 모두 나옵니다. 영상 ID가 바뀌었으니(이전 6개 → 3개) 업로드 후 실제 ID로 교체할 때 `transcripts.json` 키를 함께 바꾸세요.
 
 ## 사용자 5명 (가상, 우리투자증권 5단계)
 
 | user_id | 성향 | 시나리오 | 보유 | 이번 의도 |
 |---|---|---|---|---|
-| demo_user_01 | 공격투자형 | S2 | 삼성전자 45% · SK하이닉스 35% · 현금 20% | SK하이닉스 추가 매수 500만원 |
-| demo_user_02 | 적극투자형 | S2 | SK하이닉스 10% · 현대자동차 15% · 네이버 10% · 미국 S&P500 ETF 40% 등 | SK하이닉스 추가 매수 300만원 |
-| demo_user_03 | 위험중립형 | S1 | SK하이닉스 15% · 카카오 10% · 미국 S&P500 ETF 40% 등 | 삼성전자 신규 매수 300만원 |
-| demo_user_04 | 안정추구형 | S3 | 현대자동차 25% · 채권형 펀드 50% · 현금 25% | 현대자동차 보유 점검 |
-| demo_user_05 | 안정형 | S3 | 예금·CMA 70% · 채권형 펀드 30% | 리딩방 권유로 삼성전자 신규 매수 1,000만원 검토 |
+| demo_user_01 | 공격투자형 | S2 | 삼성전자 45% · SK하이닉스 35% · 예수금 20% | SK하이닉스 추가 매수 500만원 |
+| demo_user_02 | 적극투자형 | S2 | SK하이닉스 10% · 현대자동차 15% · 네이버 10% · TIGER 미국S&P500 40% · KODEX 단기채권 15% · 예수금 10% | SK하이닉스 추가 매수 300만원 |
+| demo_user_03 | 위험중립형 | S1 | SK하이닉스 15% · 카카오 10% · TIGER 미국S&P500 40% · KODEX 단기채권 20% · 예수금 15% | 삼성전자 신규 매수 300만원 |
+| demo_user_04 | 안정추구형 | S3 | 현대자동차 25% · KODEX 단기채권 50% · 예수금 25% | 현대자동차 보유 점검 |
+| demo_user_05 | 안정형 | S3 | TIGER 머니마켓액티브 70% · KODEX 단기채권 30% | 현대자동차 신규 매수 1,000만원 검토 |
 
-같은 영상을 두 사용자로 돌리면 공통 판정은 같고 개인화 설명만 달라야 합니다(S2: 반도체 비중 80%인 01 vs 10%인 02).
+같은 영상을 두 사용자로 돌리면 공통 판정은 같고 개인화 설명만 달라야 합니다(S2: 반도체 비중 80%인 01 vs 10%인 02, S3: 현대차 보유자 04 vs 주식이 없는 안정형 05).
 
-## 백엔드에 넘길 검색 규칙 (`init_db.py`의 `search()`)
+## 검색 규칙 (`check_db.py`의 `search()` — 백엔드 Java 구현의 기준)
 
 1. 회사명 필터(`company`)는 항상 건다. 주장에 회사가 둘 이상이면 **회사마다 따로 검색**한다(`search_claim()`).
 2. 기간이 확실하면(`2026-Q3`) 기간 필터를 걸고, 결과가 없으면 회사 필터로 다시 찾는다.
@@ -89,5 +100,44 @@ API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시
 
 ## 확인 상태
 
-- API 키 없이 `--fake`로 적재·필터·평가 경로를 실행해 13/13 기대 근거가 회사별 Top 3에 들어오고, 다른 회사 문서가 섞이지 않는 것(0건)을 확인했습니다. **실제 임베딩 품질은 API 키로 `python data/init_db.py --reset`을 한 번 돌려 확인하세요.**
+- **실제 임베딩(`text-embedding-3-small`) 확인 완료 (2026-10-27):** `python data/init_db.py --reset` → `python data/check_db.py` → 기대 근거 7/7이 회사별 Top 3에 들어왔고(모두 1순위), 다른 회사 문서 섞임 0건.
+- CI는 API 키 없이 `--fake`로 적재·필터·평가 경로만 점검합니다.
 
+
+
+## OpenAI / 로컬 Ollama 임베딩 전환
+
+Python 적재·검색은 `EMBEDDING_PROVIDER` 하나로 전환합니다. 실제 환경변수가
+현재 작업 폴더의 `.env`보다 우선하고, 그다음 저장소 루트 `.env`를 읽습니다.
+백엔드 폴더에서 실행하면 백엔드 `.env`를 사용할 수 있습니다.
+
+```dotenv
+EMBEDDING_PROVIDER=ollama
+OLLAMA_BASE_URL=http://127.0.0.1:11434/v1
+OLLAMA_EMBEDDING_MODEL=embeddinggemma
+EMBEDDING_MODEL=text-embedding-3-small
+CHROMA_URL=http://127.0.0.1:8000
+```
+
+Ollama 설치·실행 후 `ollama pull embeddinggemma`로 임베딩 모델을 준비합니다.
+로컬 Ollama에는 실제 API 키가 필요 없습니다. 클라우드 Ollama 인증은 이 설정의 대상이 아닙니다.
+
+`backend/won-check-backend`에서 Chroma 서버를 켜둔 채 실행:
+
+```powershell
+.\.venv\Scripts\python.exe ..\..\data\init_db.py --server http://127.0.0.1:8000
+.\.venv\Scripts\python.exe ..\..\data\check_db.py --server http://127.0.0.1:8000 --strict
+```
+
+OpenAI로 바꾸려면 `EMBEDDING_PROVIDER=openai`로 변경하고 실제 `OPENAI_API_KEY`를
+설정한 뒤 같은 명령을 다시 실행합니다. 기본 컬렉션은 OpenAI `disclosures`,
+Ollama `disclosures_ollama`입니다. `CHROMA_COLLECTION`을 지정해도 Ollama에는
+`_ollama`가 붙습니다. 모델이 바뀌면 다시 임베딩해야 하며, 기존 컬렉션과 모델이
+다르면 중단합니다. 필요한 경우 새 컬렉션 이름을 쓰세요. `--reset`은 해당
+컬렉션을 삭제하고 재적재하므로 기존 데이터를 교체할 때만 명시적으로 사용합니다.
+
+Python과 Spring 임베딩은 같은 `EMBEDDING_PROVIDER`, 모델, 컬렉션 설정을
+사용합니다. Spring은 `.env` 변경 후 재시작해야 합니다. Spring의 주장 추출·판정·
+개인화는 여전히 OpenAI를 사용하므로, Ollama 임베딩만 선택해도 키 없이 전체
+`/api/analyze`를 실행할 수 있는 것은 아닙니다. Ollama와 OpenAI의 검색 품질은
+각각 검증합니다. 키 없는 `--fake` 경로는 기존대로 유지합니다.

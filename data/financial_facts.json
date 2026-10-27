@@ -219,9 +219,23 @@
     "operating_profit_trillion_krw": 47.2063,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "SK하이닉스 2025년 연간 실적 발표(연합뉴스 보도)",
-    "source_url": "https://v.daum.net/v/VEZrd6qFW7",
-    "published_at": "2026-01-29"
+    "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260128800709",
+    "published_at": "2026-01-28"
+  },
+  {
+    "company": "SK하이닉스",
+    "company_code": "00164779",
+    "stock_code": "000660",
+    "period": "2025-Q4",
+    "segment": "전사",
+    "revenue_trillion_krw": 32.8267,
+    "operating_profit_trillion_krw": 19.1696,
+    "basis": "연결",
+    "is_preliminary": false,
+    "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260128800709",
+    "published_at": "2026-01-28"
   },
   {
     "company": "SK하이닉스",
@@ -233,8 +247,8 @@
     "operating_profit_trillion_krw": 37.6103,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "SK하이닉스 2026년 1분기 실적 발표(스마트투데이 보도)",
-    "source_url": "https://www.smarttoday.co.kr/ko-kr/articles/106831",
+    "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 1분기",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260423800001",
     "published_at": "2026-04-23"
   },
   {
@@ -247,8 +261,8 @@
     "operating_profit_trillion_krw": 60.5426,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "SK하이닉스 2026년 2분기 실적 발표(뉴시스 보도)",
-    "source_url": "https://www.newsis.com/view/NISX20260729_0003728008",
+    "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 2분기",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260729800013",
     "published_at": "2026-07-29"
   },
   {
@@ -373,8 +387,8 @@
     "operating_profit_trillion_krw": 0.732,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "카카오 2025년 연간 실적 발표",
-    "source_url": "https://www.kakaocorp.com/page/detail/11931",
+    "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260212800004",
     "published_at": "2026-02-12"
   },
   {
@@ -387,8 +401,8 @@
     "operating_profit_trillion_krw": 0.2034,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "카카오 2025년 연간 실적 발표",
-    "source_url": "https://www.kakaocorp.com/page/detail/11931",
+    "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260212800004",
     "published_at": "2026-02-12"
   },
   {
@@ -401,8 +415,8 @@
     "operating_profit_trillion_krw": 0.2114,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "카카오 2026년 1분기 실적 발표",
-    "source_url": "https://www.kakaocorp.com/page/detail/12023",
+    "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 1분기",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260507800004",
     "published_at": "2026-05-07"
   },
   {
@@ -415,8 +429,8 @@
     "operating_profit_trillion_krw": 0.277,
     "basis": "연결",
     "is_preliminary": false,
-    "source_title": "카카오 2026년 2분기 실적 발표",
-    "source_url": "https://www.kakaocorp.com/page/detail/12096",
+    "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 2분기",
+    "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260806800010",
     "published_at": "2026-08-06"
   }
 ]
