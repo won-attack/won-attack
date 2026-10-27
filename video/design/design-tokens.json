@@ -1,0 +1,25 @@
+{
+  "canvas": {
+    "width": 1080,
+    "height": 1920
+  },
+  "colors": {
+    "ink": "#12283b",
+    "navy": "#11283f",
+    "teal": "#1f756d",
+    "mint": "#e5f2ee"
+  },
+  "font": {
+    "family": "Apple SD Gothic Neo, Noto Sans KR, sans-serif",
+    "title": 62,
+    "subtitle": 46,
+    "caption": 25
+  },
+  "safeArea": {
+    "left": 64,
+    "right": 64,
+    "top": 112,
+    "bottom": 98
+  },
+  "note": "Placeholder copy only; no confirmed scenario or financial claims."
+}
