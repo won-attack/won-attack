@@ -1,6 +1,6 @@
-﻿import {useEffect, useState} from 'react';
+﻿import {useEffect, useRef, useState} from 'react';
 import './mts-reference.css';
-import {AlertCircle, ArrowLeft, ArrowUpRight, BarChart3, Bell, Bookmark, BookmarkCheck, Captions, CarFront, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Copy, Cpu, Download, ExternalLink, Heart, HelpCircle, Home, Layers3, Mail, Maximize, Menu, MessageCircle, Mic, MoreHorizontal, Pause, Play, Plus, RefreshCw, RotateCcw, Search, Share2, ShieldCheck, Settings, Sparkles, SquarePen, ThumbsDown, ThumbsUp, TrendingUp, Wallet, X, XCircle} from 'lucide-react';
+import {AlertCircle, ArrowLeft, ArrowUpRight, BarChart3, Bell, Bookmark, BookmarkCheck, Captions, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Copy, Download, ExternalLink, Heart, HelpCircle, Home, Mail, Maximize, Menu, MessageCircle, Mic, MoreHorizontal, Pause, Play, Plus, RefreshCw, RotateCcw, Search, Share2, ShieldCheck, Settings, Sparkles, SquarePen, ThumbsDown, ThumbsUp, TrendingUp, VolumeX, Wallet, X, XCircle} from 'lucide-react';
 
 type Status = 'SUPPORTED'|'CONTRADICTED'|'INSUFFICIENT_EVIDENCE'|'PREDICTION';
 type ClaimType = 'FINANCIAL'|'DISCLOSURE'|'PREDICTION';
@@ -10,17 +10,27 @@ type Analysis = {video:{video_id:string;title:string;url:string};verification_re
 type SavedReport = {id:string;userId:string;userLabel:string;savedAt:string;report:Analysis};
 type Page = 'browse'|'shorts'|'youtube'|'loading'|'results'|'stock'|'mts-home'|'watchlist'|'assets'|'all'|'archive';
 type DemoVideo = {id:string;title:string;channel:string;company:string;theme:'samsung'|'hynix'|'hyundai';eyebrow:string;headline:string;duration:string;views:string;published:string};
-type DemoShort = {video:DemoVideo;title:string;channel:string;caption:string;overlay:string;likes:string;comments:string};
+type DemoShort = {video:DemoVideo;title:string;channel:string;caption:string;likes:string;comments:string};
 const videos:DemoVideo[]=[
-  {id:'WCdemoS1V01',title:'삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다',channel:'주식왕 데이빗(가상)',company:'삼성전자',theme:'samsung',eyebrow:'3분기 영업이익 107조?',headline:'지금 안 사면 늦습니다',duration:'0:36',views:'18만',published:'2주 전'},
-  {id:'WCdemoS2V02',title:'SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요',channel:'실적으로 말하는 주식(가상)',company:'SK하이닉스',theme:'hynix',eyebrow:'3분기 77조 확정?',headline:'지금 비중 늘리세요',duration:'0:27',views:'26만',published:'6일 전'},
-  {id:'WCdemoS3V03',title:'현대차 관세 직격탄, 보유자는 지금 파세요',channel:'팩트폭격 주식(가상)',company:'현대자동차',theme:'hyundai',eyebrow:'관세 직격탄?',headline:'보유자는 지금 파세요',duration:'0:20',views:'11만',published:'2개월 전'},
+  {id:'WCdemoS1V01',title:'삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다',channel:'주식왕 데이빗(가상)',company:'삼성전자',theme:'samsung',eyebrow:'3분기 영업이익 107조?',headline:'지금 안 사면 늦습니다',duration:'0:30',views:'18만',published:'2주 전'},
+  {id:'WCdemoS2V02',title:'SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요',channel:'실적으로 말하는 주식(가상)',company:'SK하이닉스',theme:'hynix',eyebrow:'3분기 77조 확정?',headline:'지금 비중 늘리세요',duration:'0:30',views:'26만',published:'6일 전'},
+  {id:'WCdemoS3V03',title:'현대차 관세 직격탄, 보유자는 지금 파세요',channel:'팩트폭격 주식(가상)',company:'현대자동차',theme:'hyundai',eyebrow:'관세 직격탄?',headline:'보유자는 지금 파세요',duration:'0:30',views:'11만',published:'2개월 전'},
 ];
 const demoShorts:DemoShort[]=[
-  {video:videos[0],title:'삼성전자 실적, 이 숫자 확인하세요',channel:'오늘의 투자 팩트(가상)',caption:'영상 속 실적 주장을 공식 자료와 비교해 봐요.',overlay:'실적 숫자,\n공식 자료로 확인',likes:'1.8천',comments:'150'},
-  {video:videos[1],title:'SK하이닉스 3분기 실적 체크',channel:'반도체 브리핑(가상)',caption:'확정된 수치인지 발표 자료를 확인하세요.',overlay:'77조 확정?\n발표 자료 확인',likes:'2.4천',comments:'208'},
-  {video:videos[2],title:'현대차 관세 뉴스, 사실일까?',channel:'경제 한입(가상)',caption:'단정적인 매도 주장, 근거부터 살펴봐요.',overlay:'관세 영향\n근거부터 체크',likes:'986',comments:'74'},
+  {video:videos[1],title:'SK하이닉스 3분기 실적, 77조 확정?',channel:'반도체 브리핑(가상)',caption:'영상 속 투자 주장을 공식 자료와 함께 확인해요.',likes:'2.4천',comments:'208'},
 ];
+const videoFiles:Record<string,string>={
+  WCdemoS1V01:new URL('../../video/out/samsung-30s-landscape-v1.mp4',import.meta.url).href,
+  WCdemoS2V02:new URL('../../video/out/hynix-30s-v2.mp4',import.meta.url).href,
+  WCdemoS3V03:new URL('../../video/out/hyundai-30s-landscape-v1.mp4',import.meta.url).href,
+};
+const videoThumbnailFiles:Record<string,string>={
+  WCdemoS1V01:new URL('../../video/out/samsung-30s-landscape-v1.png',import.meta.url).href,
+  WCdemoS2V02:new URL('../../video/out/hynix-30s-v2.png',import.meta.url).href,
+  WCdemoS3V03:new URL('../../video/out/hyundai-30s-landscape-v1.png',import.meta.url).href,
+};
+const videoSrc=(video:DemoVideo)=>videoFiles[video.id]??'';
+const videoThumbnailSrc=(video:DemoVideo)=>videoThumbnailFiles[video.id]??'';
 const videoUrl=(video:DemoVideo)=>`https://www.youtube.com/watch?v=${video.id}`;
 const profiles=[
   {id:'demo_user_01',label:'박서연 님',detail:'공격투자형',allocation:'반도체 비중 80%',level:'주의',holdings:{samsung:45,hynix:35,hyundai:0}},
@@ -99,12 +109,8 @@ function DemoControls({user,busy,onSelect}:{user:string;busy:boolean;onSelect:(i
   </aside>;
 }
 function VideoThumbnail({video}:{video:DemoVideo}){
-  const Art=video.theme==='samsung'?Cpu:video.theme==='hynix'?Layers3:CarFront;
   return <div className={`demo-thumbnail demo-thumbnail--${video.theme}`} aria-hidden="true">
-    <div className="demo-thumbnail-shine"/><div className="demo-thumbnail-grid"/>
-    <div className="demo-thumbnail-art"><Art/></div>
-    <span className="demo-thumbnail-tag">WON CHECK · 시연 영상</span>
-    <div className="demo-thumbnail-copy"><span>{video.company}</span><strong>{video.eyebrow}</strong><em>{video.headline}</em></div>
+    <img src={videoThumbnailSrc(video)} alt="" loading="lazy"/>
     <span className="demo-thumbnail-duration">{video.duration}</span>
   </div>;
 }
@@ -124,32 +130,44 @@ function BrowseScreen({onSelect,onShorts}:{onSelect:(video:DemoVideo)=>void;onSh
 function ShortsScreen({onShare,onHome}:{onShare:(video:DemoVideo)=>void;onHome:()=>void}){
   const [liked,setLiked]=useState<string[]>([]);
   const [saved,setSaved]=useState<string[]>([]);
-  return <div className="shorts-shell screen-enter"><div className="shorts-feed">{demoShorts.map((item,index)=>{
+  const playerRef=useRef<HTMLVideoElement>(null);
+  const [playing,setPlaying]=useState(false);
+  const [muted,setMuted]=useState(true);
+  const togglePlayback=()=>{const player=playerRef.current;if(!player)return;if(player.paused){player.muted=false;setMuted(false);void player.play().catch(()=>setPlaying(false))}else if(player.muted){player.muted=false;setMuted(false)}else player.pause()};
+  return <div className="shorts-shell screen-enter"><div className="shorts-feed">{demoShorts.map(item=>{
     const isLiked=liked.includes(item.video.id);const isSaved=saved.includes(item.video.id);
     return <article className={`shorts-card shorts-card--${item.video.theme}`} key={item.video.id}>
-      <div className="shorts-scene"><VideoThumbnail video={item.video}/><div className="shorts-scene-shade"/><div className="shorts-headline">{item.overlay.split('\n').map(line=><strong key={line}>{line}</strong>)}</div><span className="shorts-caption">{index===0?'공식 자료로 확인해볼게요':index===1?'주장과 공시 수치를 비교해봅니다':'확인 가능한 근거가 있는지 살펴봐요'}</span><span className="shorts-video-label">시연용 예시 영상 · 실제 영상은 추후 교체</span></div>
+      <div className="shorts-scene"><video ref={playerRef} className="shorts-video-media" src={videoSrc(item.video)} poster={videoThumbnailSrc(item.video)} playsInline preload="auto" autoPlay muted={muted} loop onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/><button type="button" className="shorts-play-toggle" aria-label={!playing?'영상 재생':muted?'소리 켜기':'영상 일시정지'} onClick={togglePlayback}>{!playing?<Play size={36} fill="currentColor"/>:muted?<VolumeX size={25}/>:<Pause size={28} fill="currentColor"/>}</button><div className="shorts-scene-shade"/></div>
       <div className="shorts-topline"><strong>Shorts</strong><Search size={22}/><MoreHorizontal size={22}/></div>
-      <div className="shorts-rail"><button type="button" aria-label="좋아요" aria-pressed={isLiked} onClick={()=>setLiked(current=>isLiked?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Heart size={29} fill={isLiked?'#ff3040':'none'}/><span>{item.likes}</span></button><button type="button" aria-label="댓글"><MessageCircle size={28}/><span>{item.comments}</span></button><button type="button" aria-label="저장" aria-pressed={isSaved} onClick={()=>setSaved(current=>isSaved?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Bookmark size={27} fill={isSaved?'white':'none'}/><span>{isSaved?'저장됨':'저장'}</span></button><button type="button" aria-label="공유" onClick={()=>onShare({...item.video,title:item.title,channel:item.channel})}><Share2 size={29}/><span>공유</span></button><button type="button" aria-label="리믹스"><RefreshCw size={28}/><span>리믹스</span></button></div>
-      <div className="shorts-info"><span className="shorts-channel-avatar">{item.video.company.slice(0,1)}</span><strong>@{item.channel}</strong><button type="button">구독</button><p>{item.title} · {item.caption}</p><div className="shorts-audio"><Play size={14} fill="currentColor"/><span>WON Check 시연용 오디오</span></div></div>
+      <div className="shorts-rail"><button type="button" aria-label="좋아요" aria-pressed={isLiked} onClick={()=>setLiked(current=>isLiked?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Heart size={29} fill={isLiked?'#ff3040':'none'}/><span>{item.likes}</span></button><button type="button" aria-label="댓글"><MessageCircle size={28}/><span>{item.comments}</span></button><button type="button" aria-label="저장" aria-pressed={isSaved} onClick={()=>setSaved(current=>isSaved?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Bookmark size={27} fill={isSaved?'white':'none'}/><span>{isSaved?'저장됨':'저장'}</span></button><button type="button" aria-label="공유" onClick={()=>{playerRef.current?.pause();onShare({...item.video,title:item.title,channel:item.channel})}}><Share2 size={29}/><span>공유</span></button><button type="button" aria-label="리믹스"><RefreshCw size={28}/><span>리믹스</span></button></div>
+      <div className="shorts-info"><span className="shorts-channel-avatar">{item.video.company.slice(0,1)}</span><strong>@{item.channel}</strong><button type="button">구독</button><p>{item.title} · {item.caption}</p><div className="shorts-audio"><Play size={14} fill="currentColor"/><span>시연 영상 원본 오디오</span></div></div>
     </article>;
   })}</div><DemoBottomNav active="shorts" onHome={onHome} onShorts={()=>document.querySelector('.shorts-feed')?.scrollTo({top:0,behavior:'smooth'})} dark/></div>;
 }
 function YoutubeScreen({video,onShare,onBack,onChoose}:{video:DemoVideo;onShare:()=>void;onBack:()=>void;onChoose:(video:DemoVideo)=>void}){
   const [playing,setPlaying]=useState(false);
+  const [muted,setMuted]=useState(true);
+  const [playhead,setPlayhead]=useState(0);
+  const [playbackError,setPlaybackError]=useState('');
+  const playerRef=useRef<HTMLVideoElement>(null);
   const [liked,setLiked]=useState(false);
   const [disliked,setDisliked]=useState(false);
   const [subscribed,setSubscribed]=useState(false);
   const [expanded,setExpanded]=useState(false);
+  const togglePlayback=()=>{const player=playerRef.current;if(!player)return;if(player.paused){setPlaybackError('');player.muted=false;setMuted(false);void player.play().catch(()=>{setPlaying(false);setPlaybackError('영상 재생에 실패했어요. 영상 파일의 코덱이나 브라우저 재생 상태를 확인해 주세요.')})}else if(player.muted){player.muted=false;setMuted(false)}else player.pause()};
+  const openShare=()=>{playerRef.current?.pause();onShare()};
+  const formatTime=(seconds:number)=>`${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;
   return <div className="screen youtube-screen screen-enter">
     <div className="yt-player">
-      <VideoThumbnail video={video}/>
-      <button type="button" className="yt-video-toggle" aria-label={playing?'영상 일시정지':'영상 재생'} onClick={()=>setPlaying(!playing)}>{playing&&<Pause size={28} fill="currentColor"/>}</button>
+      <video ref={playerRef} className="yt-video-media" src={videoSrc(video)} poster={videoThumbnailSrc(video)} playsInline preload="auto" autoPlay muted={muted} onPlay={()=>{setPlaying(true);setPlaybackError('')}} onPause={()=>setPlaying(false)} onError={()=>{setPlaying(false);setPlaybackError('영상 파일을 불러오지 못했어요. 새로고침 후에도 같으면 파일 형식이나 경로를 확인해 주세요.')}} onTimeUpdate={event=>setPlayhead(event.currentTarget.currentTime)}/>
+      {playbackError&&<div className="yt-playback-error" role="alert">{playbackError}</div>}
+      <button type="button" className="yt-video-toggle" aria-label={!playing?'영상 재생':muted?'소리 켜기':'영상 일시정지'} onClick={togglePlayback}>{!playing?<Play size={28} fill="currentColor"/>:muted?<VolumeX size={23}/>:<Pause size={28} fill="currentColor"/>}</button>
       <div className="yt-player-top"><button type="button" className="yt-watch-back" aria-label="영상 목록으로 돌아가기" onClick={onBack}><ChevronDown size={22}/></button><span/><Play size={19} fill="currentColor"/><Captions size={21}/><Settings size={22}/></div>
-      <div className="yt-player-bottom"><span>0:01 / {video.duration}</span><span>{video.company} 시연 영상</span><Maximize size={18}/></div><div className="yt-progress"><span/></div>
+      <div className="yt-player-bottom"><span>{formatTime(playhead)} / {video.duration}</span><span>{video.company} 시연 영상</span><Maximize size={18}/></div><div className="yt-progress"><span style={{width:`${Math.min(100,playhead/30*100)}%`}}/></div>
     </div>
     <div className="yt-details"><h1>{video.title}</h1><div className="yt-metadata"><span>조회수 {video.views}회</span><span>{video.published}</span><span>#{video.company}</span><span>#투자</span><span>#주식</span><button type="button" onClick={()=>setExpanded(!expanded)}>더보기</button></div>{expanded&&<div className="yt-expanded">{video.channel} · 시연용 가상 영상</div>}
       <div className="yt-channel"><span className="yt-channel-avatar">{video.company.slice(0,1)}</span><strong>{video.channel}</strong><span>시연 채널</span><button type="button" className="yt-subscribe" onClick={()=>setSubscribed(!subscribed)}>{subscribed?'구독중':'구독'}</button></div>
-      <div className="yt-actions"><div className="yt-like-group"><button type="button" aria-label="좋아요" aria-pressed={liked} onClick={()=>{setLiked(!liked);setDisliked(false)}}><ThumbsUp size={18} fill={liked?'currentColor':'none'}/> 2.8만</button><i/><button type="button" aria-label="싫어요" aria-pressed={disliked} onClick={()=>{setDisliked(!disliked);setLiked(false)}}><ThumbsDown size={18} fill={disliked?'currentColor':'none'}/></button></div><button type="button" className="yt-share" onClick={onShare}><Share2 size={19} fill="currentColor"/> 공유</button><button type="button"><RefreshCw size={18}/> 리믹스</button><button type="button"><Download size={18}/> 오프라인 저장</button></div>
+      <div className="yt-actions"><div className="yt-like-group"><button type="button" aria-label="좋아요" aria-pressed={liked} onClick={()=>{setLiked(!liked);setDisliked(false)}}><ThumbsUp size={18} fill={liked?'currentColor':'none'}/> 2.8만</button><i/><button type="button" aria-label="싫어요" aria-pressed={disliked} onClick={()=>{setDisliked(!disliked);setLiked(false)}}><ThumbsDown size={18} fill={disliked?'currentColor':'none'}/></button></div><button type="button" className="yt-share" onClick={openShare}><Share2 size={19} fill="currentColor"/> 공유</button><button type="button"><RefreshCw size={18}/> 리믹스</button><button type="button"><Download size={18}/> 오프라인 저장</button></div>
       <div className="yt-comments"><div className="yt-comments-head"><strong>댓글 <span>4.9천</span></strong></div><div className="yt-comment-input"><span className="yt-comment-avatar">🌆</span><span>댓글 올리기...</span></div></div>
       {videos.filter(item=>item.id!==video.id).map(item=><button type="button" className="yt-recommendation demo-recommendation" key={item.id} onClick={()=>onChoose(item)}><VideoThumbnail video={item}/><div className="yt-recommendation-meta"><span className={`browse-avatar browse-avatar--${item.theme}`}>{item.company.slice(0,1)}</span><div><strong>{item.title}</strong><p>{item.channel} · 조회수 {item.views}회</p></div><MoreHorizontal size={21}/></div></button>)}
     </div></div>;
