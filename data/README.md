@@ -104,3 +104,41 @@ chroma run --path data/chroma_db --port 8000
 - **실제 임베딩(`text-embedding-3-small`) 확인 완료 (2026-10-27):** `python data/init_db.py --reset` → `python data/check_db.py` → 기대 근거 7/7이 회사별 Top 3에 들어왔고(모두 1순위), 다른 회사 문서 섞임 0건.
 - CI는 API 키 없이 `--fake`로 적재·필터·평가 경로만 점검합니다.
 
+
+
+## OpenAI / 로컬 Ollama 임베딩 전환
+
+Python 적재·검색은 `EMBEDDING_PROVIDER` 하나로 전환합니다. 실제 환경변수가
+현재 작업 폴더의 `.env`보다 우선하고, 그다음 저장소 루트 `.env`를 읽습니다.
+백엔드 폴더에서 실행하면 백엔드 `.env`를 사용할 수 있습니다.
+
+```dotenv
+EMBEDDING_PROVIDER=ollama
+OLLAMA_BASE_URL=http://127.0.0.1:11434/v1
+OLLAMA_EMBEDDING_MODEL=embeddinggemma
+EMBEDDING_MODEL=text-embedding-3-small
+CHROMA_URL=http://127.0.0.1:8000
+```
+
+Ollama 설치·실행 후 `ollama pull embeddinggemma`로 임베딩 모델을 준비합니다.
+로컬 Ollama에는 실제 API 키가 필요 없습니다. 클라우드 Ollama 인증은 이 설정의 대상이 아닙니다.
+
+`backend/won-check-backend`에서 Chroma 서버를 켜둔 채 실행:
+
+```powershell
+.\.venv\Scripts\python.exe ..\..\data\init_db.py --server http://127.0.0.1:8000
+.\.venv\Scripts\python.exe ..\..\data\check_db.py --server http://127.0.0.1:8000 --strict
+```
+
+OpenAI로 바꾸려면 `EMBEDDING_PROVIDER=openai`로 변경하고 실제 `OPENAI_API_KEY`를
+설정한 뒤 같은 명령을 다시 실행합니다. 기본 컬렉션은 OpenAI `disclosures`,
+Ollama `disclosures_ollama`입니다. `CHROMA_COLLECTION`을 지정해도 Ollama에는
+`_ollama`가 붙습니다. 모델이 바뀌면 다시 임베딩해야 하며, 기존 컬렉션과 모델이
+다르면 중단합니다. 필요한 경우 새 컬렉션 이름을 쓰세요. `--reset`은 해당
+컬렉션을 삭제하고 재적재하므로 기존 데이터를 교체할 때만 명시적으로 사용합니다.
+
+Python과 Spring 임베딩은 같은 `EMBEDDING_PROVIDER`, 모델, 컬렉션 설정을
+사용합니다. Spring은 `.env` 변경 후 재시작해야 합니다. Spring의 주장 추출·판정·
+개인화는 여전히 OpenAI를 사용하므로, Ollama 임베딩만 선택해도 키 없이 전체
+`/api/analyze`를 실행할 수 있는 것은 아닙니다. Ollama와 OpenAI의 검색 품질은
+각각 검증합니다. 키 없는 `--fake` 경로는 기존대로 유지합니다.

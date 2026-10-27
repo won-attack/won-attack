@@ -34,12 +34,23 @@ def load_env(path=REPO / ".env"):
                 os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
 
+# Explicit environment variables > working-directory .env > repository .env.
+load_env(Path.cwd() / ".env")
 load_env()
 _db = Path(os.getenv("CHROMA_PATH", ROOT / "chroma_db"))
 DB_PATH = _db if _db.is_absolute() else (REPO / _db).resolve()
+PROVIDER = os.getenv("EMBEDDING_PROVIDER", "openai").strip().lower()
+if PROVIDER not in {"openai", "ollama"}:
+    raise ValueError("EMBEDDING_PROVIDER must be openai or ollama")
+if PROVIDER == "ollama":
+    MODEL = os.getenv("OLLAMA_EMBEDDING_MODEL", "embeddinggemma")
+else:
+    MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+# Keep Ollama vectors apart from OpenAI vectors even when a base name is set.
 COLLECTION = os.getenv("CHROMA_COLLECTION", "disclosures")
-MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-DIM = 1536
+if PROVIDER == "ollama":
+    COLLECTION += "_ollama"
+DIM = 1536  # Only the --fake path uses this fixed dimension.
 
 
 # ------------------------------------------------------------------ 임베딩 (저장·검색에 같은 함수 사용)
@@ -54,8 +65,15 @@ def embed(texts, fake=False):
             out.append([x / n for x in v])
         return out
     from openai import OpenAI
-    resp = OpenAI().embeddings.create(model=MODEL, input=texts)
-    return [d.embedding for d in resp.data]
+    if PROVIDER == "ollama":
+        client = OpenAI(
+            base_url=os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/v1"),
+            api_key="ollama",  # Local Ollama does not require authentication.
+        )
+    else:
+        client = OpenAI()
+    resp = client.embeddings.create(model=MODEL, input=texts)
+    return [d.embedding for d in sorted(resp.data, key=lambda item: item.index)]
 
 
 def get_collection(client, reset=False):
@@ -64,7 +82,19 @@ def get_collection(client, reset=False):
             client.delete_collection(COLLECTION)
         except Exception:
             pass
-    return client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine", "embedding_model": MODEL})
+    col = client.get_or_create_collection(COLLECTION, metadata={
+        "hnsw:space": "cosine", "embedding_model": MODEL, "embedding_provider": PROVIDER,
+    })
+    if col.count():
+        metadata = col.metadata or {}
+        # Collections created by the previous script used OpenAI, without a provider label.
+        stored_provider = metadata.get("embedding_provider", "openai")
+        if stored_provider != PROVIDER or metadata.get("embedding_model") != MODEL:
+            raise ValueError(
+                f"Collection '{COLLECTION}' uses another embedding configuration. "
+                "Choose a different CHROMA_COLLECTION, or explicitly re-ingest with --reset."
+            )
+    return col
 
 
 def open_collection(server=None, reset=False):
@@ -91,7 +121,7 @@ def load(fake=False, reset=False, server=None):
     metas = [{**r["metadata"], "title": r["metadata"]["source_title"]} for r in rows]
     col.upsert(ids=[r["id"] for r in rows], documents=[r["document"] for r in rows],
                metadatas=metas, embeddings=vecs)
-    print(f"적재 완료: {col.count()}개 문장 → {where_to} / 컬렉션 '{COLLECTION}' ({'fake' if fake else MODEL})")
+    print(f"적재 완료: {col.count()}개 문장 → {where_to} / 컬렉션 '{COLLECTION}' ({'fake' if fake else PROVIDER + '/' + MODEL})")
     return col
 
 
