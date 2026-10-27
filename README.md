@@ -61,7 +61,7 @@ won-check/
 ├── README.md
 ├── .env.example          # 복사해서 .env 생성 (커밋 금지)
 ├── start-demo.bat        # Windows 시연 한 번에 실행 (stop-demo.bat으로 종료)
-├── start-demo.sh         # macOS 시연 한 번에 실행
+├── start-demo.sh         # macOS 시연 한 번에 실행 (stop-demo.sh로 종료)
 ├── docs/
 │   ├── architecture.png
 │   └── api/              # 프론트·백엔드 공통 API 계약
@@ -96,6 +96,7 @@ won-check/
 | `start-demo.bat` | Windows. 더블클릭 → ChromaDB · 백엔드 · 프론트 창 3개가 열림. 근거 DB 다시 적재: `start-demo.bat reset` |
 | `stop-demo.bat` | Windows. 더블클릭 → 위 창 3개를 한 번에 종료 |
 | `start-demo.sh` | macOS. `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) → 한 터미널에서 실행, `Ctrl+C`로 모두 종료, 로그는 `logs/` |
+| `stop-demo.sh` | macOS. 터미널을 그냥 닫았거나 포트가 남아 있을 때 `./stop-demo.sh` → 8000·8080·5173 포트 프로세스 종료 |
 
 실행 순서
 
@@ -114,7 +115,7 @@ won-check/
 | "백엔드 코드(gradlew)가 없습니다" | 백엔드 브랜치가 main에 합쳐졌는지, `git pull` 했는지 |
 | 4단계 점검 실패 | 데이터 쪽 문제 → `start-demo.bat reset`으로 다시 적재 |
 | 화면에서 판정이 이상함 | 점검(7/7)은 통과했으니 백엔드 쪽(회사명 추출·검색 필터)을 확인 |
-| 포트가 이미 사용 중 | `stop-demo.bat`으로 이전 실행을 끄고 다시 실행 |
+| 포트가 이미 사용 중 | `stop-demo.bat`(macOS `./stop-demo.sh`)으로 이전 실행을 끄고 다시 실행 |
 
 ### 직접 실행할 때
 
