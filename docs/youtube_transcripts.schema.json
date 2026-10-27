@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "Segment": {
+      "additionalProperties": false,
+      "properties": {
+        "time": {
+          "pattern": "^\\d+:[0-5]\\d$",
+          "title": "Time",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "caption": {
+          "minLength": 1,
+          "title": "Caption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time",
+        "text",
+        "caption"
+      ],
+      "title": "Segment",
+      "type": "object"
+    },
+    "Video": {
+      "additionalProperties": false,
+      "properties": {
+        "video_id": {
+          "title": "Video Id",
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "channel": {
+          "title": "Channel",
+          "type": "string"
+        },
+        "published_at": {
+          "title": "Published At",
+          "type": "string"
+        },
+        "mentioned_companies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mentioned Companies",
+          "type": "array"
+        },
+        "transcript_source": {
+          "title": "Transcript Source",
+          "type": "string"
+        },
+        "transcript": {
+          "title": "Transcript",
+          "type": "string"
+        },
+        "segments": {
+          "items": {
+            "$ref": "#/$defs/Segment"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "video_id",
+        "url",
+        "title",
+        "channel",
+        "published_at",
+        "mentioned_companies",
+        "transcript_source",
+        "transcript",
+        "segments"
+      ],
+      "title": "Video",
+      "type": "object"
+    }
+  },
+  "additionalProperties": {
+    "$ref": "#/$defs/Video"
+  },
+  "title": "Transcripts",
+  "type": "object"
+}
