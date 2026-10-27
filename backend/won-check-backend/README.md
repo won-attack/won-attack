@@ -26,6 +26,39 @@ Switch `user_id` to `demo_user_02` to compare personalization.
 
 **Security:** `/api/admin/ingest` is for localhost development only; do not expose the endpoint publicly. No financial advice is given. Evidence is never fabricated if the source URL is absent. Mock verdicts are demonstration fixtures, not verified findings.
 
+## Local Ollama and OpenAI selection
+
+`WONCHECK_MODE=mock` skips AI calls. For actual inference, use `WONCHECK_MODE=live`
+and select `LLM_PROVIDER=ollama` (local testing) or `LLM_PROVIDER=openai` (demo).
+This selection controls both chat and embedding calls.
+
+For Ollama, run the local server, install a chat model and an embedding model,
+and set these variables in the IntelliJ Run Configuration:
+
+```text
+WONCHECK_MODE=live
+LLM_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434/v1
+OLLAMA_CHAT_MODEL=<installed-chat-model>
+OLLAMA_EMBEDDING_MODEL=<installed-embedding-model>
+CHROMA_COLLECTION=disclosures_ollama
+WONCHECK_DATA_PATH=<absolute-path-to-repository-data>
+```
+
+Local Ollama does not require `OPENAI_API_KEY`; the OpenAI key is never sent to it.
+For OpenAI, set `LLM_PROVIDER=openai`, `OPENAI_API_KEY`, and a separate collection
+such as `CHROMA_COLLECTION=disclosures`. `OPENAI_CHAT_MODEL` overrides `LLM_MODEL`;
+if neither is set, the chat model defaults to `gpt-4o-mini`.
+
+Both providers require a running Chroma server and ingested disclosures for live
+retrieval. Ingest into a separate collection when changing embedding models;
+stored documents and queries must use the same embedding model. The base Ollama
+URL must include `/v1`. A local `.env` in the backend process working directory
+is loaded automatically as a Java properties file (`KEY=value`, without quotes).
+IntelliJ/process environment variables override values in `.env`.
+Use this backend project folder as the IntelliJ working directory; the local
+`WONCHECK_DATA_PATH=../../data` then points to the shared repository data folder.
+
 ## Tests
 
 ```bash
