@@ -2,6 +2,7 @@
 # 커밋 메시지 첫 줄이 "종류: 요약" 또는 "종류(범위): 요약" 형식인지 검사한다.
 # 사용: check_commits.sh <FROM_SHA> <TO_SHA>
 set -euo pipefail
+export LC_ALL=C.UTF-8  # 한글 요약 길이를 바이트가 아니라 글자 수로 센다
 
 FROM="${1:-}"
 TO="${2:-HEAD}"

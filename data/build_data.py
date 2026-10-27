@@ -1,6 +1,6 @@
 """WON Check 시연 데이터 생성: data/*.json, scripts/*.md
 
-근거 기업 5곳: 삼성전자, SK하이닉스, 현대자동차, 네이버, 카카오 (시연 영상은 앞의 3곳).
+근거 기업 5곳: 삼성전자, SK하이닉스, 현대자동차, 네이버, 카카오 (시연 영상 3개는 앞의 3곳에 1개씩).
 수치는 각 사 공식 실적 발표 자료와 대조했다(2026-10-27 확인). SK하이닉스는 회사 뉴스룸 접속이 막혀
 회사 발표를 그대로 인용한 언론 보도로 대조했고, document_type에 그 사실을 표시했다.
 문장은 원문을 옮기지 않고 RAG용으로 정규화·요약했다(팀 확정안 6장 방식).
@@ -214,6 +214,7 @@ D += [
 ]
 
 
+
 def disclosures():
     out = []
     for id_, period, src, seg, metric, value, unit, prelim, doc in D:
@@ -309,20 +310,21 @@ USERS = [
     {"user_id": "demo_user_05", "name": "정영호(가상)", "risk_tolerance": "안정형", "investment_horizon": "장기",
      "investment_style": "퇴직금 보전 우선, 예금·채권 중심", "scenario": "S3",
      "holdings": [{"company": "정기예금·CMA", "weight_pct": 70}, {"company": "국내 채권형 펀드", "weight_pct": 30}],
-     "intent": {"type": "신규 매수 검토(리딩방 권유)", "company": "삼성전자", "amount_krw": 10_000_000}},
+     "intent": {"type": "신규 매수 검토", "company": "현대자동차", "amount_krw": 10_000_000}},
 ]
 
 # ------------------------------------------------------------------ 영상(가상 채널) — 영상당 검증 주장 3개
 # video_id는 11자. 실제 업로드 후 실제 ID로 바꾸면 된다.
 VIDEOS = [
-    {"video_id": "WCdemoS1A01", "scenario": "S1", "title": "삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다",
+    {"video_id": "WCdemoS1V01", "scenario": "S1", "companies": ["삼성전자"],
+     "title": "삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다",
      "channel": "주식왕 데이빗(가상)", "published_at": "2026-10-12", "tone": "흥분된 말투, 빨간 화살표 자막",
      "segments": [
          ("0:00", "여러분, 삼성전자가 드디어 일냈습니다. 영업이익 100조 시대가 열렸어요.", "영업이익 100조 시대"),
          ("0:06", "이번 3분기 영업이익이 107조 넘게 나왔습니다. 분기 하나에 107조예요.", "3Q 영업이익 107조"),
          ("0:14", "매출은 아예 200조를 돌파했어요. 한 분기 매출이 200조입니다.", "분기 매출 200조 돌파"),
          ("0:22", "제가 볼 때 내년이면 주가 두 배는 그냥 갑니다.", "내년 주가 2배"),
-         ("0:29", "지금 안 사면 진짜 늦어요. 매수 타이밍은 멤버십에서 알려드릴게요.", "매수 타이밍은 멤버십에서"),
+         ("0:29", "지금 안 사면 진짜 늦어요. 매수 타이밍은 유료 멤버십에서 알려드릴게요.", "매수 타이밍은 멤버십에서"),
      ],
      "claims": [
          {"text": "삼성전자의 2026년 3분기 영업이익은 107조 원을 넘었다", "claim_type": "FINANCIAL", "period": "2026-Q3",
@@ -334,58 +336,15 @@ VIDEOS = [
          {"text": "삼성전자 주가는 내년에 두 배가 될 것이다", "claim_type": "PREDICTION", "period": None,
           "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 주가 전망"},
      ],
-     "risk_signals": ["매수 재촉(지금 안 사면 늦는다)", "유료 멤버십 매매 신호"]},
-    {"video_id": "WCdemoS1B02", "scenario": "S1", "companies": ["삼성전자", "SK하이닉스"],
-     "title": "삼성전자 vs SK하이닉스, 숫자로만 비교했습니다",
-     "channel": "반도체 비교 노트(가상)", "published_at": "2026-10-21", "tone": "차분한 설명형, 두 회사 실적 비교 그래프",
-     "segments": [
-         ("0:00", "삼성전자와 SK하이닉스, 반도체 두 회사를 숫자로만 비교해 보겠습니다.", "삼성전자 vs SK하이닉스"),
-         ("0:06", "작년 연간 영업이익은 SK하이닉스가 47조 원으로, 43조 원대인 삼성전자를 처음 앞질렀습니다.", "2025년 영업이익 하이닉스 47조 > 삼성 43조"),
-         ("0:15", "올해 2분기에는 하이닉스 영업이익이 삼성전자 반도체 부문보다도 많았어요.", "2Q 하이닉스 > 삼성 반도체?"),
-         ("0:22", "그리고 하이닉스 3분기 영업이익은 77조 원으로 확정됐다고 합니다.", "하이닉스 3Q 77조 확정?"),
-         ("0:29", "저는 두 종목 모두 보유하지 않고, 숫자는 각 사 실적 발표 기준입니다.", "미보유 · 실적 발표 기준"),
-     ],
-     "claims": [
-         {"text": "SK하이닉스의 2025년 연간 영업이익은 삼성전자보다 많았다", "claim_type": "FINANCIAL", "period": "2025-FY",
-          "companies": ["SK하이닉스", "삼성전자"], "expected_status": "SUPPORTED",
-          "expected_sources": ["hynix_001", "samsung_002"],
-          "reason": "SK하이닉스 약 47.2조 원 > 삼성전자 약 43.6조 원. 두 회사 근거를 각각 찾아 비교해야 함"},
-         {"text": "SK하이닉스의 2026년 2분기 영업이익은 삼성전자 반도체(DS)부문 영업이익보다 많았다", "claim_type": "FINANCIAL",
-          "period": "2026-Q2", "companies": ["SK하이닉스", "삼성전자"], "expected_status": "CONTRADICTED",
-          "expected_sources": ["hynix_005", "samsung_020"],
-          "reason": "SK하이닉스 약 60.5조 원 < 삼성전자 DS부문 약 89.2조 원"},
-         {"text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다", "claim_type": "FINANCIAL", "period": "2026-Q3",
-          "companies": ["SK하이닉스"], "expected_status": "INSUFFICIENT_EVIDENCE", "expected_sources": ["hynix_008"],
-          "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"},
-     ],
      "risk_signals": []},
-    {"video_id": "WCdemoS2A03", "scenario": "S2", "title": "삼성전자 분기마다 이익 두 배, 더 사도 됩니다",
-     "channel": "부자되는 차트쌤(가상)", "published_at": "2026-10-15", "tone": "과장된 리액션, 금색 자막",
+    {"video_id": "WCdemoS2V02", "scenario": "S2", "companies": ["SK하이닉스"],
+     "title": "SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요",
+     "channel": "실적으로 말하는 주식(가상)", "published_at": "2026-10-21", "tone": "뉴스 브리핑형, 그래프 자막",
      "segments": [
-         ("0:00", "삼성전자 아직도 안 사셨어요? 올해 1분기에만 작년 1년치 영업이익보다 더 벌었어요.", "1Q > 작년 1년치"),
-         ("0:08", "그리고 분기마다 영업이익이 두 배씩 늘고 있습니다. 이건 수학이에요.", "분기마다 이익 2배"),
-         ("0:15", "이 사이클은 2028년까지 무조건 갑니다. 원금 걱정 없어요.", "2028년까지 무조건, 원금 걱정 X"),
-         ("0:23", "이미 갖고 계신 분들도 지금 더 담으세요. 실시간 신호는 VIP방에서 드립니다.", "추가 매수 · VIP방"),
-     ],
-     "claims": [
-         {"text": "삼성전자의 2026년 1분기 영업이익은 2025년 연간 영업이익보다 많다", "claim_type": "FINANCIAL", "period": "2026-Q1",
-          "expected_status": "SUPPORTED", "expected_sources": ["samsung_015", "samsung_002"],
-          "reason": "2026년 1분기 약 57.2조 원 > 2025년 연간 약 43.6조 원"},
-         {"text": "삼성전자의 2026년 분기 영업이익은 1분기, 2분기, 3분기로 갈 때마다 두 배씩 늘고 있다", "claim_type": "FINANCIAL", "period": "2026-Q1~Q3",
-          "expected_status": "CONTRADICTED", "expected_sources": ["samsung_015", "samsung_019", "samsung_024"],
-          "reason": "1→2분기 약 1.56배(57.2→89.5), 2→3분기 약 1.20배(89.5→107.4, 잠정). 증가는 맞지만 두 배는 아님"},
-         {"text": "반도체 호황은 2028년까지 계속될 것이다", "claim_type": "PREDICTION", "period": None,
-          "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 업황 전망"},
-     ],
-     "risk_signals": ["원금 보장 암시(원금 걱정 없어요)", "추가 매수 재촉", "유료 VIP방 매매 신호"]},
-    {"video_id": "WCdemoS2B04", "scenario": "S2", "companies": ["SK하이닉스"],
-     "title": "SK하이닉스 2분기 영업이익 60조, 3분기엔 100조 간다?",
-     "channel": "실적으로 말하는 주식(가상)", "published_at": "2026-08-05", "tone": "뉴스 브리핑형, 그래프 자막",
-     "segments": [
-         ("0:00", "SK하이닉스 2분기 실적 나왔습니다. 영업이익이 60조 원을 넘겼어요. 영업이익률이 76%입니다.", "2Q 영업이익 60조 · 이익률 76%"),
-         ("0:09", "매출도 드디어 분기 80조 원을 돌파했습니다.", "분기 매출 80조 돌파"),
-         ("0:15", "이 기세면 3분기엔 영업이익 100조도 갑니다. 이미 보유하신 분들도 비중 늘려도 된다고 봐요.", "3Q 100조 · 비중 확대"),
-         ("0:24", "다만 반도체는 업황 따라 크게 출렁이니 한 종목에 몰빵은 조심하세요.", "리스크: 업황 변동"),
+         ("0:00", "SK하이닉스 2분기 영업이익이 60조 원을 넘겼죠. 영업이익률이 76%입니다.", "2Q 영업이익 60조 · 이익률 76%"),
+         ("0:08", "매출도 분기 80조 원을 돌파했고요.", "분기 매출 80조 돌파"),
+         ("0:13", "그리고 3분기 영업이익은 77조 원으로 이미 확정됐습니다.", "3Q 영업이익 77조 확정"),
+         ("0:20", "이미 보유하신 분들도 지금 비중을 늘리셔야 합니다.", "지금 비중 확대"),
      ],
      "claims": [
          {"text": "SK하이닉스의 2026년 2분기 영업이익은 60조 원을 넘었고 영업이익률은 76%다", "claim_type": "FINANCIAL",
@@ -394,11 +353,12 @@ VIDEOS = [
          {"text": "SK하이닉스의 2026년 2분기 매출은 80조 원을 돌파했다", "claim_type": "FINANCIAL", "period": "2026-Q2",
           "expected_status": "CONTRADICTED", "expected_sources": ["hynix_005"],
           "reason": "2분기 매출은 약 79조 3,187억 원으로 80조 원에 못 미침"},
-         {"text": "SK하이닉스의 2026년 3분기 영업이익은 100조 원에 이를 것이다", "claim_type": "PREDICTION", "period": "2026-Q3",
-          "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 실적 전망"},
+         {"text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다", "claim_type": "FINANCIAL", "period": "2026-Q3",
+          "expected_status": "INSUFFICIENT_EVIDENCE", "expected_sources": ["hynix_008"],
+          "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"},
      ],
-     "risk_signals": ["보유 비중 확대 권유"]},
-    {"video_id": "WCdemoS3A05", "scenario": "S3", "companies": ["현대자동차"],
+     "risk_signals": []},
+    {"video_id": "WCdemoS3V03", "scenario": "S3", "companies": ["현대자동차"],
      "title": "현대차 관세 직격탄, 보유자는 지금 파세요",
      "channel": "팩트폭격 주식(가상)", "published_at": "2026-08-10", "tone": "단호한 말투, 검은 배경 빨간 자막",
      "segments": [
@@ -416,33 +376,13 @@ VIDEOS = [
          {"text": "현대자동차의 내년 이익은 절반으로 줄어들 것이다", "claim_type": "PREDICTION", "period": None,
           "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 실적 전망"},
      ],
-     "risk_signals": ["매도 재촉(지금 파세요)"]},
-    {"video_id": "WCdemoS3B06", "scenario": "S3", "title": "삼성전자 3분기 확정 실적 120조, 미리 알려드립니다 (방 인원 제한)",
-     "channel": "시크릿 리딩 클럽(가상)", "published_at": "2026-10-20", "tone": "속삭이는 말투, 모자이크 '내부 문서' 이미지",
-     "segments": [
-         ("0:00", "다들 3분기 잠정치만 보시죠? 확정 실적은 영업이익 120조로 이미 정해졌습니다.", "확정 실적 120조 이미 결정"),
-         ("0:08", "제가 작년 4분기에도 반도체 영업이익 16조 넘는다고 맞혔잖아요.", "작년 4Q 반도체 16조 적중"),
-         ("0:15", "회사 쪽에서 들은 얘기라 발표 전에 저희 방에서만 먼저 공유합니다.", "발표 전 비밀방 선공개"),
-         ("0:22", "저희 방은 수익 보장합니다. 인원 제한 있으니 DM 빨리 주세요.", "수익 보장 · 인원 제한"),
-     ],
-     "claims": [
-         {"text": "삼성전자의 2026년 3분기 확정 영업이익은 120조 원으로 이미 정해졌다", "claim_type": "FINANCIAL", "period": "2026-Q3",
-          "expected_status": "CONTRADICTED", "expected_sources": ["samsung_024", "samsung_026"],
-          "reason": "공식 잠정 영업이익은 약 107.4조 원이며 확정 실적은 아직 발표 전"},
-         {"text": "삼성전자 반도체 부문의 2025년 4분기 영업이익은 16조 원을 넘었다", "claim_type": "FINANCIAL", "period": "2025-Q4",
-          "expected_status": "SUPPORTED", "expected_sources": ["samsung_010"],
-          "reason": "DS부문 영업이익 약 16.4조 원. 맞는 사실을 섞어 신뢰를 얻는 수법에 유의"},
-         {"text": "이 리딩방에 들어오면 수익이 보장된다", "claim_type": "PREDICTION", "period": None,
-          "expected_status": "PREDICTION", "expected_sources": [],
-          "reason": "사실 판정 대상이 아닌 수익 보장 표현 — 위험 신호로 별도 표시"},
-     ],
-     "risk_signals": ["미공개 정보 암시", "리딩방 유도", "수익 보장", "인원 제한 재촉"]},
+     "risk_signals": []},
 ]
 
 SCENARIOS = {
     "S1": {"name": "신규 투자 검토", "users": ["demo_user_03"], "question": "영상의 근거가 맞고, 내 투자 목적에도 맞을까?"},
     "S2": {"name": "추가 매수 검토", "users": ["demo_user_01", "demo_user_02"], "question": "더 사면 자산 구성이 어떻게 달라질까?"},
-    "S3": {"name": "보유 점검 · 리딩방 권유", "users": ["demo_user_04", "demo_user_05"], "question": "기존 보유 이유를 다시 봐야 할까? 이 권유를 믿어도 될까?"},
+    "S3": {"name": "보유 점검", "users": ["demo_user_04", "demo_user_05"], "question": "기존에 보유한 이유를 다시 검토해야 할까?"},
 }
 
 
@@ -464,6 +404,8 @@ def main():
         for c in v["claims"]:
             missing = set(c["expected_sources"]) - ids
             assert not missing, (v["video_id"], missing)
+        for r in v["risk_signals"]:
+            assert not set(r["expected_sources"]) - ids, (v["video_id"], r["type"])
     (DATA / "disclosures.json").write_text(json.dumps(disc, ensure_ascii=False, indent=2), encoding="utf-8")
     (DATA / "financial_facts.json").write_text(json.dumps([
         {"company": SOURCES[src].get("company", DEFAULT_COMPANY),
@@ -503,7 +445,8 @@ def main():
         lines += ["", "## 의도한 검증 결과", ""]
         lines += [f"- **{lab[c['expected_status']]}** — {c['text']}: {c['reason']}" for c in v["claims"]]
         if v["risk_signals"]:
-            lines += ["", "위험 신호: " + ", ".join(v["risk_signals"])]
+            lines += ["", "## 의도한 위험 신호", ""]
+            lines += [f"- **{ {'DANGER': '위험', 'CAUTION': '주의'}[r['level']] }** {r['type']} — \"{r['quote']}\": {r['reason']}" for r in v["risk_signals"]]
         lines += ["", "> 영상 하단에 '시연용으로 제작한 가상 영상입니다. 실제 인물·채널과 무관합니다.' 표기를 넣으세요.",
                   "> 업로드 후 실제 video_id로 transcripts.json의 키와 url을 바꾸세요."]
         (SCRIPTS / f"{v['video_id']}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
