@@ -31,3 +31,6 @@ pnpm-debug.log*
 *.iml
 .DS_Store
 Thumbs.db
+
+# ---------- 시연 실행 로그 (start-demo.sh) ----------
+logs/

@@ -1,0 +1,141 @@
+{
+  "videoId": "WCdemoS3V03",
+  "kind": "hyundai",
+  "presenter": "이채원",
+  "character": "chaewon",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationInFrames": 900,
+  "durationSeconds": 30,
+  "voice": {
+    "engine": "macOS say (offline)",
+    "name": "Yuna",
+    "rate": 105
+  },
+  "transcriptSha256": "2af6c31e4dd2178b22b736793659d4c272e9b61d13f8203f5b7b7c244a58949d",
+  "paidApiCalls": 0,
+  "scenes": [
+    {
+      "id": 0,
+      "from": 0,
+      "durationInFrames": 111,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-01.wav",
+      "audioSeconds": 3.3212,
+      "text": "현대차 보유자분들, 주목하세요.",
+      "spokenText": "현대차 보유자분들, 주목하세요.",
+      "caption": "현대차 보유자 필독",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 104,
+          "lines": [
+            "현대차 보유자분들, 주목하세요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "from": 111,
+      "durationInFrames": 238,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-02.wav",
+      "audioSeconds": 6.831,
+      "text": "2026년 1분기 영업이익이 전년보다 30% 넘게 줄었습니다.",
+      "spokenText": "이천이십육 년 일 분기 영업이익이 전년보다 삼십 퍼센트 넘게 줄었습니다.",
+      "caption": "2026 1Q 영업이익 전년 대비 -30% ↓",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 209,
+          "lines": [
+            "2026년 1분기 영업이익이",
+            "전년보다 30% 넘게 줄었습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "from": 349,
+      "durationInFrames": 173,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-03.wav",
+      "audioSeconds": 3.3829,
+      "text": "2분기는 아예 영업 적자로 돌아섰어요.",
+      "spokenText": "이 분기는 아예 영업 적자로 돌아섰어요.",
+      "caption": "2Q 영업 적자 전환",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 106,
+          "lines": [
+            "2분기는 아예 영업 적자로 돌아섰어요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "from": 522,
+      "durationInFrames": 174,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-04.wav",
+      "audioSeconds": 3.5934,
+      "text": "제 생각엔 내년 이익이 반토막 납니다.",
+      "spokenText": "제 생각엔 내년 이익이 반토막 납니다.",
+      "caption": "내년 이익 반토막",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 112,
+          "lines": [
+            "제 생각엔 내년 이익이 반토막 납니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "from": 696,
+      "durationInFrames": 115,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-05.wav",
+      "audioSeconds": 1.9382,
+      "text": "더 버티다가는 늦어요.",
+      "spokenText": "더 버티다가는 늦어요.",
+      "caption": "버티기는 답이 아니다",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 63,
+          "lines": [
+            "더 버티다가는 늦어요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "from": 811,
+      "durationInFrames": 89,
+      "audioFrom": 4,
+      "audio": "assets/audio/hyundai/scene-06.wav",
+      "audioSeconds": 2.5937,
+      "text": "보유자분들, 지금 파세요.",
+      "spokenText": "보유자분들, 지금 파세요.",
+      "caption": "지금 매도",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 82,
+          "lines": [
+            "보유자분들, 지금 파세요."
+          ]
+        }
+      ]
+    }
+  ]
+}

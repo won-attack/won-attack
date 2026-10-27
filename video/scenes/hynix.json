@@ -1,0 +1,143 @@
+{
+  "videoId": "WCdemoS2V02",
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "durationInFrames": 900,
+  "durationSeconds": 30,
+  "voice": {
+    "engine": "macOS say (offline)",
+    "name": "Yuna",
+    "rate": 85
+  },
+  "transcriptSha256": "3671a5161e141d5488caf7183f09ad4dc79e481628181ead471d30561efdc8a5",
+  "containsIntentionalFalseClaims": true,
+  "paidApiCalls": 0,
+  "scenes": [
+    {
+      "id": 0,
+      "from": 0,
+      "durationInFrames": 145,
+      "audioFrom": 5,
+      "audio": "assets/audio/hynix/scene-01.wav",
+      "audioSeconds": 4.4241,
+      "text": "SK하이닉스, 실적으로 보겠습니다.",
+      "spokenText": "에스케이하이닉스, 실적으로 보겠습니다.",
+      "caption": "SK하이닉스 실적 브리핑",
+      "subtitles": [
+        {
+          "from": 5,
+          "to": 138,
+          "lines": [
+            "SK하이닉스,",
+            "실적으로 보겠습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "from": 145,
+      "durationInFrames": 289,
+      "audioFrom": 5,
+      "audio": "assets/audio/hynix/scene-02.wav",
+      "audioSeconds": 9.2429,
+      "text": "2026년 2분기 영업이익은 60조 원 이상, 이익률은 76%입니다.",
+      "spokenText": "이천이십육 년 이 분기 영업이익은 육십 조 원 이상, 이익률은 칠십육 퍼센트입니다.",
+      "caption": "2026 2Q 영업이익 60조 · 이익률 76%",
+      "subtitles": [
+        {
+          "from": 5,
+          "to": 121,
+          "lines": [
+            "2026년 2분기 영업이익은"
+          ]
+        },
+        {
+          "from": 121,
+          "to": 190,
+          "lines": [
+            "60조 원 이상,"
+          ]
+        },
+        {
+          "from": 190,
+          "to": 283,
+          "lines": [
+            "이익률은 76%입니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "from": 434,
+      "durationInFrames": 131,
+      "audioFrom": 5,
+      "audio": "assets/audio/hynix/scene-03.wav",
+      "audioSeconds": 3.5657,
+      "text": "매출은 80조 원을 돌파했어요.",
+      "spokenText": "매출은 팔십 조 원을 돌파했어요.",
+      "caption": "2Q 매출 80조 돌파",
+      "subtitles": [
+        {
+          "from": 5,
+          "to": 112,
+          "lines": [
+            "매출은 80조 원을",
+            "돌파했어요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "from": 565,
+      "durationInFrames": 197,
+      "audioFrom": 5,
+      "audio": "assets/audio/hynix/scene-04.wav",
+      "audioSeconds": 5.8867,
+      "text": "3분기 영업이익은 77조 원으로 이미 확정됐습니다.",
+      "spokenText": "삼 분기 영업이익은 칠십칠 조 원으로 이미 확정됐습니다.",
+      "caption": "3Q 영업이익 77조 '확정'",
+      "subtitles": [
+        {
+          "from": 5,
+          "to": 66,
+          "lines": [
+            "3분기 영업이익은"
+          ]
+        },
+        {
+          "from": 66,
+          "to": 182,
+          "lines": [
+            "77조 원으로",
+            "이미 확정됐습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "from": 762,
+      "durationInFrames": 138,
+      "audioFrom": 5,
+      "audio": "assets/audio/hynix/scene-05.wav",
+      "audioSeconds": 3.97,
+      "text": "보유하신 분들도 지금 비중을 늘리세요.",
+      "spokenText": "보유하신 분들도 지금 비중을 늘리세요.",
+      "caption": "보유자도 비중 확대",
+      "subtitles": [
+        {
+          "from": 5,
+          "to": 125,
+          "lines": [
+            "보유하신 분들도",
+            "지금 비중을 늘리세요."
+          ]
+        }
+      ]
+    }
+  ]
+}

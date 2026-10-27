@@ -21,6 +21,7 @@ python data/check_db.py                      # 시연 주장 7개의 근거가 T
 chroma run --path data/chroma_db --port 8000
 ```
 
+- **시연 때는 루트의 `start-demo.bat`(macOS `start-demo.sh`)이 1)·2)와 서버 점검(`check_db.py --server`)까지 자동으로 합니다.**
 - 서버가 이미 켜져 있으면 1) 대신 `python data/init_db.py --server --reset` → `python data/check_db.py --server`.
 - 검색 시험: `python data/check_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2`
 - `data/chroma_db/`는 커밋하지 않습니다. **시연 노트북에서 한 번 실행**해 두면 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.

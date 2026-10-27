@@ -54,4 +54,6 @@ jobs:
           git diff --exit-code -- data/
       # API 키 없이 해시 벡터로 적재·필터·평가 경로만 점검한다 (검색 품질은 로컬에서 실제 키로 확인)
       - name: ChromaDB 적재·검색 경로 점검
-        run: python data/init_db.py --fake --reset --strict
+        run: |
+          python data/init_db.py --fake --reset
+          python data/check_db.py --fake --strict
