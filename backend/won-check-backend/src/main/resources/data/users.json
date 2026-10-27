@@ -1,0 +1,4 @@
+{
+  "demo_user_01": {"name":"가상 사용자 A","risk_profile":"moderate","samsung_weight_pct":75,"holdings":[{"ticker":"005930","weight_pct":75},{"ticker":"OTHER","weight_pct":25}]},
+  "demo_user_02": {"name":"가상 사용자 B","risk_profile":"moderate","samsung_weight_pct":15,"holdings":[{"ticker":"005930","weight_pct":15},{"ticker":"OTHER","weight_pct":85}]}
+}
