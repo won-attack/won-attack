@@ -24,8 +24,14 @@ public class AnalyzeService {
     public AnalyzeResponse analyze(AnalyzeRequest request) {
         Video video = data.video(request.videoUrl());
         JsonNode user = data.user(request.userId());
+        String transcript = data.transcript(video.videoId());
+        List<Claim> extractedClaims = claims.extract(transcript, data.publishedDate(video.videoId()));
+        if (extractedClaims.isEmpty()) {
+            return new AnalyzeResponse(video, List.of(), new PersonalizedAnalysis(
+                    "영상 대본에서 검증할 투자 주장을 찾지 못했습니다.", List.of()), Instant.now().toString());
+        }
         List<Verification> results = new ArrayList<>();
-        for (Claim claim : claims.extract(data.transcript(video.videoId()))) results.add(verifier.verify(claim));
+        for (Claim claim : extractedClaims) results.add(verifier.verify(claim));
         return new AnalyzeResponse(video, results, personalization.analyze(user, results), Instant.now().toString());
     }
 }
