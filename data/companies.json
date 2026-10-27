@@ -59,19 +59,5 @@
       "카카오",
       "Kakao"
     ]
-  },
-  {
-    "company": "금융당국",
-    "company_code": "",
-    "stock_code": "",
-    "sector": "감독당국",
-    "demo": false,
-    "is_regulator": true,
-    "aliases": [
-      "금융위원회",
-      "금융감독원",
-      "금감원",
-      "금융위"
-    ]
   }
 ]

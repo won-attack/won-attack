@@ -92,20 +92,6 @@ def search_claim(col, claim, companies, period=None, k=3, fake=False):
     return {name: search(col, claim, company=name, period=period, k=k, fake=fake) for name in companies}
 
 
-REGULATOR = "금융당국"
-RISK_TERMS = {
-    "LEADING_ROOM": "리딩방 가입 유도 유료 리딩방 유인",
-    "GUARANTEED_RETURN": "원금 보장 수익 보장 고수익 사기 가능성",
-    "UNDISCLOSED_INFO": "미공개 정보 허위사실 풍문 불공정거래",
-    "PAID_SIGNAL": "유료 종목 추천 매매 시점 유사투자자문업 1대1 투자 조언",
-}
-
-
-def search_risk(col, quote, risk_type, k=3, fake=False):
-    """위험 신호 표현에 대한 금융당국 안내 검색. URGENCY(재촉)처럼 근거 유형이 없으면 검색하지 않는다."""
-    return search(col, f"{quote} {RISK_TERMS.get(risk_type, '')}", company=REGULATOR, period=None, k=k, fake=fake)
-
-
 def check(col, fake=False, strict=False):
     exp = json.loads((ROOT / "expected_results.json").read_text(encoding="utf-8"))
     company_of = {d["id"]: d["metadata"]["company"]
@@ -130,19 +116,6 @@ def check(col, fake=False, strict=False):
             total += 1
             print(f"  [{'O' if ok else 'X'}] {v['video_id']} {'+'.join(c['companies']):18s} {c['expected_status']:21s}"
                   f" 기대 {c['expected_sources'][:2]} → {got_all}")
-    # 위험 신호: 영상 표현 + 유형 설명으로 금융당국 안내를 검색
-    for v in exp["videos"]:
-        for r in v.get("risk_signals", []):
-            if not r["expected_sources"]:
-                continue
-            res = search_risk(col, r["quote"], r["type"], fake=fake)
-            got = res["ids"][0]
-            ok = any(s in got for s in r["expected_sources"])
-            leak += sum(company_of[g] != REGULATOR for g in got)
-            hit += ok
-            total += 1
-            print(f"  [{'O' if ok else 'X'}] {v['video_id']} {'위험 신호':18s} {r['type']:21s}"
-                  f" 기대 {r['expected_sources']} → {got}")
     print(f"\n근거 문장 적중(회사별 Top3): {hit}/{total} · 다른 회사 문서 섞임: {leak}건"
           + ("  (fake 벡터 결과 — 실제 품질은 API 키로 다시 확인)" if fake else ""))
     if strict and (hit < total or leak):

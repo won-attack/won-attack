@@ -9,11 +9,8 @@
    - 회사명은 `data/companies.json`의 `aliases`로 정규화(현대차 → 현대자동차). 회사가 둘 이상이면 회사마다 검색(`search_claim()`)
    - 여러 분기 비교 주장은 분기별로 1개씩 근거 수집 — `data/init_db.py`의 `search()` 참고
 4. 수치는 `data/financial_facts.json`으로 코드 계산, LLM은 근거 대조·설명 → `status`
-5. 위험 신호: LLM이 대본에서 위험 표현(리딩방 유도·수익 보장·미공개 정보 암시·유료 매매 신호·재촉)을 찾고,
-   재촉(`URGENCY`)을 뺀 유형은 `company="금융당국"` 근거를 검색해 붙인다 → `risk_signals` (`init_db.py`의 `search_risk()`)
-   - 근거가 붙은 유형만 `DANGER`, 재촉 표현은 `CAUTION`. 채널을 사기·불법으로 단정하지 않는다
-6. 공통 판정을 고정한 뒤 `data/users.json` 프로필로 개인화 위험 설명 생성
-7. `docs/api/analyze_response.json` 형식으로 응답 (JSON 형식 검증, 실패 시 500 `ANALYSIS_FAILED`)
+5. 공통 판정을 고정한 뒤 `data/users.json` 프로필로 개인화 위험 설명 생성
+6. `docs/api/analyze_response.json` 형식으로 응답 (JSON 형식 검증, 실패 시 500 `ANALYSIS_FAILED`)
 
 규칙
 - 정답(`data/expected_results.json`)을 서버에 하드코딩하지 않는다

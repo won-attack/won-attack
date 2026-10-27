@@ -33,7 +33,7 @@
 | 백엔드 | 미확정 — 확정 후 기입 |
 | LLM · 임베딩 | OpenAI API · `text-embedding-3-small` (1536) |
 | 벡터 DB | ChromaDB `PersistentClient` · 컬렉션 `disclosures` · cosine |
-| 데이터 | 5개 기업(삼성전자·SK하이닉스·현대자동차·네이버·카카오) 실적 근거 50문장 + 금융당국 위험 신호 근거 5문장 |
+| 데이터 | 5개 기업(삼성전자·SK하이닉스·현대자동차·네이버·카카오) 실적 발표 자료 기반 근거 문장 50개 |
 
 ## 폴더 구조
 
@@ -51,7 +51,7 @@ won-check/
 ├── backend/              # 백엔드 담당
 └── data/                 # 데이터·벡터 DB 담당
     ├── companies.json        # 기업 5곳 · DART 고유번호 · 회사명 별칭
-    ├── disclosures.json      # 근거 문장 55개(기업 50 + 금융당국 5) + 메타데이터
+    ├── disclosures.json      # 근거 문장 50개 + 메타데이터
     ├── financial_facts.json  # 분기·부문별 수치(코드 계산용)
     ├── transcripts.json      # video_id별 시연 대본 3개
     ├── users.json            # 가상 사용자 5명
@@ -87,20 +87,18 @@ python data/init_db.py --reset  # data/chroma_db 생성 + 근거 Top3 점검
 | 요청 | `{ "video_url": "...", "user_id": "demo_user_01" }` |
 | `claim_type` | `FINANCIAL` · `DISCLOSURE` · `PREDICTION` |
 | `status` | `SUPPORTED` · `CONTRADICTED` · `INSUFFICIENT_EVIDENCE` · `PREDICTION` |
-| `risk_signals[].level` | `DANGER`(당국이 경고한 유형, 근거 필수) · `CAUTION`(재촉 표현 등, 위법 기준 아님) |
 | 오류 | 400 `INVALID_VIDEO_URL` · 404 `VIDEO_NOT_SUPPORTED` · 404 `USER_NOT_FOUND` · 500 `ANALYSIS_FAILED` |
 
 근거가 없으면 `sources: []`를 반환하고 근거를 만들어내지 않습니다.
-위험 신호는 채널을 단정하지 않고 **영상 속 표현 + 금융당국 안내 근거**만 보여줍니다.
 `analyze_response.json`의 개인화 문구는 형식 예시이며 실제 결과는 LLM이 생성합니다.
 
 ## 시연 시나리오
 
 | 시나리오 | 영상 | 사용자 | 보여줄 것 |
 |---|---|---|---|
-| S1 신규 투자 검토 | `WCdemoS1V01` 삼성전자 | `demo_user_03` 위험중립형 | 확인·불일치·예측, 유료 매매 신호(주의) |
+| S1 신규 투자 검토 | `WCdemoS1V01` 삼성전자 | `demo_user_03` 위험중립형 | 확인 · 불일치(매출 200조) · 예측 |
 | S2 추가 매수 검토 | `WCdemoS2V02` SK하이닉스 | `demo_user_01` 공격투자형 / `demo_user_02` 적극투자형 | 미발표 실적은 **근거 부족**, 같은 판정 · 다른 개인화(반도체 비중 80% vs 10%) |
-| S3 보유 점검 · 리딩방 | `WCdemoS3V03` 현대자동차 | `demo_user_04` 안정추구형 / `demo_user_05` 안정형 | 부정 과장 + 끝부분 리딩방 권유 → **위험 신호 3건**(리딩방·미공개 정보·수익 보장) |
+| S3 보유 점검 | `WCdemoS3V03` 현대자동차 | `demo_user_04` 안정추구형(보유) / `demo_user_05` 안정형(미보유) | 부정 과장 영상: 감소는 맞지만 적자는 아님 |
 
 영상은 기업별 1개(삼성전자·SK하이닉스·현대자동차)입니다. 네이버·카카오는 사용자 보유 종목과 회사 필터 확인용 근거만 들어 있습니다.
 
@@ -113,6 +111,13 @@ python data/init_db.py --reset  # data/chroma_db 생성 + 근거 Top3 점검
 - 삼성전자 2026년 3분기 수치는 **잠정 실적**입니다. SK하이닉스·현대자동차 3분기 실적은 10월 29일, 네이버·카카오는 그 이후 발표 예정이라 2분기까지만 들어 있습니다.
 - 시연 영상·채널·사용자는 모두 **시연용 가상 데이터**이며 실제 인물·채널과 무관합니다.
 - 공유 화면은 웹 시뮬레이션이고, 분석(LLM·임베딩·벡터 검색)은 실제로 동작합니다.
+
+## 추후 고도화
+
+- **리딩방·수익 보장 위험 신호 탐지:** 영상 속 리딩방 유도, 원금·수익 보장, 미공개 정보 암시 표현을 금융위·금감원 안내를 근거로 표시
+- DART OpenAPI 공시 자동 수집과 정정 공시 반영
+- 유튜브 공유 시트 · 우리WON MTS 네이티브 연동, 실제 계좌·투자성향 연동(동의 기반)
+- 검증 결과 캐시와 근거 변경 알림
 
 ## 기여
 

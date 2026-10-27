@@ -1,7 +1,6 @@
 """WON Check 시연 데이터 생성: data/*.json, scripts/*.md
 
 근거 기업 5곳: 삼성전자, SK하이닉스, 현대자동차, 네이버, 카카오 (시연 영상 3개는 앞의 3곳에 1개씩).
-위험 신호 근거: 금융위·금감원 안내 5문장(company="금융당국").
 수치는 각 사 공식 실적 발표 자료와 대조했다(2026-10-27 확인). SK하이닉스는 회사 뉴스룸 접속이 막혀
 회사 발표를 그대로 인용한 언론 보도로 대조했고, document_type에 그 사실을 표시했다.
 문장은 원문을 옮기지 않고 RAG용으로 정규화·요약했다(팀 확정안 6장 방식).
@@ -28,9 +27,6 @@ COMPANIES = {
             "aliases": ["네이버", "NAVER", "Naver"]},
     "카카오": {"company_code": "00258801", "stock_code": "035720", "sector": "인터넷 플랫폼", "demo": False,
             "aliases": ["카카오", "Kakao"]},
-    # 기업이 아니라 위험 신호 판단 근거(금융위·금감원 안내). 검색 시 company="금융당국"으로 필터
-    "금융당국": {"company_code": "", "stock_code": "", "sector": "감독당국", "demo": False, "is_regulator": True,
-             "aliases": ["금융위원회", "금융감독원", "금감원", "금융위"]},
 }
 DEFAULT_COMPANY = "삼성전자"
 
@@ -94,19 +90,6 @@ SOURCES = {
                   "published_at": "2026-02-12", "source_url": "https://www.kakaocorp.com/page/detail/11931"},
     "KK_2026Q1": {"company": "카카오", "source_title": "카카오 2026년 1분기 실적 발표", "document_type": "공식 실적발표 자료",
                   "published_at": "2026-05-07", "source_url": "https://www.kakaocorp.com/page/detail/12023"},
-    # ---- 금융당국 안내 (위험 신호 근거)
-    "REG_IMPERSONATION": {"company": "금융당국", "source_title": "금감원, 핀플루언서 사칭 투자사기 유의(조세금융신문 보도)",
-                          "document_type": "감독당국 소비자 경보(언론 보도)", "published_at": "2026-04-28",
-                          "source_url": "https://www.tfmedia.co.kr/news/article.html?no=204107"},
-    "REG_UNFAIR": {"company": "금융당국", "source_title": "금융위·금감원, 핀플루언서 등의 불공정거래 집중 점검 및 고강도 조사",
-                   "document_type": "감독당국 보도자료(KDI 경제정보센터 게시)", "published_at": "2026-03-23",
-                   "source_url": "https://eiec.kdi.re.kr/policy/materialView.do?num=278290"},
-    "REG_UIA_AD": {"company": "금융당국", "source_title": "유사투자자문업 과장광고 주의(경북매일, 금융위·금감원 점검 결과 인용)",
-                   "document_type": "감독당국 점검 결과(언론 보도)", "published_at": "2026-04-22",
-                   "source_url": "https://kbmaeil.com/article/20260421500089"},
-    "REG_UIA_1ON1": {"company": "금융당국", "source_title": "금감원, 유튜브 핀플루언서 불법행위 정황 포착(아시아경제 보도)",
-                     "document_type": "감독당국 점검 결과(언론 보도)", "published_at": "2026-04-12",
-                     "source_url": "https://view.asiae.co.kr/article/2026041215475771641"},
     "KK_2026Q2": {"company": "카카오", "source_title": "카카오 2026년 2분기 실적 발표", "document_type": "공식 실적발표 자료",
                   "published_at": "2026-08-06", "source_url": "https://www.kakaocorp.com/page/detail/12096"},
 }
@@ -230,19 +213,6 @@ D += [
      "카카오의 2026년 2분기 플랫폼 부문 매출은 약 1조 2,303억 원으로 전년 동기 대비 17% 늘었고, 콘텐츠 부문 매출은 약 8,682억 원으로 1% 늘었다."),
 ]
 
-# ---- 금융당국 안내: 위험 신호 판단 근거. segment에 해당 위험 유형 코드를 쉼표로 적는다.
-D += [
-    ("reg_001", "2026", "REG_IMPERSONATION", "LEADING_ROOM", "RISK_GUIDE", None, "", False,
-     "금융감독원은 유명 핀플루언서를 사칭한 채널, 영상 댓글을 통한 주식 리딩방 가입 유도, 구독자가 많은 채널을 사들여 유료 리딩방으로 유인하는 수법을 확인했다며 투자자 주의를 당부했다."),
-    ("reg_002", "2026", "REG_IMPERSONATION", "GUARANTEED_RETURN,LEADING_ROOM", "RISK_GUIDE", None, "", False,
-     "금융감독원은 유튜브 등 SNS에서 고급 정보를 준다고 하거나 원금 보장·고수익을 언급하며 투자를 권유하는 경우 사기일 가능성이 매우 크며, 상대가 제도권 금융회사인지 먼저 확인해야 한다고 안내했다."),
-    ("reg_003", "2026", "REG_UIA_AD", "GUARANTEED_RETURN,PAID_SIGNAL", "RISK_GUIDE", None, "", False,
-     "유사투자자문업은 신고만으로 영업할 수 있는 제도권 밖 업종이며, 금융당국 점검에서 수익 보장이나 손실 보전을 약속하는 표시·광고가 주요 위반 유형으로 적발됐다."),
-    ("reg_004", "2026", "REG_UNFAIR", "UNDISCLOSED_INFO", "RISK_GUIDE", None, "", False,
-     "금융위원회와 금융감독원은 핀플루언서의 선행매매, 투자 심리를 악용한 허위사실·풍문 유포, 경영진과 공모한 허위 정보 유포를 불공정거래로 집중 점검·조사한다고 밝혔다. 근거 없는 정보를 맹목적으로 따르면 손실이나 형사처벌 등 불이익을 받을 수 있다."),
-    ("reg_005", "2026", "REG_UIA_1ON1", "PAID_SIGNAL", "RISK_GUIDE", None, "", False,
-     "금융감독원은 신고 없이 돈을 받고 종목과 매매 시점을 추천한 유튜브 채널의 불법 정황을 적발했으며, 유사투자자문업자의 1대1 투자 상담과 개별 투자 조언은 모두 불법이라고 밝혔다."),
-]
 
 
 def disclosures():
@@ -340,7 +310,7 @@ USERS = [
     {"user_id": "demo_user_05", "name": "정영호(가상)", "risk_tolerance": "안정형", "investment_horizon": "장기",
      "investment_style": "퇴직금 보전 우선, 예금·채권 중심", "scenario": "S3",
      "holdings": [{"company": "정기예금·CMA", "weight_pct": 70}, {"company": "국내 채권형 펀드", "weight_pct": 30}],
-     "intent": {"type": "리딩방 권유를 받고 투자 검토", "company": "현대자동차", "amount_krw": 10_000_000}},
+     "intent": {"type": "신규 매수 검토", "company": "현대자동차", "amount_krw": 10_000_000}},
 ]
 
 # ------------------------------------------------------------------ 영상(가상 채널) — 영상당 검증 주장 3개
@@ -366,13 +336,7 @@ VIDEOS = [
          {"text": "삼성전자 주가는 내년에 두 배가 될 것이다", "claim_type": "PREDICTION", "period": None,
           "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 주가 전망"},
      ],
-     "risk_signals": [
-         {"type": "URGENCY", "level": "CAUTION", "quote": "지금 안 사면 진짜 늦어요", "expected_sources": [],
-          "reason": "매수 재촉 표현. 위법 기준은 아니므로 주의 수준으로만 표시"},
-         {"type": "PAID_SIGNAL", "level": "CAUTION", "quote": "매수 타이밍은 유료 멤버십에서 알려드릴게요",
-          "expected_sources": ["reg_005"],
-          "reason": "유료 매매 시점 추천. 유사투자자문업 신고 여부 확인 필요, 1:1 조언이면 불법"},
-     ]},
+     "risk_signals": []},
     {"video_id": "WCdemoS2V02", "scenario": "S2", "companies": ["SK하이닉스"],
      "title": "SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요",
      "channel": "실적으로 말하는 주식(가상)", "published_at": "2026-10-21", "tone": "뉴스 브리핑형, 그래프 자막",
@@ -393,19 +357,14 @@ VIDEOS = [
           "expected_status": "INSUFFICIENT_EVIDENCE", "expected_sources": ["hynix_008"],
           "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"},
      ],
-     "risk_signals": [
-         {"type": "URGENCY", "level": "CAUTION", "quote": "지금 비중을 늘리셔야 합니다", "expected_sources": [],
-          "reason": "미확정 정보를 근거로 한 매수 재촉. 위법 기준은 아니므로 주의 수준"},
-     ]},
+     "risk_signals": []},
     {"video_id": "WCdemoS3V03", "scenario": "S3", "companies": ["현대자동차"],
-     "title": "현대차 관세 직격탄, 보유자는 지금 파세요 (갈아탈 종목은 방에서)",
-     "channel": "팩트폭격 주식(가상)", "published_at": "2026-08-10", "tone": "단호한 말투, 검은 배경 빨간 자막 → 끝부분 속삭이는 말투",
+     "title": "현대차 관세 직격탄, 보유자는 지금 파세요",
+     "channel": "팩트폭격 주식(가상)", "published_at": "2026-08-10", "tone": "단호한 말투, 검은 배경 빨간 자막",
      "segments": [
          ("0:00", "현대차, 이제 끝났습니다. 관세 때문에 1분기 영업이익이 30% 넘게 빠졌어요.", "관세 · 1Q 영업이익 -30%"),
          ("0:08", "2분기는 아예 적자로 돌아섰습니다.", "2Q 적자 전환"),
          ("0:13", "내년엔 이익이 반토막 날 거예요. 보유하신 분들 지금 파세요.", "내년 이익 반토막 · 지금 매도"),
-         ("0:20", "갈아탈 종목은 저희 방에서만 알려드립니다. 회사 쪽에서 들은 얘기라 발표 전에 먼저 드려요.", "갈아탈 종목은 비밀방에서"),
-         ("0:29", "저희 방은 수익 보장합니다. 인원 제한 있으니 DM 빨리 주세요.", "수익 보장 · 인원 제한 · DM"),
      ],
      "claims": [
          {"text": "현대자동차의 2026년 1분기 영업이익은 전년 동기보다 30% 넘게 줄었다", "claim_type": "FINANCIAL",
@@ -417,22 +376,13 @@ VIDEOS = [
          {"text": "현대자동차의 내년 이익은 절반으로 줄어들 것이다", "claim_type": "PREDICTION", "period": None,
           "expected_status": "PREDICTION", "expected_sources": [], "reason": "미래 실적 전망"},
      ],
-     "risk_signals": [
-         {"type": "URGENCY", "level": "CAUTION", "quote": "보유하신 분들 지금 파세요", "expected_sources": [],
-          "reason": "매도 재촉. 위법 기준은 아니므로 주의 수준"},
-         {"type": "LEADING_ROOM", "level": "DANGER", "quote": "갈아탈 종목은 저희 방에서만 알려드립니다",
-          "expected_sources": ["reg_001"], "reason": "금감원이 경고한 리딩방 유도 수법과 같은 유형"},
-         {"type": "UNDISCLOSED_INFO", "level": "DANGER", "quote": "회사 쪽에서 들은 얘기라 발표 전에 먼저 드려요",
-          "expected_sources": ["reg_004"], "reason": "미공개 정보 암시. 허위사실·풍문 유포는 불공정거래 점검 대상"},
-         {"type": "GUARANTEED_RETURN", "level": "DANGER", "quote": "저희 방은 수익 보장합니다",
-          "expected_sources": ["reg_002", "reg_003"], "reason": "금감원이 사기 가능성이 매우 크다고 경고한 수익 보장 표현"},
-     ]},
+     "risk_signals": []},
 ]
 
 SCENARIOS = {
     "S1": {"name": "신규 투자 검토", "users": ["demo_user_03"], "question": "영상의 근거가 맞고, 내 투자 목적에도 맞을까?"},
     "S2": {"name": "추가 매수 검토", "users": ["demo_user_01", "demo_user_02"], "question": "더 사면 자산 구성이 어떻게 달라질까?"},
-    "S3": {"name": "보유 점검 · 리딩방 권유", "users": ["demo_user_04", "demo_user_05"], "question": "기존 보유 이유를 다시 봐야 할까? 이 권유를 믿어도 될까?"},
+    "S3": {"name": "보유 점검", "users": ["demo_user_04", "demo_user_05"], "question": "기존에 보유한 이유를 다시 검토해야 할까?"},
 }
 
 
