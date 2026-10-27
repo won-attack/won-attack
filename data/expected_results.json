@@ -29,6 +29,9 @@
     {
       "video_id": "WCdemoS1A01",
       "scenario": "S1",
+      "companies": [
+        "삼성전자"
+      ],
       "claims": [
         {
           "text": "삼성전자의 2026년 3분기 영업이익은 107조 원을 넘었다",
@@ -38,7 +41,10 @@
           "expected_sources": [
             "samsung_024"
           ],
-          "reason": "잠정 영업이익 약 107.4조 원으로 일치. 단, 확정 전 잠정치임을 표시해야 함"
+          "reason": "잠정 영업이익 약 107.4조 원으로 일치. 단, 확정 전 잠정치임을 표시해야 함",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "삼성전자의 2026년 3분기 매출은 200조 원을 돌파했다",
@@ -48,7 +54,10 @@
           "expected_sources": [
             "samsung_024"
           ],
-          "reason": "잠정 매출은 약 195조 원으로 200조 원에 못 미침"
+          "reason": "잠정 매출은 약 195조 원으로 200조 원에 못 미침",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "삼성전자 주가는 내년에 두 배가 될 것이다",
@@ -56,7 +65,10 @@
           "period": null,
           "expected_status": "PREDICTION",
           "expected_sources": [],
-          "reason": "미래 주가 전망"
+          "reason": "미래 주가 전망",
+          "companies": [
+            "삼성전자"
+          ]
         }
       ],
       "risk_signals": [
@@ -67,35 +79,53 @@
     {
       "video_id": "WCdemoS1B02",
       "scenario": "S1",
+      "companies": [
+        "삼성전자",
+        "SK하이닉스"
+      ],
       "claims": [
         {
-          "text": "삼성전자 DS부문은 2026년 2분기 영업이익 89조 원 이상을 기록해 전사 영업이익의 대부분을 차지했다",
+          "text": "SK하이닉스의 2025년 연간 영업이익은 삼성전자보다 많았다",
           "claim_type": "FINANCIAL",
-          "period": "2026-Q2",
+          "period": "2025-FY",
+          "companies": [
+            "SK하이닉스",
+            "삼성전자"
+          ],
           "expected_status": "SUPPORTED",
           "expected_sources": [
-            "samsung_020",
-            "samsung_019"
+            "hynix_001",
+            "samsung_002"
           ],
-          "reason": "DS 영업이익 약 89.2조 원 / 전사 약 89.5조 원(약 99.7%)"
+          "reason": "SK하이닉스 약 47.2조 원 > 삼성전자 약 43.6조 원. 두 회사 근거를 각각 찾아 비교해야 함"
         },
         {
-          "text": "삼성전자 DX부문은 2026년 2분기에 적자를 기록했다",
+          "text": "SK하이닉스의 2026년 2분기 영업이익은 삼성전자 반도체(DS)부문 영업이익보다 많았다",
           "claim_type": "FINANCIAL",
           "period": "2026-Q2",
-          "expected_status": "SUPPORTED",
-          "expected_sources": [
-            "samsung_021"
+          "companies": [
+            "SK하이닉스",
+            "삼성전자"
           ],
-          "reason": "DX 영업손실 약 0.8조 원"
+          "expected_status": "CONTRADICTED",
+          "expected_sources": [
+            "hynix_005",
+            "samsung_020"
+          ],
+          "reason": "SK하이닉스 약 60.5조 원 < 삼성전자 DS부문 약 89.2조 원"
         },
         {
-          "text": "삼성전자가 HBM 시장 점유율 1위를 되찾았다",
-          "claim_type": "DISCLOSURE",
-          "period": null,
+          "text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다",
+          "claim_type": "FINANCIAL",
+          "period": "2026-Q3",
+          "companies": [
+            "SK하이닉스"
+          ],
           "expected_status": "INSUFFICIENT_EVIDENCE",
-          "expected_sources": [],
-          "reason": "회사 실적 자료에 시장 점유율 순위 근거가 없음(HBM4 양산·공급 확대 사실과는 별개)"
+          "expected_sources": [
+            "hynix_008"
+          ],
+          "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"
         }
       ],
       "risk_signals": []
@@ -103,6 +133,9 @@
     {
       "video_id": "WCdemoS2A03",
       "scenario": "S2",
+      "companies": [
+        "삼성전자"
+      ],
       "claims": [
         {
           "text": "삼성전자의 2026년 1분기 영업이익은 2025년 연간 영업이익보다 많다",
@@ -113,7 +146,10 @@
             "samsung_015",
             "samsung_002"
           ],
-          "reason": "2026년 1분기 약 57.2조 원 > 2025년 연간 약 43.6조 원"
+          "reason": "2026년 1분기 약 57.2조 원 > 2025년 연간 약 43.6조 원",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "삼성전자의 2026년 분기 영업이익은 1분기, 2분기, 3분기로 갈 때마다 두 배씩 늘고 있다",
@@ -125,7 +161,10 @@
             "samsung_019",
             "samsung_024"
           ],
-          "reason": "1→2분기 약 1.56배(57.2→89.5), 2→3분기 약 1.20배(89.5→107.4, 잠정). 증가는 맞지만 두 배는 아님"
+          "reason": "1→2분기 약 1.56배(57.2→89.5), 2→3분기 약 1.20배(89.5→107.4, 잠정). 증가는 맞지만 두 배는 아님",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "반도체 호황은 2028년까지 계속될 것이다",
@@ -133,7 +172,10 @@
           "period": null,
           "expected_status": "PREDICTION",
           "expected_sources": [],
-          "reason": "미래 업황 전망"
+          "reason": "미래 업황 전망",
+          "companies": [
+            "삼성전자"
+          ]
         }
       ],
       "risk_signals": [
@@ -145,76 +187,96 @@
     {
       "video_id": "WCdemoS2B04",
       "scenario": "S2",
+      "companies": [
+        "SK하이닉스"
+      ],
       "claims": [
         {
-          "text": "삼성전자의 2025년 연간 영업이익은 약 43조 원이다",
+          "text": "SK하이닉스의 2026년 2분기 영업이익은 60조 원을 넘었고 영업이익률은 76%다",
           "claim_type": "FINANCIAL",
-          "period": "2025-FY",
+          "period": "2026-Q2",
           "expected_status": "SUPPORTED",
           "expected_sources": [
-            "samsung_002"
+            "hynix_005"
           ],
-          "reason": "2025년 연간 약 43.6조 원"
+          "reason": "2분기 영업이익 약 60조 5,426억 원, 영업이익률 76.3%",
+          "companies": [
+            "SK하이닉스"
+          ]
         },
         {
-          "text": "삼성전자의 2026년 3분기 영업이익은 전년 동기보다 10배 늘었다",
+          "text": "SK하이닉스의 2026년 2분기 매출은 80조 원을 돌파했다",
           "claim_type": "FINANCIAL",
-          "period": "2026-Q3",
+          "period": "2026-Q2",
           "expected_status": "CONTRADICTED",
           "expected_sources": [
-            "samsung_025",
-            "samsung_024",
-            "samsung_008"
+            "hynix_005"
           ],
-          "reason": "전년 동기 대비 782.50% 증가 = 약 8.8배(12.2조 → 107.4조, 잠정). 10배는 아님"
+          "reason": "2분기 매출은 약 79조 3,187억 원으로 80조 원에 못 미침",
+          "companies": [
+            "SK하이닉스"
+          ]
         },
         {
-          "text": "삼성전자는 4분기에도 사상 최대 실적을 낼 것이다",
+          "text": "SK하이닉스의 2026년 3분기 영업이익은 100조 원에 이를 것이다",
           "claim_type": "PREDICTION",
-          "period": "2026-Q4",
+          "period": "2026-Q3",
           "expected_status": "PREDICTION",
-          "expected_sources": [
-            "samsung_023"
-          ],
-          "reason": "아직 발표되지 않은 미래 실적. 회사 전망(하반기 성장 전망)은 확정이 아님"
+          "expected_sources": [],
+          "reason": "미래 실적 전망",
+          "companies": [
+            "SK하이닉스"
+          ]
         }
       ],
-      "risk_signals": []
+      "risk_signals": [
+        "보유 비중 확대 권유"
+      ]
     },
     {
       "video_id": "WCdemoS3A05",
       "scenario": "S3",
+      "companies": [
+        "현대자동차"
+      ],
       "claims": [
         {
-          "text": "삼성전자의 2026년 3분기 영업이익은 직전 분기보다 줄었다",
+          "text": "현대자동차의 2026년 1분기 영업이익은 전년 동기보다 30% 넘게 줄었다",
           "claim_type": "FINANCIAL",
-          "period": "2026-Q3",
-          "expected_status": "CONTRADICTED",
+          "period": "2026-Q1",
+          "expected_status": "SUPPORTED",
           "expected_sources": [
-            "samsung_025",
-            "samsung_024",
-            "samsung_019"
+            "hyundai_004",
+            "hyundai_005"
           ],
-          "reason": "잠정 영업이익은 직전 분기 대비 20.01% 증가(89.5조 → 107.4조)"
+          "reason": "1분기 영업이익 약 2조 5,147억 원으로 전년 동기 대비 30.8% 감소. 관세 영향 약 8,600억 원",
+          "companies": [
+            "현대자동차"
+          ]
         },
         {
-          "text": "삼성전자 DX부문은 2026년에 계속 적자를 냈다",
+          "text": "현대자동차는 2026년 2분기에 영업 적자를 냈다",
           "claim_type": "FINANCIAL",
-          "period": "2026-Q1~Q2",
+          "period": "2026-Q2",
           "expected_status": "CONTRADICTED",
           "expected_sources": [
-            "samsung_017",
-            "samsung_021"
+            "hyundai_006"
           ],
-          "reason": "1분기 영업이익 약 3조 원 흑자, 2분기 약 0.8조 원 적자. '계속 적자'는 사실과 다름"
+          "reason": "2분기 영업이익 약 2조 8,509억 원 흑자(영업이익률 5.8%). 감소는 맞지만 적자는 아님",
+          "companies": [
+            "현대자동차"
+          ]
         },
         {
-          "text": "메모리 가격은 곧 폭락할 것이다",
+          "text": "현대자동차의 내년 이익은 절반으로 줄어들 것이다",
           "claim_type": "PREDICTION",
           "period": null,
           "expected_status": "PREDICTION",
           "expected_sources": [],
-          "reason": "미래 가격 전망"
+          "reason": "미래 실적 전망",
+          "companies": [
+            "현대자동차"
+          ]
         }
       ],
       "risk_signals": [
@@ -224,6 +286,9 @@
     {
       "video_id": "WCdemoS3B06",
       "scenario": "S3",
+      "companies": [
+        "삼성전자"
+      ],
       "claims": [
         {
           "text": "삼성전자의 2026년 3분기 확정 영업이익은 120조 원으로 이미 정해졌다",
@@ -234,7 +299,10 @@
             "samsung_024",
             "samsung_026"
           ],
-          "reason": "공식 잠정 영업이익은 약 107.4조 원이며 확정 실적은 아직 발표 전"
+          "reason": "공식 잠정 영업이익은 약 107.4조 원이며 확정 실적은 아직 발표 전",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "삼성전자 반도체 부문의 2025년 4분기 영업이익은 16조 원을 넘었다",
@@ -244,7 +312,10 @@
           "expected_sources": [
             "samsung_010"
           ],
-          "reason": "DS부문 영업이익 약 16.4조 원. 맞는 사실을 섞어 신뢰를 얻는 수법에 유의"
+          "reason": "DS부문 영업이익 약 16.4조 원. 맞는 사실을 섞어 신뢰를 얻는 수법에 유의",
+          "companies": [
+            "삼성전자"
+          ]
         },
         {
           "text": "이 리딩방에 들어오면 수익이 보장된다",
@@ -252,7 +323,10 @@
           "period": null,
           "expected_status": "PREDICTION",
           "expected_sources": [],
-          "reason": "사실 판정 대상이 아닌 수익 보장 표현 — 위험 신호로 별도 표시"
+          "reason": "사실 판정 대상이 아닌 수익 보장 표현 — 위험 신호로 별도 표시",
+          "companies": [
+            "삼성전자"
+          ]
         }
       ],
       "risk_signals": [

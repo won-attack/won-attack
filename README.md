@@ -33,7 +33,7 @@
 | 백엔드 | 미확정 — 확정 후 기입 |
 | LLM · 임베딩 | OpenAI API · `text-embedding-3-small` (1536) |
 | 벡터 DB | ChromaDB `PersistentClient` · 컬렉션 `disclosures` · cosine |
-| 데이터 | 삼성전자 공식 실적 발표 자료(2024~2026년 3분기 잠정) 기반 근거 문장 26개 |
+| 데이터 | 5개 기업(삼성전자·SK하이닉스·현대자동차·네이버·카카오) 실적 발표 자료 기반 근거 문장 50개 |
 
 ## 폴더 구조
 
@@ -50,7 +50,8 @@ won-check/
 ├── frontend/             # 프론트 담당
 ├── backend/              # 백엔드 담당
 └── data/                 # 데이터·벡터 DB 담당
-    ├── disclosures.json      # 근거 문장 26개 + 메타데이터
+    ├── companies.json        # 기업 5곳 · DART 고유번호 · 회사명 별칭
+    ├── disclosures.json      # 근거 문장 50개 + 메타데이터
     ├── financial_facts.json  # 분기·부문별 수치(코드 계산용)
     ├── transcripts.json      # video_id별 시연 대본 6개
     ├── users.json            # 가상 사용자 5명
@@ -95,16 +96,19 @@ python data/init_db.py --reset  # data/chroma_db 생성 + 근거 Top3 점검
 
 | 시나리오 | 영상 | 사용자 | 보여줄 것 |
 |---|---|---|---|
-| S1 신규 투자 검토 | `WCdemoS1A01`, `WCdemoS1B02` | `demo_user_03` 위험중립형 | 과장 채널 vs 정확한 채널, 근거 부족 판정 |
-| S2 추가 매수 검토 | `WCdemoS2A03`, `WCdemoS2B04` | `demo_user_01` 공격투자형 / `demo_user_02` 적극투자형 | 같은 판정, 다른 개인화(삼성전자 비중 60% vs 15%) |
-| S3 보유 점검 · 리딩방 | `WCdemoS3A05`, `WCdemoS3B06` | `demo_user_04` 안정추구형 / `demo_user_05` 안정형 | 부정 과장 영상, 리딩방 위험 신호 |
+| S1 신규 투자 검토 | `WCdemoS1A01` 삼성전자, `WCdemoS1B02` 삼성전자 vs SK하이닉스 | `demo_user_03` 위험중립형 | 두 회사 비교 주장(회사별 근거 검색), 미발표 실적은 근거 부족 |
+| S2 추가 매수 검토 | `WCdemoS2A03` 삼성전자, `WCdemoS2B04` SK하이닉스 | `demo_user_01` 공격투자형 / `demo_user_02` 적극투자형 | 같은 판정, 다른 개인화(반도체 비중 80% vs 10%) |
+| S3 보유 점검 · 리딩방 | `WCdemoS3A05` 현대자동차, `WCdemoS3B06` 삼성전자 | `demo_user_04` 안정추구형 / `demo_user_05` 안정형 | 부정 과장 영상, 리딩방 위험 신호 |
+
+시연 영상은 삼성전자·SK하이닉스·현대자동차 3곳을 다루고, 네이버·카카오는 사용자 보유 종목과 회사 필터 확인용으로 근거만 들어 있습니다.
 
 자세한 대본과 기대 판정은 `data/scripts/`, `data/expected_results.json`을 보세요.
 
 ## 데이터 출처와 고지
 
-- 근거 수치는 삼성전자 공식 실적 발표 자료와 대조했습니다. 출처 URL은 `data/disclosures.json`에 문장별로 있습니다.
-- 2026년 3분기 수치는 **잠정 실적**입니다. 확정 실적 발표 후 갱신이 필요합니다.
+- 근거 수치는 각 사 실적 발표 자료와 대조했습니다. 출처 URL은 `data/disclosures.json`에 문장별로 있습니다.
+- SK하이닉스는 회사 뉴스룸 대신 회사 발표를 인용한 언론 보도로 대조했고, `document_type`에 표시했습니다.
+- 삼성전자 2026년 3분기 수치는 **잠정 실적**입니다. SK하이닉스·현대자동차 3분기 실적은 10월 29일, 네이버·카카오는 그 이후 발표 예정이라 2분기까지만 들어 있습니다.
 - 시연 영상·채널·사용자는 모두 **시연용 가상 데이터**이며 실제 인물·채널과 무관합니다.
 - 공유 화면은 웹 시뮬레이션이고, 분석(LLM·임베딩·벡터 검색)은 실제로 동작합니다.
 

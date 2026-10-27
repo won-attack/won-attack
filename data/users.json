@@ -9,20 +9,20 @@
     "holdings": [
       {
         "company": "삼성전자",
-        "weight_pct": 60
+        "weight_pct": 45
       },
       {
-        "company": "국내 반도체 ETF",
-        "weight_pct": 25
+        "company": "SK하이닉스",
+        "weight_pct": 35
       },
       {
         "company": "현금성 자산",
-        "weight_pct": 15
+        "weight_pct": 20
       }
     ],
     "intent": {
       "type": "추가 매수 검토",
-      "company": "삼성전자",
+      "company": "SK하이닉스",
       "amount_krw": 5000000
     }
   },
@@ -35,25 +35,33 @@
     "scenario": "S2",
     "holdings": [
       {
-        "company": "삼성전자",
+        "company": "SK하이닉스",
+        "weight_pct": 10
+      },
+      {
+        "company": "현대자동차",
         "weight_pct": 15
+      },
+      {
+        "company": "네이버",
+        "weight_pct": 10
       },
       {
         "company": "미국 S&P500 ETF",
-        "weight_pct": 45
+        "weight_pct": 40
       },
       {
         "company": "국내 채권형 펀드",
-        "weight_pct": 25
+        "weight_pct": 15
       },
       {
         "company": "현금성 자산",
-        "weight_pct": 15
+        "weight_pct": 10
       }
     ],
     "intent": {
       "type": "추가 매수 검토",
-      "company": "삼성전자",
+      "company": "SK하이닉스",
       "amount_krw": 3000000
     }
   },
@@ -66,12 +74,16 @@
     "scenario": "S1",
     "holdings": [
       {
-        "company": "미국 S&P500 ETF",
-        "weight_pct": 50
+        "company": "SK하이닉스",
+        "weight_pct": 15
       },
       {
-        "company": "국내 반도체 ETF",
-        "weight_pct": 20
+        "company": "카카오",
+        "weight_pct": 10
+      },
+      {
+        "company": "미국 S&P500 ETF",
+        "weight_pct": 40
       },
       {
         "company": "국내 채권형 펀드",
@@ -79,7 +91,7 @@
       },
       {
         "company": "현금성 자산",
-        "weight_pct": 10
+        "weight_pct": 15
       }
     ],
     "intent": {
@@ -97,12 +109,12 @@
     "scenario": "S3",
     "holdings": [
       {
-        "company": "삼성전자",
-        "weight_pct": 20
+        "company": "현대자동차",
+        "weight_pct": 25
       },
       {
         "company": "국내 채권형 펀드",
-        "weight_pct": 55
+        "weight_pct": 50
       },
       {
         "company": "현금성 자산",
@@ -111,7 +123,7 @@
     ],
     "intent": {
       "type": "보유 점검",
-      "company": "삼성전자",
+      "company": "현대자동차",
       "amount_krw": 0
     }
   },
