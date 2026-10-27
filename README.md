@@ -85,6 +85,15 @@ won-check/
 
 필요한 것: Python 3.10+, Java 21, Node.js 18+, OpenAI API 키
 
+**한 번에 실행:** 루트 `.env`에 `OPENAI_API_KEY`를 넣은 뒤
+
+- Windows: `start-demo.bat` 더블클릭 (근거 DB 다시 적재: `start-demo.bat reset`) · 끄기: `stop-demo.bat`
+- macOS: `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) · 끄기: `Ctrl+C`
+
+DB 적재 → ChromaDB 서버 → 근거 검색 점검(7/7) → 백엔드(live) → 프론트(실제 API) 순서로 띄우고 브라우저를 엽니다. 점검이 실패하면 백엔드를 띄우기 전에 멈춥니다.
+
+**직접 실행할 때:**
+
 ```bash
 # 0) 환경 변수
 copy .env.example .env                         # macOS: cp .env.example .env → OPENAI_API_KEY 입력
