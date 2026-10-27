@@ -6,3 +6,4 @@ dist/
 !.env.example
 .edge-presentation-test/
 .presentation-*.png
+.mp4
