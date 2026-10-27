@@ -30,6 +30,7 @@ class OpenAiServiceTest {
         server = MockRestServiceServer.bindTo(builder).build();
         service = new OpenAiService(builder.build(), mapper);
         field("provider", "openai");
+        field("embeddingProvider", "openai");
         field("key", "test-team-key");
         field("chatModel", "test-openai-chat");
         field("embeddingModel", "test-openai-embedding");
@@ -62,7 +63,7 @@ class OpenAiServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"openai", "ollama"})
     void routesEmbeddingsAndReadsVector(String provider) {
-        field("provider", provider);
+        field("embeddingProvider", provider);
         boolean ollama = provider.equals("ollama");
         server.expect(requestTo(baseUrl(ollama) + "/embeddings"))
                 .andExpect(method(HttpMethod.POST))
@@ -79,6 +80,7 @@ class OpenAiServiceTest {
     @Test
     void ollamaWorksWithoutOpenAiKey() {
         field("provider", "ollama");
+        field("embeddingProvider", "ollama");
         field("key", "");
         server.expect(requestTo(baseUrl(true) + "/embeddings"))
                 .andExpect(headerDoesNotExist(HttpHeaders.AUTHORIZATION))
@@ -99,19 +101,39 @@ class OpenAiServiceTest {
     void rejectsUnknownProviderBeforeSending() {
         field("provider", "olama");
         assertTrue(assertThrows(IllegalStateException.class,
-                () -> service.embed("text")).getMessage().contains("LLM_PROVIDER"));
+                () -> service.json("system", "user")).getMessage().contains("LLM_PROVIDER"));
         server.verify();
     }
 
     @Test
     void ollamaRequiresBothSelectedModels() {
         field("provider", "ollama");
+        field("embeddingProvider", "ollama");
         field("ollamaChatModel", "");
         field("ollamaEmbeddingModel", "");
         assertTrue(assertThrows(IllegalStateException.class,
                 () -> service.json("system", "user")).getMessage().contains("OLLAMA_CHAT_MODEL"));
         assertTrue(assertThrows(IllegalStateException.class,
                 () -> service.embed("text")).getMessage().contains("OLLAMA_EMBEDDING_MODEL"));
+        server.verify();
+    }
+
+    @Test
+    void ollamaChatDoesNotSwitchOpenAiEmbeddings() {
+        field("provider", "ollama");
+        server.expect(requestTo(baseUrl(false) + "/embeddings"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer test-team-key"))
+                .andExpect(jsonPath("$.model").value("test-openai-embedding"))
+                .andRespond(withSuccess("{\"data\":[{\"embedding\":[1.0]}]}", MediaType.APPLICATION_JSON));
+        assertEquals(List.of(1.0), service.embed("text"));
+        server.verify();
+    }
+
+    @Test
+    void rejectsUnknownEmbeddingProvider() {
+        field("embeddingProvider", "olama");
+        assertTrue(assertThrows(IllegalStateException.class,
+                () -> service.embed("text")).getMessage().contains("EMBEDDING_PROVIDER"));
         server.verify();
     }
 

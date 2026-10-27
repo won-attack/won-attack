@@ -5,7 +5,7 @@
 ```text
 won-check-backend/
 ├── build.gradle, settings.gradle, gradlew, gradlew.bat
-├── docker-compose.yml             # ChromaDB 0.6.3 (B)
+├── docker-compose.yml             # Optional ChromaDB 1.0.20 (B)
 ├── README.md, TEAM_GUIDE.md
 └── src/
     ├── main/java/com/woncheck/woncheckbackend/
@@ -47,8 +47,9 @@ won-check-backend/
 - **Critical:** Replace ALL synthetic disclosure excerpts with accurately checked primary-source passages, and add genuine `source_url` values. Current JSON is a 3-record placeholder, not the intended 10 verified paragraphs.
 - Confirm `text-embedding-3-small` dimension 1536 and Chroma cosine collection `disclosures`.
 - With real data and API key: run `docker compose up -d`; set `WONCHECK_MODE=live` and `WONCHECK_INGEST_ENABLED=true`; call `POST /api/admin/ingest`; verify count and retrieval Top 3 with actual relevant claims.
-- Verify returned `document_id`, `text`, `title`, `period`, `source_url` match the original official evidence. Current code retrieves 10 candidates then filters company/period to up to 3; if precision needs improvement, adjust metadata filtering.
-- Verify the Chroma API v1 endpoints against the pinned 0.6.3 Docker image in your environment.
+- Verify returned `document_id`, `text`, `title`, `period`, `source_url` match the original official evidence. Company/period filters are applied in Chroma `where` before Top K selection; period fallback and quarter ranges follow `data/check_db.py`.
+- Verify Chroma API v2 against the team's local ChromaDB 1.x server. Docker is optional.
+- `LLM_PROVIDER` selects chat only. Keep `EMBEDDING_PROVIDER=openai` and `EMBEDDING_MODEL=text-embedding-3-small` when querying the shared OpenAI-embedded collection, even with Ollama chat.
 
 ## Integration contract
 

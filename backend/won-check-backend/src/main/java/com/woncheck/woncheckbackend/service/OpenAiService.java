@@ -17,6 +17,7 @@ public class OpenAiService {
     private final ObjectMapper mapper;
 
     @Value("${woncheck.llm.provider:openai}") private String provider;
+    @Value("${woncheck.embedding.provider:openai}") private String embeddingProvider;
     @Value("${woncheck.openai.api-key:}") private String key;
     @Value("${woncheck.openai.chat-model:gpt-4o-mini}") private String chatModel;
     @Value("${woncheck.openai.embedding-model:text-embedding-3-small}") private String embeddingModel;
@@ -30,7 +31,7 @@ public class OpenAiService {
     }
 
     public JsonNode json(String system, String user) {
-        boolean ollama = usesOllama();
+        boolean ollama = usesOllama(provider, "LLM_PROVIDER");
         String model = required(ollama ? ollamaChatModel : chatModel,
                 ollama ? "OLLAMA_CHAT_MODEL" : "OPENAI_CHAT_MODEL / LLM_MODEL");
         Map<String, Object> payload = Map.of(
@@ -54,7 +55,7 @@ public class OpenAiService {
     }
 
     public List<Double> embed(String text) {
-        boolean ollama = usesOllama();
+        boolean ollama = usesOllama(embeddingProvider, "EMBEDDING_PROVIDER");
         String model = required(ollama ? ollamaEmbeddingModel : embeddingModel,
                 ollama ? "OLLAMA_EMBEDDING_MODEL" : "EMBEDDING_MODEL");
         JsonNode response = post("/embeddings", Map.of("model", model, "input", text), ollama);
@@ -66,11 +67,11 @@ public class OpenAiService {
         return vector;
     }
 
-    private boolean usesOllama() {
-        return switch (required(provider, "LLM_PROVIDER").toLowerCase(Locale.ROOT)) {
+    private boolean usesOllama(String selectedProvider, String name) {
+        return switch (required(selectedProvider, name).toLowerCase(Locale.ROOT)) {
             case "ollama" -> true;
             case "openai" -> false;
-            default -> throw new IllegalStateException("LLM_PROVIDER must be openai or ollama");
+            default -> throw new IllegalStateException(name + " must be openai or ollama");
         };
     }
 

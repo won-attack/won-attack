@@ -16,7 +16,10 @@ public final class Models {
     public record Video(String videoId, String title, String url) {
     }
 
-    public record Claim(String claimId, String claim, String claimType) {
+    public record Claim(String claimId, String claim, String claimType, List<String> companies, String period) {
+        public Claim {
+            companies = companies == null ? List.of() : List.copyOf(companies);
+        }
     }
 
     public record EvidenceDto(String documentId, String text, String title, String period, String sourceUrl) {
