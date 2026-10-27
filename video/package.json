@@ -1,0 +1,34 @@
+{
+  "name": "won-check-video",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prepare:hynix": "python3 scripts/prepare_hynix.py",
+    "studio": "remotion studio src/index.tsx",
+    "check": "tsc --noEmit",
+    "stills:hynix": "node scripts/render.mjs --stills-only",
+    "render:hynix": "node scripts/render.mjs",
+    "prepare:motion": "python3 scripts/prepare_motion.py",
+    "prerender:hynix": "python3 scripts/prepare_motion.py",
+    "prestills:hynix": "python3 scripts/prepare_motion.py",
+    "prepare:landscape": "python3 scripts/prepare_landscape.py",
+    "stills:landscape": "node scripts/render_landscape.mjs --stills-only",
+    "render:landscape": "node scripts/render_landscape.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.539",
+    "@remotion/cli": "4.0.539",
+    "@remotion/renderer": "4.0.539",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.539"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
+  }
+}
