@@ -34,3 +34,6 @@ Thumbs.db
 
 # ---------- 시연 실행 로그 (start-demo.sh) ----------
 logs/
+
+# YouTube 전사 중간 자료 (최종 data/youtube_transcripts.json만 검토)
+/runs/

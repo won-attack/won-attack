@@ -59,6 +59,10 @@
 ```
 won-check/
 ├── README.md
+├── pipeline.py               # YouTube 음성 → Whisper → 구조화 JSON
+├── video_inputs.json         # 처리할 영상 URL
+├── requirements-transcription.txt # 영상 전사 도구 전용 의존성
+├── tests/test_youtube_pipeline.py # 영상 전사 오프라인 테스트
 ├── .env.example          # 복사해서 .env 생성 (커밋 금지)
 ├── start-demo.bat        # Windows 시연 한 번에 실행 (stop-demo.bat으로 종료)
 ├── start-demo.sh         # macOS 시연 한 번에 실행 (stop-demo.sh로 종료)
@@ -71,7 +75,8 @@ won-check/
     ├── companies.json        # 기업 5곳 · DART 고유번호 · 회사명 별칭
     ├── disclosures.json      # 근거 문장 48개 + 메타데이터 (→ ChromaDB)
     ├── financial_facts.json  # 분기별 매출·영업이익 (수치 비교용)
-    ├── transcripts.json      # video_id별 시연 대본 3개
+    ├── transcripts.json      # video_id별 시연 대본 3개 (보존)
+    ├── youtube_transcripts.json # 실제 영상 전사 결과 (pipeline.py로 생성)
     ├── users.json            # 가상 사용자 5명
     ├── expected_results.json # 리허설용 기대 판정 (서버에 하드코딩 금지)
     ├── scripts/              # 영상 제작용 대본
@@ -141,6 +146,22 @@ cd frontend && npm install && npm run dev      # http://localhost:5173
 - 1)은 ChromaDB 서버가 **꺼진 상태**에서 실행합니다. 서버가 켜져 있으면 `python data/init_db.py --server --reset`로 서버에 바로 적재하고 `python data/check_db.py --server`로 점검합니다.
 - Spring Boot는 `.env`를 자동으로 읽지 않습니다. 터미널이나 IntelliJ 실행 설정(Environment variables)에 `OPENAI_API_KEY`, `WONCHECK_MODE=live`를 넣으세요. 자세한 내용은 [backend/README.md](backend/README.md).
 - 프론트는 기본이 목업 응답입니다. 실제 백엔드를 쓰려면 `frontend/.env`에 `VITE_USE_MOCK=false`.
+
+## 실제 YouTube 영상 전사
+
+루트 `.env`의 `OPENAI_API_KEY`를 사용합니다. 기존 `data/transcripts.json`은 보존하고, 실제 영상 결과는 별도 `data/youtube_transcripts.json`에 저장합니다.
+
+```bash
+python -m pip install -r requirements-transcription.txt
+python pipeline.py
+python -m unittest discover -s tests -p 'test_youtube_pipeline.py' -v
+```
+
+입력은 `video_inputs.json`이며 요청 영상 `48WVf1ijerc`가 등록되어 있습니다. 결과 파일이 이미 있으면 덮어쓰지 않고 중단합니다. 재실행은 `python pipeline.py --output data/youtube_transcripts_02.json`처럼 새 파일명을 지정하세요. 다운로드 음성과 API 중간 자료는 Git에서 제외한 `runs/`에 보관합니다.
+
+`caption`은 화면 OCR이 아닌 음성 요약입니다. 현재 백엔드 계약은 여전히 `data/transcripts.json`을 읽습니다. 새 파일을 분석에 사용하려면 백엔드의 대본 조회가 `data/youtube_transcripts.json`도 읽도록 후속 연동해야 합니다. 해당 조회 연동은 백엔드 담당 팀원이 별도로 진행합니다.
+
+설치·처리 방식·검증 범위는 [영상 전사 안내](docs/youtube-pipeline.md)를 참고하세요.
 
 ## API
 
