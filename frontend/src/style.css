@@ -138,3 +138,57 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #404
 .yt-actions .yt-share{outline:0;box-shadow:none;background:#f2f2f2}
 .yt-actions .yt-share:focus-visible{outline:2px solid #404040;outline-offset:2px}
 .ios-share-apps .won-app-choice::before{content:none}
+
+/* Scrollable selection screen for the three prepared demo videos. */
+.browse-shell{display:flex;flex:1;min-height:0;flex-direction:column;background:#fff;color:#101010}
+.browse-header{flex:none;background:#fff}
+.browse-search-row{height:71px;display:flex;align-items:center;gap:13px;padding:0 16px}
+.browse-search-row>svg:first-child{flex:none}
+.browse-search-row>svg:last-child{flex:none;transform:rotate(90deg)}
+.browse-search{height:43px;min-width:0;flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 13px 0 17px;background:#f2f2f2;border-radius:25px;font-size:19px}
+.browse-search svg{flex:none}
+.browse-mic{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:50%;background:#f2f2f2}
+.browse-filters{height:55px;display:flex;align-items:flex-start;gap:8px;overflow-x:auto;padding:4px 12px 8px;white-space:nowrap;scrollbar-width:none}
+.browse-filters::-webkit-scrollbar{display:none}
+.browse-filters button{height:36px;flex:none;padding:0 14px;border:0;border-radius:10px;background:#f2f2f2;color:#111;font-size:14px}
+.browse-filters button.active{background:#111;color:#fff}
+.browse-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.browse-list::-webkit-scrollbar{display:none}
+.browse-video{display:block;width:100%;padding:0 0 18px;border:0;background:#fff;color:#101010;text-align:left}
+.demo-thumbnail{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;isolation:isolate;background:#123968;color:#fff}
+.demo-thumbnail--samsung{background:radial-gradient(circle at 76% 35%,#498eff 0,transparent 39%),linear-gradient(125deg,#071b50 0%,#123f9b 54%,#061334 100%)}
+.demo-thumbnail--hynix{background:radial-gradient(circle at 78% 30%,#ed6369 0,transparent 34%),linear-gradient(120deg,#1c103d 0%,#563778 52%,#160b31 100%)}
+.demo-thumbnail--hyundai{background:radial-gradient(circle at 80% 28%,#24b9d1 0,transparent 38%),linear-gradient(120deg,#032433 0%,#175676 57%,#031b2a 100%)}
+.demo-thumbnail-shine{position:absolute;z-index:-1;width:58%;height:145%;top:-26%;right:-10%;border:32px solid #ffffff1c;border-radius:50%;transform:rotate(-18deg);box-shadow:0 0 0 39px #ffffff0a}
+.demo-thumbnail-grid{position:absolute;inset:0;z-index:-1;opacity:.17;background:linear-gradient(90deg,transparent 31px,#fff5 32px),linear-gradient(transparent 31px,#fff5 32px);background-size:32px 32px;mask-image:linear-gradient(90deg,transparent,#000)}
+.demo-thumbnail-tag{position:absolute;top:15px;left:16px;font:800 11px Manrope,'Noto Sans KR',sans-serif;letter-spacing:1.1px;color:#d5e8ff}
+.demo-thumbnail-copy{position:absolute;left:17px;right:12px;bottom:22px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-shadow:0 2px 9px #0007}
+.demo-thumbnail-copy span{font-size:15px;font-weight:800}
+.demo-thumbnail-copy strong{font-size:31px;line-height:1.16;font-weight:900;letter-spacing:-1.8px}
+.demo-thumbnail-copy em{font-size:24px;line-height:1.16;font-style:normal;font-weight:900;letter-spacing:-1.2px;color:#3fe9ed}
+.demo-thumbnail--hynix .demo-thumbnail-copy em{color:#ffd457}
+.demo-thumbnail--hyundai .demo-thumbnail-copy em{color:#7eeaf6}
+.demo-thumbnail-duration{position:absolute;right:9px;bottom:8px;padding:2px 5px;border-radius:4px;background:#000b;color:#fff;font:700 12px Manrope,sans-serif}
+.browse-video-info{display:flex;align-items:flex-start;gap:11px;padding:11px 12px 0}
+.browse-avatar{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:50%;background:#1749aa;color:#fff;font-size:15px;font-weight:900}
+.browse-avatar--hynix{background:#8c3c79}.browse-avatar--hyundai{background:#137b91}
+.browse-video-info>div{flex:1;min-width:0}
+.browse-video-info strong{display:-webkit-box;overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:15px;line-height:1.35;font-weight:800}
+.browse-video-info div>span{display:block;margin-top:5px;color:#686868;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browse-video-info>svg{flex:none;margin-top:2px}
+.browse-bottom{height:62px;flex:none;display:flex;align-items:center;justify-content:space-around;border-top:1px solid #eee;background:#fff}
+.browse-bottom>span{min-width:50px;display:flex;align-items:center;flex-direction:column;gap:2px;font-size:10px;color:#252525}
+.browse-bottom .browse-add{width:42px;height:42px;min-width:42px;display:grid;place-items:center;border-radius:50%;background:#f1f1f1}
+.browse-profile{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#3bb9ed,#204caf);color:#fff;font-weight:900}
+.yt-player{background-image:none!important;position:relative}
+.yt-player>.demo-thumbnail{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+.yt-player .demo-thumbnail-copy{bottom:29px}.yt-player .demo-thumbnail-duration{display:none}
+.yt-watch-back{width:25px;height:25px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:#fff;pointer-events:auto;filter:drop-shadow(0 1px 2px #0008)}
+.demo-recommendation{display:block;width:100%;border:0;background:#fff;color:#111;text-align:left;margin-bottom:10px}
+.demo-recommendation .demo-thumbnail{border-radius:7px}
+.demo-recommendation .demo-thumbnail-copy strong{font-size:27px}
+.demo-recommendation .demo-thumbnail-copy em{font-size:21px}
+.ios-preview-thumb{background:none;overflow:hidden}
+.ios-preview-thumb .demo-thumbnail{height:100%;aspect-ratio:auto}
+.ios-preview-thumb .demo-thumbnail-copy{left:7px;bottom:8px}.ios-preview-thumb .demo-thumbnail-copy span{font-size:10px}.ios-preview-thumb .demo-thumbnail-copy strong,.ios-preview-thumb .demo-thumbnail-copy em,.ios-preview-thumb .demo-thumbnail-tag,.ios-preview-thumb .demo-thumbnail-duration{display:none}
+@media(max-width:360px){.browse-search-row{gap:8px}.browse-filters button{font-size:12px}.demo-thumbnail-copy strong{font-size:27px}.demo-thumbnail-copy em{font-size:20px}}

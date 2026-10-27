@@ -1,6 +1,6 @@
 # frontend
 
-React 웹 — 시연용 유튜브 화면, 공유 모달(WON MTS 선택), WON MTS 결과 화면.
+React 웹 — 스크롤 가능한 시연 영상 목록, 유튜브 영상 화면, 공유 모달(WON MTS 선택), WON MTS 결과 화면.
 
 - API 기준: `../docs/api/analyze_request.json`, `analyze_response.json`, `analyze_error.json`
 - 백엔드 완성 전에는 `analyze_response.json`을 목업으로 사용
@@ -25,5 +25,6 @@ npm run dev
 `http://localhost:8000`을 가리킵니다. 백엔드 주소가 다르면
 `frontend/vite.config.ts`의 프록시 대상만 변경하면 됩니다.
 
-현재 화면의 영상 ID는 프런트엔드 시연용 자리표시자입니다. 실제 API 연동 시에는
-`../data/transcripts.json`에 등록된 영상 ID와 일치시키세요.
+첫 화면에서 `../data/transcripts.json`에 등록된 삼성전자·SK하이닉스·현대자동차
+시연 영상 3개 중 하나를 선택합니다. 현재 URL의 영상 ID는 사전 준비 대본 조회용
+시연 ID입니다. 실제 영상 업로드 후에는 해당 영상의 URL과 데이터의 ID를 함께 갱신해야 합니다.
