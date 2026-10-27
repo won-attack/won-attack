@@ -96,13 +96,13 @@ public class DataService {
         } catch (Exception ex) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_VIDEO_URL", "올바른 YouTube URL이 아닙니다.");
         }
-        JsonNode n = find(load("transcripts.json"), id, new String[]{"videos", "transcripts", "data"}, "video_id", "id", "youtube_id");
-        if (n.isMissingNode()) throw new ApiException(HttpStatus.NOT_FOUND, "VIDEO_NOT_SUPPORTED", "시연 데이터에 없는 영상입니다.");
+        JsonNode n = videoRecord(id);
+        if (n.isMissingNode()) throw new ApiException(HttpStatus.NOT_FOUND, "VIDEO_NOT_SUPPORTED", "등록된 대본이 없는 영상입니다.");
         return new Video(id, text(n, "title", "video_title"), url);
     }
 
     public String transcript(String id) {
-        JsonNode n = find(load("transcripts.json"), id, new String[]{"videos", "transcripts", "data"}, "video_id", "id", "youtube_id");
+        JsonNode n = videoRecord(id);
         String transcript = text(n, "transcript", "transcript_text", "script", "content", "text");
         if (transcript.isBlank() && n.path("segments").isArray()) {
             StringBuilder sb = new StringBuilder();
@@ -111,6 +111,24 @@ public class DataService {
         }
         if (transcript.isBlank()) throw new IllegalStateException("Transcript missing for video: " + id);
         return transcript;
+    }
+
+    private JsonNode videoRecord(String id) {
+        boolean sourceExists = false;
+        // Prefer real pipeline output; retain existing demo data for other videos.
+        for (String name : new String[]{"youtube_transcripts.json", "transcripts.json"}) {
+            if (!Files.isRegularFile(dataDir.resolve(name))
+                    && !(name.equals("transcripts.json") && allowSampleFallback)) continue;
+            sourceExists = true;
+            JsonNode record = find(load(name), id, new String[]{"videos", "transcripts", "data"},
+                    "video_id", "id", "youtube_id");
+            if (!record.isMissingNode()) return record;
+        }
+        if (!sourceExists) {
+            throw new IllegalStateException("Missing transcript JSON in " + dataDir
+                    + ". Provide youtube_transcripts.json or transcripts.json.");
+        }
+        return mapper.missingNode();
     }
 
     public JsonNode user(String id) {

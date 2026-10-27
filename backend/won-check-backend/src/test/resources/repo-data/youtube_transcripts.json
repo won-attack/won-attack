@@ -1,0 +1,17 @@
+{
+  "PIPEtest001": {
+    "video_id": "PIPEtest001",
+    "url": "https://www.youtube.com/watch?v=PIPEtest001",
+    "title": "전사 파이프라인 테스트 영상",
+    "channel": "테스트 채널",
+    "published_at": "2026-10-27",
+    "mentioned_companies": ["현대자동차"],
+    "transcript_source": "OPENAI_WHISPER_1",
+    "transcript": "현대차 2026년 2분기 매출입니다. 현대차 영업이익입니다. 현대차 실적을 살펴봅니다.",
+    "segments": [
+      {"time": "0:00", "text": "현대차 2026년 2분기 매출입니다.", "caption": "매출"},
+      {"time": "0:03", "text": "현대차 영업이익입니다.", "caption": "영업이익"},
+      {"time": "0:06", "text": "현대차 실적을 살펴봅니다.", "caption": "실적"}
+    ]
+  }
+}

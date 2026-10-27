@@ -33,6 +33,16 @@ class AnalyzeControllerTest {
             .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error.code").value("INVALID_VIDEO_URL"));
     }
 
+    @Test void analyzesPipelineTranscriptThroughExistingApi() throws Exception {
+        mvc.perform(post("/api/analyze").contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(new AnalyzeRequest("https://youtu.be/PIPEtest001", "demo_user_01"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.video.videoId").value("PIPEtest001"))
+                .andExpect(jsonPath("$.video.title").value("전사 파이프라인 테스트 영상"))
+                .andExpect(jsonPath("$.verification_results.length()").value(3))
+                .andExpect(jsonPath("$.verification_results[0].claim").value("현대차 2026년 2분기 매출입니다."));
+    }
+
     @Test void unknownVideo() throws Exception {
         mvc.perform(post("/api/analyze").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"video_url\":\"https://youtu.be/UNKNOWN0000\",\"user_id\":\"demo_user_01\"}"))
