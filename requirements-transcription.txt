@@ -1,0 +1,4 @@
+openai>=2,<3
+pydantic>=2.8,<3
+yt-dlp>=2025.1
+imageio-ffmpeg>=0.6,<0.7
