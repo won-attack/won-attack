@@ -60,6 +60,8 @@
 won-check/
 ├── README.md
 ├── .env.example          # 복사해서 .env 생성 (커밋 금지)
+├── start-demo.bat        # Windows 시연 한 번에 실행 (stop-demo.bat으로 종료)
+├── start-demo.sh         # macOS 시연 한 번에 실행
 ├── docs/
 │   ├── architecture.png
 │   └── api/              # 프론트·백엔드 공통 API 계약
@@ -85,14 +87,36 @@ won-check/
 
 필요한 것: Python 3.10+, Java 21, Node.js 18+, OpenAI API 키
 
-**한 번에 실행:** 루트 `.env`에 `OPENAI_API_KEY`를 넣은 뒤
+### 한 번에 실행 (권장)
 
-- Windows: `start-demo.bat` 더블클릭 (근거 DB 다시 적재: `start-demo.bat reset`) · 끄기: `stop-demo.bat`
-- macOS: `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) · 끄기: `Ctrl+C`
+루트 `.env`에 `OPENAI_API_KEY`를 넣은 뒤 실행 파일 하나로 시연 환경 전체를 띄웁니다.
 
-DB 적재 → ChromaDB 서버 → 근거 검색 점검(7/7) → 백엔드(live) → 프론트(실제 API) 순서로 띄우고 브라우저를 엽니다. 점검이 실패하면 백엔드를 띄우기 전에 멈춥니다.
+| 파일 | 쓰는 법 |
+|---|---|
+| `start-demo.bat` | Windows. 더블클릭 → ChromaDB · 백엔드 · 프론트 창 3개가 열림. 근거 DB 다시 적재: `start-demo.bat reset` |
+| `stop-demo.bat` | Windows. 더블클릭 → 위 창 3개를 한 번에 종료 |
+| `start-demo.sh` | macOS. `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) → 한 터미널에서 실행, `Ctrl+C`로 모두 종료, 로그는 `logs/` |
 
-**직접 실행할 때:**
+실행 순서
+
+1. `.env`의 키를 읽고 Python · Node.js · Java 설치 여부를 확인합니다. chromadb·openai가 없으면 `data/requirements.txt`로 설치합니다.
+2. 근거 DB(`data/chroma_db`)가 없거나 `reset`을 붙였을 때만 `init_db.py`로 적재합니다.
+3. ChromaDB 서버를 켭니다 (`:8000`).
+4. `check_db.py --server`로 근거 검색을 점검합니다. **7/7이 아니면 여기서 멈춥니다** — 데이터 문제를 백엔드보다 먼저 잡기 위해서입니다.
+5. 백엔드를 켭니다 (`:8080`, `WONCHECK_MODE=live`, 데이터 경로·ChromaDB 주소 자동 지정). 백엔드 폴더는 `backend/` 또는 `backend/won-check-backend/`를 자동으로 찾습니다.
+6. 프론트를 켭니다 (`:5173`, `VITE_USE_MOCK=false`). `node_modules`가 없으면 `npm install`부터 합니다.
+7. 백엔드가 뜨면 브라우저로 `http://localhost:5173`을 엽니다.
+
+문제가 생기면
+
+| 증상 | 확인할 것 |
+|---|---|
+| "백엔드 코드(gradlew)가 없습니다" | 백엔드 브랜치가 main에 합쳐졌는지, `git pull` 했는지 |
+| 4단계 점검 실패 | 데이터 쪽 문제 → `start-demo.bat reset`으로 다시 적재 |
+| 화면에서 판정이 이상함 | 점검(7/7)은 통과했으니 백엔드 쪽(회사명 추출·검색 필터)을 확인 |
+| 포트가 이미 사용 중 | `stop-demo.bat`으로 이전 실행을 끄고 다시 실행 |
+
+### 직접 실행할 때
 
 ```bash
 # 0) 환경 변수
