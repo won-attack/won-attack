@@ -1,18 +1,30 @@
 # WON Check 시연 데이터 · 벡터 DB
 
 팀 확정안(노션 「개발 방향」 → 사전 확정안 v1.0)의 규격을 따릅니다.
-ChromaDB `PersistentClient` · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
+ChromaDB(백엔드 docker 서버, 점검용 로컬 `PersistentClient`) · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
 
 ## 실행
 
 ```bash
 pip install chromadb openai
-set OPENAI_API_KEY=sk-...        # macOS/Linux: export OPENAI_API_KEY=sk-...
-python data/init_db.py --reset        # chroma_db/ 생성 + 평가셋으로 근거 Top3 점검
-python data/init_db.py --query "삼성전자 3분기 매출 200조 돌파" --period 2026-Q3
+# 루트 .env 에 OPENAI_API_KEY=sk-... 한 줄 추가
 ```
 
-API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관).
+**시연용 벡터 DB = 백엔드의 ChromaDB 서버(docker)** 입니다. 데이터 담당이 여기에 적재하고, 백엔드는 검색만 합니다.
+
+```bash
+cd backend && docker compose up -d && cd ..          # ChromaDB 서버(chromadb/chroma:0.6.3, :8000) 켜기
+python data/init_db.py --server --reset --strict     # 서버에 48문장 적재 + 근거 Top3 점검
+python data/init_db.py --server --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2
+```
+
+- 서버 주소가 다르면 `--server http://주소:포트` 또는 `.env`의 `CHROMA_URL`.
+- docker 볼륨에 저장돼 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.
+- **백엔드 서버를 띄우는 PC의 ChromaDB에 적재해야 합니다.** 내 PC 서버에 넣으면 다른 PC의 백엔드는 못 봅니다.
+- 메타데이터에는 백엔드가 읽는 `title`(= `source_title`)도 함께 넣습니다.
+
+서버 없이 내 PC 폴더(`data/chroma_db/`)로 점검만: `python data/init_db.py --reset --strict`
+API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관, CI가 사용).
 데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
 
 ## 파일

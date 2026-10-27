@@ -9,6 +9,8 @@
     python init_db.py                    # ./chroma_db 에 적재 후 평가셋으로 Top3 점검
     python init_db.py --reset            # 컬렉션을 지우고 다시 적재
     python init_db.py --fake             # API 키 없이 파이프라인만 시험(해시 벡터, 품질 무관)
+    python init_db.py --server --reset --strict
+                                         # 백엔드 ChromaDB 서버(docker, 기본 http://localhost:8000)에 적재
     python init_db.py --query "삼성전자 3분기 영업이익 107조" --period 2026-Q3
     python init_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2
 """
@@ -16,9 +18,9 @@ import argparse
 import hashlib
 import json
 import math
+import urllib.error
+import urllib.request
 from pathlib import Path
-
-import chromadb
 
 import os
 
@@ -62,6 +64,55 @@ def embed(texts, fake=False):
     return [d.embedding for d in resp.data]
 
 
+# ------------------------------------------------------------------ 백엔드 ChromaDB 서버 (HTTP v1 API)
+class ServerCollection:
+    """백엔드(Spring)와 같은 ChromaDB 서버(chromadb/chroma:0.6.3)에 HTTP로 붙는다.
+
+    파이썬 chromadb 클라이언트는 버전마다 서버 API가 달라 깨지기 쉬워서, 백엔드 ChromaClient.java와
+    똑같이 /api/v1 REST를 직접 호출한다. search()가 쓰는 query(where=...)·count()·upsert()만 구현.
+    """
+
+    def __init__(self, url, reset=False):
+        self.url = url.rstrip("/")
+        if reset:
+            try:
+                self._call("DELETE", f"/api/v1/collections/{COLLECTION}")
+            except urllib.error.HTTPError:
+                pass
+        c = self._call("POST", "/api/v1/collections", {
+            "name": COLLECTION, "get_or_create": True,
+            "metadata": {"hnsw:space": "cosine", "embedding_model": MODEL}})
+        self.id = c["id"]
+
+    def _call(self, method, path, body=None):
+        req = urllib.request.Request(self.url + path, method=method,
+                                     data=None if body is None else json.dumps(body).encode("utf-8"),
+                                     headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                raw = r.read().decode("utf-8")
+        except urllib.error.URLError as e:
+            if isinstance(e, urllib.error.HTTPError):
+                raise
+            raise SystemExit(f"ChromaDB 서버({self.url})에 연결할 수 없습니다. "
+                             f"backend 폴더에서 'docker compose up -d'로 서버를 먼저 켜세요. ({e.reason})")
+        return json.loads(raw) if raw else None
+
+    def upsert(self, ids, documents, metadatas, embeddings):
+        self._call("POST", f"/api/v1/collections/{self.id}/upsert",
+                   {"ids": ids, "documents": documents, "metadatas": metadatas, "embeddings": embeddings})
+
+    def count(self):
+        return self._call("GET", f"/api/v1/collections/{self.id}/count")
+
+    def query(self, query_embeddings, n_results, where=None):
+        body = {"query_embeddings": query_embeddings, "n_results": n_results,
+                "include": ["documents", "metadatas", "distances"]}
+        if where:
+            body["where"] = where
+        return self._call("POST", f"/api/v1/collections/{self.id}/query", body)
+
+
 def get_collection(client, reset=False):
     if reset:
         try:
@@ -71,14 +122,19 @@ def get_collection(client, reset=False):
     return client.get_or_create_collection(COLLECTION, metadata={"hnsw:space": "cosine", "embedding_model": MODEL})
 
 
-def load(fake=False, reset=False):
+def load(fake=False, reset=False, server=None):
     rows = json.loads((ROOT / "disclosures.json").read_text(encoding="utf-8"))
-    client = chromadb.PersistentClient(path=str(DB_PATH))
-    col = get_collection(client, reset)
+    if server:
+        col, where_to = ServerCollection(server, reset), f"ChromaDB 서버 {server}"
+    else:
+        import chromadb
+        col, where_to = get_collection(chromadb.PersistentClient(path=str(DB_PATH)), reset), str(DB_PATH)
     vecs = embed([r["document"] for r in rows], fake)
+    # 백엔드(ChromaRagService)는 출처 제목을 metadata.title 로 읽는다
+    metas = [{**r["metadata"], "title": r["metadata"]["source_title"]} for r in rows]
     col.upsert(ids=[r["id"] for r in rows], documents=[r["document"] for r in rows],
-               metadatas=[r["metadata"] for r in rows], embeddings=vecs)
-    print(f"적재 완료: {col.count()}개 문장 → {DB_PATH} / 컬렉션 '{COLLECTION}' ({'fake' if fake else MODEL})")
+               metadatas=metas, embeddings=vecs)
+    print(f"적재 완료: {col.count()}개 문장 → {where_to} / 컬렉션 '{COLLECTION}' ({'fake' if fake else MODEL})")
     return col
 
 
@@ -149,8 +205,12 @@ def main():
     ap.add_argument("--query")
     ap.add_argument("--period")
     ap.add_argument("--company", default="삼성전자", help="--query와 함께 쓰는 회사명 (companies.json의 company)")
+    ap.add_argument("--server", nargs="?", const=os.getenv("CHROMA_URL", "http://localhost:8000"),
+                    help="백엔드 ChromaDB 서버에 적재 (기본 CHROMA_URL 또는 http://localhost:8000)")
     a = ap.parse_args()
-    col = load(a.fake, a.reset)
+    if a.server and a.fake:
+        raise SystemExit("--server 에는 --fake 를 쓸 수 없습니다. 시연 DB에는 실제 임베딩만 넣으세요.")
+    col = load(a.fake, a.reset, a.server)
     if a.query:
         res = search(col, a.query, company=a.company, period=a.period, fake=a.fake)
         for i, d, m, dist in zip(res["ids"][0], res["documents"][0], res["metadatas"][0], res["distances"][0]):
