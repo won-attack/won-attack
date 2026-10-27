@@ -45,7 +45,7 @@ Spring Boot는 루트 `.env`를 자동으로 읽지 않습니다. 터미널에�
 - 회사·기간 필터는 **검색 요청의 `where`** 에 넣는다 (가져온 뒤 Java에서 거르면 결과가 3개 미만이 될 수 있음).
   - 기간이 확실하면 `{"$and":[{"company":"SK하이닉스"},{"period":"2026-Q2"}]}`, 결과가 없으면 `{"company":"SK하이닉스"}`로 다시 검색
   - 여러 분기 비교(`2026-Q1~Q3`)는 분기마다 `n_results: 1`로 따로 검색
-  - 기준 구현: `data/init_db.py`의 `search()` (실제 임베딩으로 7/7 검증)
+  - 기준 구현: `data/check_db.py`의 `search()` (실제 임베딩으로 7/7 검증)
 - 메타데이터 키: `company` · `period` · `title`(= `source_title`) · `source_url` · `filing_id` · `metric` · `segment` · `is_preliminary` 등
 
 ## 규칙

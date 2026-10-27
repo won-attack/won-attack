@@ -88,7 +88,7 @@ PR은 작게 유지합니다. 화면 하나, API 하나, 데이터 변경 하나
 
 - `data/*.json`은 직접 고치지 말고 `data/build_data.py`를 수정한 뒤 `python data/build_data.py`로 다시 만듭니다. CI가 두 결과가 같은지 검사합니다.
 - 근거 문장의 숫자는 **공식 출처와 대조한 값만** 넣고, `source_url`을 반드시 채웁니다.
-- 근거를 바꾸면 `python data/init_db.py --reset`으로 기대 근거가 Top 3에 들어오는지 확인합니다.
+- 근거를 바꾸면 `python data/init_db.py --reset` 후 `python data/check_db.py`로 기대 근거가 Top 3에 들어오는지 확인합니다.
 
 ## 7. 문제가 생겼을 때
 

@@ -25,7 +25,7 @@ body:
     id: scenario
     attributes:
       label: 재현에 사용한 video_id / user_id
-      placeholder: 예) WCdemoS1A01 / demo_user_03
+      placeholder: 예) WCdemoS1V01 / demo_user_03
 
   - type: textarea
     id: what
@@ -41,9 +41,9 @@ body:
       label: 재현 절차
       description: 다른 사람이 같은 문제를 재현할 수 있도록 순서대로 작성합니다.
       placeholder: |
-        1. `python data/init_db.py --reset`
+        1. `python data/init_db.py --reset` → `python data/check_db.py`
         2. 백엔드 실행
-        3. 유튜브 화면에서 WCdemoS1A01 공유 → demo_user_03으로 분석
+        3. 유튜브 화면에서 WCdemoS1V01 공유 → demo_user_03으로 분석
     validations:
       required: true
 

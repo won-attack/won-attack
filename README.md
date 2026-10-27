@@ -76,7 +76,8 @@ won-check/
     ├── raw/dart/             # 근거로 쓴 DART 공시 원문
     ├── tools/fetch_dart.py   # OpenDART 수집
     ├── build_data.py         # 위 JSON 재생성
-    ├── init_db.py            # 임베딩 → ChromaDB 적재 → 검색 점검
+    ├── init_db.py            # 임베딩 → ChromaDB 적재
+    ├── check_db.py           # 적재된 DB가 시연 주장의 근거를 찾는지 점검
     └── requirements.txt      # chromadb · openai
 ```
 
@@ -90,7 +91,8 @@ copy .env.example .env                         # macOS: cp .env.example .env →
 pip install -r data/requirements.txt
 
 # 1) 벡터 DB 적재 (시연 전 1회, 데이터가 바뀔 때만 다시)
-python data/init_db.py --reset --strict        # data/chroma_db 생성 + 근거 Top3 점검(7/7)
+python data/init_db.py --reset                 # data/chroma_db 에 근거 48문장 적재
+python data/check_db.py                        # 근거 검색 점검 → 7/7이면 정상
 
 # 2) ChromaDB 서버 켜기 (터미널 1, 켜 둔 채로)
 chroma run --path data/chroma_db --port 8000
@@ -102,7 +104,7 @@ cd backend && gradlew.bat bootRun              # macOS: ./gradlew bootRun → ht
 cd frontend && npm install && npm run dev      # http://localhost:5173
 ```
 
-- 1)은 ChromaDB 서버가 **꺼진 상태**에서 실행합니다. 서버가 켜져 있으면 `python data/init_db.py --server --reset --strict`로 서버에 바로 적재합니다.
+- 1)은 ChromaDB 서버가 **꺼진 상태**에서 실행합니다. 서버가 켜져 있으면 `python data/init_db.py --server --reset`로 서버에 바로 적재하고 `python data/check_db.py --server`로 점검합니다.
 - Spring Boot는 `.env`를 자동으로 읽지 않습니다. 터미널이나 IntelliJ 실행 설정(Environment variables)에 `OPENAI_API_KEY`, `WONCHECK_MODE=live`를 넣으세요. 자세한 내용은 [backend/README.md](backend/README.md).
 - 프론트는 기본이 목업 응답입니다. 실제 백엔드를 쓰려면 `frontend/.env`에 `VITE_USE_MOCK=false`.
 

@@ -13,18 +13,19 @@ pip install -r data/requirements.txt      # chromadb 1.x · openai
 **시연용 벡터 DB = 로컬 ChromaDB 서버**입니다(배포·Docker 없음). 데이터 담당이 적재하고, 백엔드(Spring Boot)는 HTTP로 검색만 합니다.
 
 ```bash
-# 1) 적재 + 점검 (ChromaDB 서버가 꺼진 상태에서)
-python data/init_db.py --reset --strict      # data/chroma_db 에 48문장 적재 → 근거 Top3 7/7 확인
+# 1) 적재 → 점검 (ChromaDB 서버가 꺼진 상태에서)
+python data/init_db.py --reset               # data/chroma_db 에 48문장 적재
+python data/check_db.py                      # 시연 주장 7개의 근거가 Top3에 나오는지 → 7/7이면 정상
 
 # 2) 서버로 띄우기 (켜 둔 채로 백엔드 실행)
 chroma run --path data/chroma_db --port 8000
 ```
 
-- 서버가 이미 켜져 있으면 1) 대신 `python data/init_db.py --server --reset --strict` (서버에 바로 적재).
-- 검색 시험: `python data/init_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2`
+- 서버가 이미 켜져 있으면 1) 대신 `python data/init_db.py --server --reset` → `python data/check_db.py --server`.
+- 검색 시험: `python data/check_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2`
 - `data/chroma_db/`는 커밋하지 않습니다. **시연 노트북에서 한 번 실행**해 두면 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.
 - 메타데이터에는 백엔드가 읽는 `title`(= `source_title`)도 함께 넣습니다.
-- API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관, CI가 사용).
+- API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` → `python data/check_db.py --fake` (해시 벡터라 검색 품질과 무관, CI가 사용).
 - 데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
 
 ## 파일
@@ -38,7 +39,8 @@ chroma run --path data/chroma_db --port 8000
 | `users.json` | 가상 사용자 5명(우리투자증권 5단계 성향) | 백엔드 개인화 |
 | `expected_results.json` | 영상별 의도한 판정·기대 근거 | 리허설·평가용 (서버에 하드코딩 금지) |
 | `scripts/*.md` | AI 영상 제작용 대본 3개 | 영상 제작 |
-| `init_db.py` | 적재 + 검색 + 점검. `search()`는 백엔드 `rag.py`로 옮기면 됨 | 데이터·백엔드 |
+| `init_db.py` | 근거 문장 임베딩 → ChromaDB 적재 | 데이터(시연 전 1회) |
+| `check_db.py` | 적재된 DB 점검: 시연 주장 7개로 검색해 기대 근거가 Top 3에 나오는지, 다른 회사가 섞이지 않는지. `search()`는 백엔드 검색의 기준 구현 | 데이터·CI |
 
 ## 근거 데이터 — 5개 기업, 공식 출처만
 
@@ -89,7 +91,7 @@ chroma run --path data/chroma_db --port 8000
 
 같은 영상을 두 사용자로 돌리면 공통 판정은 같고 개인화 설명만 달라야 합니다(S2: 반도체 비중 80%인 01 vs 10%인 02, S3: 현대차 보유자 04 vs 주식이 없는 안정형 05).
 
-## 검색 규칙 (`init_db.py`의 `search()` — 백엔드 Java 구현의 기준)
+## 검색 규칙 (`check_db.py`의 `search()` — 백엔드 Java 구현의 기준)
 
 1. 회사명 필터(`company`)는 항상 건다. 주장에 회사가 둘 이상이면 **회사마다 따로 검색**한다(`search_claim()`).
 2. 기간이 확실하면(`2026-Q3`) 기간 필터를 걸고, 결과가 없으면 회사 필터로 다시 찾는다.
@@ -98,6 +100,6 @@ chroma run --path data/chroma_db --port 8000
 
 ## 확인 상태
 
-- **실제 임베딩(`text-embedding-3-small`) 확인 완료 (2026-10-27):** `python data/init_db.py --reset --strict` → 기대 근거 7/7이 회사별 Top 3에 들어왔고(모두 1순위), 다른 회사 문서 섞임 0건.
+- **실제 임베딩(`text-embedding-3-small`) 확인 완료 (2026-10-27):** `python data/init_db.py --reset` → `python data/check_db.py` → 기대 근거 7/7이 회사별 Top 3에 들어왔고(모두 1순위), 다른 회사 문서 섞임 0건.
 - CI는 API 키 없이 `--fake`로 적재·필터·평가 경로만 점검합니다.
 
