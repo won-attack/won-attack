@@ -86,5 +86,6 @@ API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시
 
 ## 확인 상태
 
-- API 키 없이 `--fake`로 적재·필터·평가 경로를 실행해 기대 근거 7/7이 회사별 Top 3에 들어오고, 다른 회사 문서가 섞이지 않는 것(0건)을 확인했습니다. **실제 임베딩 품질은 API 키로 `python data/init_db.py --reset`을 한 번 돌려 확인하세요.**
+- **실제 임베딩(`text-embedding-3-small`) 확인 완료 (2026-10-27):** `python data/init_db.py --reset --strict` → 기대 근거 7/7이 회사별 Top 3에 들어왔고(모두 1순위), 다른 회사 문서 섞임 0건.
+- CI는 API 키 없이 `--fake`로 적재·필터·평가 경로만 점검합니다.
 
