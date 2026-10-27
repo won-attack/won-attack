@@ -159,7 +159,7 @@ python -m unittest discover -s tests -p 'test_youtube_pipeline.py' -v
 
 입력은 `video_inputs.json`이며 요청 영상 `48WVf1ijerc`가 등록되어 있습니다. 결과 파일이 이미 있으면 덮어쓰지 않고 중단합니다. 재실행은 `python pipeline.py --output data/youtube_transcripts_02.json`처럼 새 파일명을 지정하세요. 다운로드 음성과 API 중간 자료는 Git에서 제외한 `runs/`에 보관합니다.
 
-`caption`은 화면 OCR이 아닌 음성 요약입니다. 현재 백엔드 계약은 여전히 `data/transcripts.json`을 읽습니다. 새 파일을 분석에 사용하려면 백엔드의 대본 조회가 `data/youtube_transcripts.json`도 읽도록 후속 연동해야 합니다. 이 체크아웃에는 백엔드 실행 코드가 없고 안내 문서만 있습니다.
+`caption`은 화면 OCR이 아닌 음성 요약입니다. 현재 백엔드 계약은 여전히 `data/transcripts.json`을 읽습니다. 새 파일을 분석에 사용하려면 백엔드의 대본 조회가 `data/youtube_transcripts.json`도 읽도록 후속 연동해야 합니다. 해당 조회 연동은 백엔드 담당 팀원이 별도로 진행합니다.
 
 설치·처리 방식·검증 범위는 [영상 전사 안내](docs/youtube-pipeline.md)를 참고하세요.
 
