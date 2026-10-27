@@ -15,16 +15,16 @@ const videos:DemoVideo[]=[
 ];
 const videoUrl=(video:DemoVideo)=>`https://www.youtube.com/watch?v=${video.id}`;
 const profiles=[
-  {id:'demo_user_01',label:'김원 님',detail:'반도체 집중 투자',allocation:'반도체 비중 80%',level:'주의'},
-  {id:'demo_user_02',label:'이체크 님',detail:'분산 투자 중',allocation:'SK하이닉스 비중 10%',level:'보통'},
-  {id:'demo_user_03',label:'박원 님',detail:'삼성전자 신규 검토',allocation:'SK하이닉스 비중 15%',level:'보통'},
-  {id:'demo_user_04',label:'이원 님',detail:'현대차 보유 점검',allocation:'현대자동차 비중 25%',level:'주의'},
-  {id:'demo_user_05',label:'최체크 님',detail:'안정형 투자',allocation:'주식 보유 없음',level:'보통'},
+  {id:'demo_user_01',label:'박서연 님',detail:'반도체 집중 투자',allocation:'반도체 비중 80%',level:'주의'},
+  {id:'demo_user_02',label:'김도현 님',detail:'분산 투자 중',allocation:'SK하이닉스 비중 10%',level:'보통'},
+  {id:'demo_user_03',label:'이도윤 님',detail:'삼성전자 신규 검토',allocation:'SK하이닉스 비중 15%',level:'보통'},
+  {id:'demo_user_04',label:'한지은 님',detail:'현대차 보유 점검',allocation:'현대자동차 비중 25%',level:'주의'},
+  {id:'demo_user_05',label:'정영호 님',detail:'안정형 투자',allocation:'주식 보유 없음',level:'보통'},
 ];
 const source=(document_id:string,title:string,period:string,source_url:string):Source=>({document_id,title,period,source_url});
 const samsungSource=source('samsung_024','삼성전자 2026년 3분기 잠정실적 발표','2026-Q3','https://news.samsungsemiconductor.com/kr/?p=37675');
-const hynixSource=source('hynix_005','SK하이닉스 2026년 2분기 실적 발표(뉴시스 보도)','2026-Q2','https://www.newsis.com/view/NISX20260729_0003728008');
-const hynixNotice=source('hynix_008','SK하이닉스 3분기 실적 발표 예정 보도','2026-Q3','https://www.mt.co.kr/article/2026101913371799572');
+const hynixSource=source('hynix_005','SK하이닉스 2026년 2분기 잠정실적 공시','2026-Q2','https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260729800013');
+const hynixNotice=source('hynix_008','SK하이닉스 3분기 경영실적 발표 안내공시','2026-Q3','https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800385');
 const hyundaiQ1=source('hyundai_004','현대자동차 2026년 1분기 경영실적 발표','2026-Q1','https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-2026-first-quarter-earnings');
 const hyundaiQ2=source('hyundai_006','현대자동차 2026년 2분기 경영실적 발표','2026-Q2','https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-2026-q2-earnings');
 const demoClaims:Record<string,Verification[]>={
