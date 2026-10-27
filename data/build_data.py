@@ -1,8 +1,8 @@
 """WON Check 시연 데이터 생성: data/*.json, scripts/*.md
 
 근거 기업 5곳: 삼성전자, SK하이닉스, 현대자동차, 네이버, 카카오 (시연 영상 3개는 앞의 3곳에 1개씩).
-수치는 각 사 공식 실적 발표 자료와 대조했다(2026-10-27 확인). SK하이닉스는 회사 뉴스룸 접속이 막혀
-회사 발표를 그대로 인용한 언론 보도로 대조했고, document_type에 그 사실을 표시했다.
+출처는 공식 자료만 쓴다: DART 공시(금융감독원 전자공시) 또는 회사 공식 뉴스룸·IR 자료. 언론 보도는 쓰지 않는다.
+모든 핵심 수치는 DART 잠정실적 공시·정기보고서(data/raw/dart/)와 대조했다(2026-10-27).
 문장은 원문을 옮기지 않고 RAG용으로 정규화·요약했다(팀 확정안 6장 방식).
 사용자·영상 채널은 가상이다.
 
@@ -51,19 +51,6 @@ SOURCES = {
                       "published_at": "2026-10-08",
                       "source_url": "https://news.samsungsemiconductor.com/kr/?p=37675"},
 
-    # ---- SK하이닉스 (회사 발표를 인용한 언론 보도)
-    "HX_2025FY": {"company": "SK하이닉스", "source_title": "SK하이닉스 2025년 연간 실적 발표(연합뉴스 보도)",
-                  "document_type": "언론 보도(회사 실적 발표 인용)", "published_at": "2026-01-29",
-                  "source_url": "https://v.daum.net/v/VEZrd6qFW7"},
-    "HX_2026Q1": {"company": "SK하이닉스", "source_title": "SK하이닉스 2026년 1분기 실적 발표(스마트투데이 보도)",
-                  "document_type": "언론 보도(회사 실적 발표 인용)", "published_at": "2026-04-23",
-                  "source_url": "https://www.smarttoday.co.kr/ko-kr/articles/106831"},
-    "HX_2026Q2": {"company": "SK하이닉스", "source_title": "SK하이닉스 2026년 2분기 실적 발표(뉴시스 보도)",
-                  "document_type": "언론 보도(회사 실적 발표 인용)", "published_at": "2026-07-29",
-                  "source_url": "https://www.newsis.com/view/NISX20260729_0003728008"},
-    "HX_2026Q3_SCHEDULE": {"company": "SK하이닉스", "source_title": "SK하이닉스 3분기 실적 발표 예정 보도(머니투데이)",
-                           "document_type": "실적 발표 일정(언론 보도)", "published_at": "2026-10-19",
-                           "source_url": "https://www.mt.co.kr/article/2026101913371799572"},
     # ---- 현대자동차 (회사 공식)
     "HMC_2025FY": {"company": "현대자동차", "source_title": "현대자동차 2025년 연간 경영실적 발표", "document_type": "공식 실적발표 자료",
                    "published_at": "2026-01-29",
@@ -74,9 +61,6 @@ SOURCES = {
     "HMC_2026Q2": {"company": "현대자동차", "source_title": "현대자동차 2026년 2분기 경영실적 발표", "document_type": "공식 실적발표 자료",
                    "published_at": "2026-07-23",
                    "source_url": "https://www.hyundaimotorgroup.com/ko/news/hyundai-motor-company-2026-q2-earnings"},
-    "HMC_2026Q3_SCHEDULE": {"company": "현대자동차", "source_title": "현대자동차 3분기 실적 발표 일정(실적 캘린더)",
-                            "document_type": "실적 발표 일정(외부 캘린더)", "published_at": "2026-10-27",
-                            "source_url": "https://www.knowingasset.com/app/calendar/7807"},
     # ---- 네이버 (회사 공식)
     "NV_2025FY": {"company": "네이버", "source_title": "네이버 2025년 4분기 및 연간 실적 발표", "document_type": "공식 실적발표 자료",
                   "published_at": "2026-02-06", "source_url": "https://www.navercorp.com/media/pressReleasesDetail?seq=34325"},
@@ -85,13 +69,31 @@ SOURCES = {
     "NV_2026Q2": {"company": "네이버", "source_title": "네이버 2026년도 2분기 실적발표(IR 자료)", "document_type": "공식 실적발표 자료",
                   "published_at": "2026-08-07",
                   "source_url": "https://navercorp.com/api/article/download/a769655e-43a9-4be8-8e78-d091981b1803"},
-    # ---- 카카오 (회사 공식)
-    "KK_2025FY": {"company": "카카오", "source_title": "카카오 2025년 연간 실적 발표", "document_type": "공식 실적발표 자료",
-                  "published_at": "2026-02-12", "source_url": "https://www.kakaocorp.com/page/detail/11931"},
-    "KK_2026Q1": {"company": "카카오", "source_title": "카카오 2026년 1분기 실적 발표", "document_type": "공식 실적발표 자료",
-                  "published_at": "2026-05-07", "source_url": "https://www.kakaocorp.com/page/detail/12023"},
-    "KK_2026Q2": {"company": "카카오", "source_title": "카카오 2026년 2분기 실적 발표", "document_type": "공식 실적발표 자료",
-                  "published_at": "2026-08-06", "source_url": "https://www.kakaocorp.com/page/detail/12096"},
+    # ---- DART 공시 (금융감독원 전자공시시스템, data/raw/dart/ 에 원문 보관)
+    "HX_DART_2025Q4": {"company": "SK하이닉스", "filing_id": "20260128800709", "published_at": "2026-01-28",
+                       "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260128800709"},
+    "HX_DART_2026Q1": {"company": "SK하이닉스", "filing_id": "20260423800001", "published_at": "2026-04-23",
+                       "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 1분기",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260423800001"},
+    "HX_DART_2026Q2": {"company": "SK하이닉스", "filing_id": "20260729800013", "published_at": "2026-07-29",
+                       "source_title": "SK하이닉스 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 2분기",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260729800013"},
+    "HX_DART_IR_2026Q3": {"company": "SK하이닉스", "filing_id": "20261014800385", "published_at": "2026-10-14",
+                          "source_title": "SK하이닉스 기업설명회(IR)개최(안내공시) — 2026년 3분기 경영실적 발표",
+                          "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800385"},
+    "HMC_DART_IR_2026Q3": {"company": "현대자동차", "filing_id": "20261022800377", "published_at": "2026-10-22",
+                           "source_title": "현대자동차 기업설명회(IR)개최(안내공시) — 2026년 3분기 경영실적 발표",
+                           "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261022800377"},
+    "KK_DART_2025Q4": {"company": "카카오", "filing_id": "20260212800004", "published_at": "2026-02-12",
+                       "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2025년 4분기·연간",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260212800004"},
+    "KK_DART_2026Q1": {"company": "카카오", "filing_id": "20260507800004", "published_at": "2026-05-07",
+                       "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 1분기",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260507800004"},
+    "KK_DART_2026Q2": {"company": "카카오", "filing_id": "20260806800010", "published_at": "2026-08-06",
+                       "source_title": "카카오 연결재무제표기준영업(잠정)실적(공정공시) — 2026년 2분기",
+                       "document_type": "DART 공시", "source_url": "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20260806800010"},
 }
 
 # ------------------------------------------------------------------ 근거 문장(벡터 DB 적재 대상)
@@ -160,22 +162,20 @@ D = [
 # ---- 다른 4개 기업 (조원 단위는 소수 둘째 자리까지 반올림, 원문 금액을 문장에 함께 적음)
 D += [
     # SK하이닉스 — 3분기 실적은 2026-10-29 발표 예정(2026-10-27 기준 미발표)
-    ("hynix_001", "2025-FY", "HX_2025FY", "전사", "OPERATING_PROFIT", 47.21, "조원", False,
-     "SK하이닉스의 2025년 연간 매출액은 약 97조 1,467억 원, 영업이익은 약 47조 2,063억 원으로 영업이익률은 49%다."),
-    ("hynix_002", "2025-FY", "HX_2025FY", "HBM", "QUALITATIVE", None, "", False,
-     "SK하이닉스는 2025년 HBM 매출이 전년보다 두 배 이상 늘어 역대 최대 실적에 기여했다고 밝혔다."),
-    ("hynix_003", "2026-Q1", "HX_2026Q1", "전사", "OPERATING_PROFIT", 37.61, "조원", False,
-     "SK하이닉스의 2026년 1분기 매출액은 약 52조 5,763억 원, 영업이익은 약 37조 6,103억 원으로 영업이익률은 72%다."),
-    ("hynix_004", "2026-Q1", "HX_2026Q1", "전사", "GROWTH", None, "%", False,
-     "SK하이닉스의 2026년 1분기 실적은 전년 동기 대비 매출 198.1%, 영업이익 405.5% 증가했다."),
-    ("hynix_005", "2026-Q2", "HX_2026Q2", "전사", "OPERATING_PROFIT", 60.54, "조원", False,
-     "SK하이닉스의 2026년 2분기 매출액은 약 79조 3,187억 원, 영업이익은 약 60조 5,426억 원으로 영업이익률은 76.3%다."),
-    ("hynix_006", "2026-Q2", "HX_2026Q2", "전사", "GROWTH", None, "%", False,
-     "SK하이닉스의 2026년 2분기 실적은 전년 동기 대비 매출 256.8%, 영업이익 557.2% 증가했다."),
-    ("hynix_007", "2026-Q2", "HX_2026Q2", "HBM", "QUALITATIVE", None, "", False,
-     "SK하이닉스는 2026년 2분기에 6세대 HBM4의 양산 출하를 시작했고 하반기에 생산을 본격 확대한다고 밝혔다."),
-    ("hynix_008", "2026-Q3", "HX_2026Q3_SCHEDULE", "전사", "NOTICE", None, "", False,
-     "SK하이닉스의 2026년 3분기 실적은 10월 29일 발표 예정이며, 2026년 10월 27일 기준으로 아직 공식 실적이 나오지 않았다. 증권사 전망치는 확정 실적이 아니다."),
+    ("hynix_001", "2025-FY", "HX_DART_2025Q4", "전사", "OPERATING_PROFIT", 47.21, "조원", False,
+     "SK하이닉스의 2025년 연간 연결 매출액은 97조 1,467억 원, 영업이익은 47조 2,063억 원으로 전년 대비 각각 46.8%, 101.2% 늘었다(잠정)."),
+    ("hynix_009", "2025-Q4", "HX_DART_2025Q4", "전사", "OPERATING_PROFIT", 19.17, "조원", False,
+     "SK하이닉스의 2025년 4분기 연결 매출액은 32조 8,267억 원, 영업이익은 19조 1,696억 원으로 전년 동기 대비 각각 66.1%, 137.2% 늘었다(잠정)."),
+    ("hynix_003", "2026-Q1", "HX_DART_2026Q1", "전사", "OPERATING_PROFIT", 37.61, "조원", False,
+     "SK하이닉스의 2026년 1분기 연결 매출액은 52조 5,763억 원, 영업이익은 37조 6,103억 원이다(잠정). 영업이익률은 약 71.5%다(계산값)."),
+    ("hynix_004", "2026-Q1", "HX_DART_2026Q1", "전사", "GROWTH", None, "%", False,
+     "SK하이닉스의 2026년 1분기 실적은 전년 동기 대비 매출액 198.1%, 영업이익 405.5% 늘었고, 직전 분기 대비 매출액 60.2%, 영업이익 96.2% 늘었다(잠정)."),
+    ("hynix_005", "2026-Q2", "HX_DART_2026Q2", "전사", "OPERATING_PROFIT", 60.54, "조원", False,
+     "SK하이닉스의 2026년 2분기 연결 매출액은 79조 3,187억 원, 영업이익은 60조 5,426억 원이다(잠정). 영업이익률은 약 76.3%다(계산값)."),
+    ("hynix_006", "2026-Q2", "HX_DART_2026Q2", "전사", "GROWTH", None, "%", False,
+     "SK하이닉스의 2026년 2분기 실적은 전년 동기 대비 매출액 256.8%, 영업이익 557.2% 늘었고, 직전 분기 대비 매출액 50.9%, 영업이익 61.0% 늘었다(잠정)."),
+    ("hynix_008", "2026-Q3", "HX_DART_IR_2026Q3", "전사", "NOTICE", None, "", False,
+     "SK하이닉스는 2026년 3분기 경영실적을 2026년 10월 28일 09:00 기업설명회(컨퍼런스콜)에서 발표한다고 공시했다. 그 전까지 3분기 공식 실적은 없으며, 증권사 전망치는 확정 실적이 아니다."),
     # 현대자동차 — 3분기 실적은 2026-10-29 발표 예정
     ("hyundai_001", "2025-FY", "HMC_2025FY", "전사", "OPERATING_PROFIT", 11.47, "조원", False,
      "현대자동차의 2025년 연간 매출액은 약 186조 2,545억 원으로 전년보다 6.3% 늘었고, 영업이익은 약 11조 4,679억 원으로 19.5% 줄었다. 영업이익률은 6.2%다."),
@@ -191,8 +191,8 @@ D += [
      "현대자동차의 2026년 2분기 매출액은 약 49조 2,153억 원으로 전년 동기 대비 1.9% 늘었고, 영업이익은 약 2조 8,509억 원으로 20.8% 줄었다. 영업이익률은 5.8%로 흑자다."),
     ("hyundai_007", "2026-Q2", "HMC_2026Q2", "전사", "QUALITATIVE", None, "", False,
      "현대자동차는 2026년 2분기 영업이익 감소의 주요 원인으로 원자재 가격 상승과 부품 협력사 화재에 따른 생산 차질을 들었다."),
-    ("hyundai_008", "2026-Q3", "HMC_2026Q3_SCHEDULE", "전사", "NOTICE", None, "", False,
-     "현대자동차의 2026년 3분기 실적은 10월 29일 발표 예정이며, 2026년 10월 27일 기준으로 아직 공식 실적이 나오지 않았다."),
+    ("hyundai_008", "2026-Q3", "HMC_DART_IR_2026Q3", "전사", "NOTICE", None, "", False,
+     "현대자동차는 2026년 3분기 경영실적을 2026년 10월 29일 14:10 기업설명회(컨퍼런스콜)에서 발표한다고 공시했다. 그 전까지 3분기 공식 실적은 없다."),
     # 네이버
     ("naver_001", "2025-FY", "NV_2025FY", "전사", "OPERATING_PROFIT", 2.21, "조원", False,
      "네이버의 2025년 연간 매출액은 약 12조 350억 원으로 전년보다 12.1% 늘었고, 영업이익은 약 2조 2,081억 원으로 11.6% 늘었다."),
@@ -203,14 +203,12 @@ D += [
     ("naver_004", "2026-Q1", "NV_2026Q1", "전사", "QUALITATIVE", None, "", False,
      "네이버는 AI 경쟁력 확보를 위한 인프라 투자 영향으로 영업이익 증가율이 둔화됐다고 밝혔다."),
     # 카카오
-    ("kakao_001", "2025-FY", "KK_2025FY", "전사", "OPERATING_PROFIT", 0.73, "조원", False,
-     "카카오의 2025년 연간 매출액은 약 8조 991억 원으로 전년보다 3% 늘었고, 영업이익은 약 7,320억 원으로 48% 늘었다."),
-    ("kakao_002", "2026-Q1", "KK_2026Q1", "전사", "OPERATING_PROFIT", 0.21, "조원", False,
-     "카카오의 2026년 1분기 매출액은 약 1조 9,421억 원으로 전년 동기 대비 11% 늘었고, 영업이익은 약 2,114억 원으로 66% 늘었다."),
-    ("kakao_003", "2026-Q2", "KK_2026Q2", "전사", "OPERATING_PROFIT", 0.28, "조원", False,
-     "카카오의 2026년 2분기 매출액은 약 2조 985억 원으로 전년 동기 대비 9% 늘었고, 영업이익은 약 2,770억 원으로 36% 늘어 분기 기준 역대 최대다."),
-    ("kakao_004", "2026-Q2", "KK_2026Q2", "플랫폼", "QUALITATIVE", None, "", False,
-     "카카오의 2026년 2분기 플랫폼 부문 매출은 약 1조 2,303억 원으로 전년 동기 대비 17% 늘었고, 콘텐츠 부문 매출은 약 8,682억 원으로 1% 늘었다."),
+    ("kakao_001", "2025-FY", "KK_DART_2025Q4", "전사", "OPERATING_PROFIT", 0.73, "조원", False,
+     "카카오의 2025년 연간 연결 매출액은 8조 991억 원으로 전년 대비 2.9% 늘었고, 영업이익은 7,320억 원으로 59.1% 늘었다(잠정)."),
+    ("kakao_002", "2026-Q1", "KK_DART_2026Q1", "전사", "OPERATING_PROFIT", 0.21, "조원", False,
+     "카카오의 2026년 1분기 연결 매출액은 1조 9,421억 원으로 전년 동기 대비 4.2% 늘었고, 영업이익은 2,114억 원으로 100.6% 늘었다(잠정)."),
+    ("kakao_003", "2026-Q2", "KK_DART_2026Q2", "전사", "OPERATING_PROFIT", 0.28, "조원", False,
+     "카카오의 2026년 2분기 연결 매출액은 2조 985억 원으로 전년 동기 대비 3.5% 늘었고, 영업이익은 2,770억 원으로 49.0% 늘었다(잠정)."),
 ]
 
 
@@ -233,7 +231,7 @@ def disclosures():
                 "published_at": s["published_at"],
                 "source_title": s["source_title"],
                 "source_url": s["source_url"],
-                "filing_id": "",
+                "filing_id": s.get("filing_id", ""),
                 # 서버 계산·필터용 추가 메타데이터(ChromaDB는 None 불가 → 빈 값으로)
                 "segment": seg,
                 "metric": metric,
@@ -266,9 +264,10 @@ FINANCIAL_FACTS = [
     ("2026-Q2", "DX", 48.0, -0.8, "IR_2026Q2", False),
     ("2026-Q3", "전사", 195.0, 107.4, "PRELIM_2026Q3", True),
     # 이하 단위 조원(원문 억 원 단위를 조원으로 환산, 소수 넷째 자리)
-    ("2025-FY", "전사", 97.1467, 47.2063, "HX_2025FY", False),
-    ("2026-Q1", "전사", 52.5763, 37.6103, "HX_2026Q1", False),
-    ("2026-Q2", "전사", 79.3187, 60.5426, "HX_2026Q2", False),
+    ("2025-FY", "전사", 97.1467, 47.2063, "HX_DART_2025Q4", False),
+    ("2025-Q4", "전사", 32.8267, 19.1696, "HX_DART_2025Q4", False),
+    ("2026-Q1", "전사", 52.5763, 37.6103, "HX_DART_2026Q1", False),
+    ("2026-Q2", "전사", 79.3187, 60.5426, "HX_DART_2026Q2", False),
     ("2025-FY", "전사", 186.2545, 11.4679, "HMC_2025FY", False),
     ("2025-Q4", "전사", 46.8386, 1.6954, "HMC_2025FY", False),
     ("2026-Q1", "전사", 45.9389, 2.5147, "HMC_2026Q1", False),
@@ -277,10 +276,10 @@ FINANCIAL_FACTS = [
     ("2025-Q4", "전사", 3.1951, 0.6106, "NV_2025FY", False),
     ("2026-Q1", "전사", 3.2411, 0.5418, "NV_2026Q1", False),
     ("2026-Q2", "전사", 3.3888, 0.5203, "NV_2026Q2", False),
-    ("2025-FY", "전사", 8.0991, 0.7320, "KK_2025FY", False),
-    ("2025-Q4", "전사", 2.1332, 0.2034, "KK_2025FY", False),
-    ("2026-Q1", "전사", 1.9421, 0.2114, "KK_2026Q1", False),
-    ("2026-Q2", "전사", 2.0985, 0.2770, "KK_2026Q2", False),
+    ("2025-FY", "전사", 8.0991, 0.7320, "KK_DART_2025Q4", False),
+    ("2025-Q4", "전사", 2.1332, 0.2034, "KK_DART_2025Q4", False),
+    ("2026-Q1", "전사", 1.9421, 0.2114, "KK_DART_2026Q1", False),
+    ("2026-Q2", "전사", 2.0985, 0.2770, "KK_DART_2026Q2", False),
 ]
 
 # ------------------------------------------------------------------ 사용자(가상) — 우리투자증권 5단계
@@ -288,28 +287,28 @@ USERS = [
     {"user_id": "demo_user_01", "name": "박서연(가상)", "risk_tolerance": "공격투자형", "investment_horizon": "단기",
      "investment_style": "반도체 업황에 집중 투자, 수익 극대화 추구", "scenario": "S2",
      "holdings": [{"company": "삼성전자", "weight_pct": 45}, {"company": "SK하이닉스", "weight_pct": 35},
-                  {"company": "현금성 자산", "weight_pct": 20}],
+                  {"company": "예수금(현금)", "weight_pct": 20}],
      "intent": {"type": "추가 매수 검토", "company": "SK하이닉스", "amount_krw": 5_000_000}},
     {"user_id": "demo_user_02", "name": "김도현(가상)", "risk_tolerance": "적극투자형", "investment_horizon": "중기",
      "investment_style": "성장주 중심이지만 업종 분산 유지", "scenario": "S2",
      "holdings": [{"company": "SK하이닉스", "weight_pct": 10}, {"company": "현대자동차", "weight_pct": 15},
-                  {"company": "네이버", "weight_pct": 10}, {"company": "미국 S&P500 ETF", "weight_pct": 40},
-                  {"company": "국내 채권형 펀드", "weight_pct": 15}, {"company": "현금성 자산", "weight_pct": 10}],
+                  {"company": "네이버", "weight_pct": 10}, {"company": "TIGER 미국S&P500", "weight_pct": 40},
+                  {"company": "KODEX 단기채권", "weight_pct": 15}, {"company": "예수금(현금)", "weight_pct": 10}],
      "intent": {"type": "추가 매수 검토", "company": "SK하이닉스", "amount_krw": 3_000_000}},
     {"user_id": "demo_user_03", "name": "이도윤(가상)", "risk_tolerance": "위험중립형", "investment_horizon": "중기",
      "investment_style": "지수 ETF 위주, 개별 종목은 처음 검토", "scenario": "S1",
      "holdings": [{"company": "SK하이닉스", "weight_pct": 15}, {"company": "카카오", "weight_pct": 10},
-                  {"company": "미국 S&P500 ETF", "weight_pct": 40}, {"company": "국내 채권형 펀드", "weight_pct": 20},
-                  {"company": "현금성 자산", "weight_pct": 15}],
+                  {"company": "TIGER 미국S&P500", "weight_pct": 40}, {"company": "KODEX 단기채권", "weight_pct": 20},
+                  {"company": "예수금(현금)", "weight_pct": 15}],
      "intent": {"type": "신규 매수 검토", "company": "삼성전자", "amount_krw": 3_000_000}},
     {"user_id": "demo_user_04", "name": "한지은(가상)", "risk_tolerance": "안정추구형", "investment_horizon": "장기",
      "investment_style": "원금 손실 최소화, 일부만 우량주 보유", "scenario": "S3",
-     "holdings": [{"company": "현대자동차", "weight_pct": 25}, {"company": "국내 채권형 펀드", "weight_pct": 50},
-                  {"company": "현금성 자산", "weight_pct": 25}],
+     "holdings": [{"company": "현대자동차", "weight_pct": 25}, {"company": "KODEX 단기채권", "weight_pct": 50},
+                  {"company": "예수금(현금)", "weight_pct": 25}],
      "intent": {"type": "보유 점검", "company": "현대자동차", "amount_krw": 0}},
     {"user_id": "demo_user_05", "name": "정영호(가상)", "risk_tolerance": "안정형", "investment_horizon": "장기",
-     "investment_style": "퇴직금 보전 우선, 예금·채권 중심", "scenario": "S3",
-     "holdings": [{"company": "정기예금·CMA", "weight_pct": 70}, {"company": "국내 채권형 펀드", "weight_pct": 30}],
+     "investment_style": "퇴직금 보전 우선, 파킹형·단기채권 ETF 중심", "scenario": "S3",
+     "holdings": [{"company": "TIGER 머니마켓액티브", "weight_pct": 70}, {"company": "KODEX 단기채권", "weight_pct": 30}],
      "intent": {"type": "신규 매수 검토", "company": "현대자동차", "amount_krw": 10_000_000}},
 ]
 
@@ -355,7 +354,7 @@ VIDEOS = [
           "reason": "2분기 매출은 약 79조 3,187억 원으로 80조 원에 못 미침"},
          {"text": "SK하이닉스의 2026년 3분기 영업이익은 77조 원으로 확정됐다", "claim_type": "FINANCIAL", "period": "2026-Q3",
           "expected_status": "INSUFFICIENT_EVIDENCE", "expected_sources": ["hynix_008"],
-          "reason": "3분기 실적은 10월 29일 발표 예정으로 아직 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"},
+          "reason": "DART 기업설명회 공시상 3분기 실적은 10월 28일 09:00 발표 예정으로, 영상 게시일(10/21) 기준 공식 수치가 없음. 77조 원은 증권사 전망치 수준이며 확정이 아님"},
      ],
      "risk_signals": []},
     {"video_id": "WCdemoS3V03", "scenario": "S3", "companies": ["현대자동차"],

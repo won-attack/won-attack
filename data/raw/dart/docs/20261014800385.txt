@@ -1,0 +1,91 @@
+SK하이닉스 | 기업설명회(IR)개최(안내공시)               | 20261014 | https://dart.fss.or.kr/dsaf001/main.do?rcpNo=20261014800385
+
+.xforms * { font-family: 돋움체;}
+.xforms_title * { font-size: 13pt; padding : 0 0 10 0;}
+.xforms table {
+ font-size: 10px;
+ padding:0px;
+ border-collapse:collapse;
+ color: #3D3D3D;
+}
+.xforms td {
+ padding-left:0px;
+ padding-top:0px;
+ border-collapse:collapse;
+ line-height:22px;
+ color: #3D3D3D;
+ /*text-align:right;*/
+ vertical-align:middle;
+ border: 1px solid #7f7f7f;
+}
+.xforms span {
+ /*display: inline-block;*/
+ padding-left:3px;
+ padding-right: 1px;
+ line-height:22px;
+ padding-top:0px;
+ padding-bottom:0px;
+ text-align:left;
+ vertical-align:middle;
+ border: 0px solid #DBDBDB;
+}
+.xforms.img{
+ border : 0px;
+}
+.xforms a:link {
+ color: #194866;
+ text-decoration: none;
+}
+.xforms a:active {
+ color: #194866;
+ text-decoration: none;
+}
+.xforms a:visited {
+ color: #194866;
+ text-decoration: none;
+}
+.xforms A:hover {
+ color:008BE3;
+ text-decoration: none;
+}
+.xforms_input{
+ border: 0px solid #DBDBDB;
+ padding-left:3px;
+ padding-right: 1px;
+ height:22px;
+ padding-top:0px;
+ padding-bottom:0px;
+ text-align:left;
+}
+SK하이닉스/기업설명회(IR) 개최(안내공시)/(2026.10.14)기업설명회(IR) 개최(안내공시) 
+ 기업설명회(IR) 개최(안내공시) 
+ | 1. 일시 및 장소 
+ | 일시 
+ | 2026-10-28 
+ | 09:00 
+ | 장소 
+ | - 
+ | 2. 참가 대상자 
+ | 투자자 및 언론사 
+ | 3. 개최목적 
+ | 2026년 3분기 경영실적 발표 
+ | 4. 개최방법 
+ | Conference Call 
+ | 5. 후원기관 
+ | 자사 주관 
+ | 6. 주요 설명회내용(요약) 
+ | 2026년 3분기 경영실적 발표 및 질의응답 
+ | 7. 결정일자 
+ | 2026-10-14 
+ | 8. IR 자료 
+ | 게재일시 
+ | 2026-10-28 
+ | 관련 웹페이지 
+ | https://www.skhynix.com 
+ | 9. 기타 투자판단과 관련한 중요사항 
+ | -투자자 편의를 위하여 당사 홈페이지 내 실시간 Webcast를 병행할 예정입니다. (국/영문 동시 진행) 
+-회사의 기업설명회 자료는 발표 당일 홈페이지를 참조하시기 바랍니다. 
+-IR 홈페이지(국/영문)는 아래 경로를 참조하시기 바랍니다. 
+(https://www.skhynix.com → 투자정보 → 재무정보 → 실적발표) 
+ | ※ 관련공시 
+ | -
