@@ -10,6 +10,7 @@
     python init_db.py --reset            # 컬렉션을 지우고 다시 적재
     python init_db.py --fake             # API 키 없이 파이프라인만 시험(해시 벡터, 품질 무관)
     python init_db.py --query "삼성전자 3분기 영업이익 107조" --period 2026-Q3
+    python init_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2
 """
 import argparse
 import hashlib
@@ -86,21 +87,38 @@ def search(col, claim, company="삼성전자", period=None, k=3, fake=False):
     return col.query(query_embeddings=[q], n_results=k, where=where)
 
 
+def search_claim(col, claim, companies, period=None, k=3, fake=False):
+    """주장에 나온 회사마다 따로 검색한다. 두 회사를 비교하는 주장도 회사별 근거가 빠지지 않는다."""
+    return {name: search(col, claim, company=name, period=period, k=k, fake=fake) for name in companies}
+
+
 def check(col, fake=False, strict=False):
     exp = json.loads((ROOT / "expected_results.json").read_text(encoding="utf-8"))
-    hit = total = 0
+    company_of = {d["id"]: d["metadata"]["company"]
+                  for d in json.loads((ROOT / "disclosures.json").read_text(encoding="utf-8"))}
+    hit = total = leak = 0
     for v in exp["videos"]:
         for c in v["claims"]:
             if not c["expected_sources"]:
                 continue
-            res = search(col, c["text"], period=c["period"], fake=fake)
-            got = res["ids"][0]
-            ok = any(s in got for s in c["expected_sources"])
+            results = search_claim(col, c["text"], c["companies"], period=c["period"], fake=fake)
+            ok = True
+            got_all = []
+            for name, res in results.items():
+                got = res["ids"][0]
+                got_all += got
+                wrong = [g for g in got if company_of[g] != name]  # 회사 필터가 새는지
+                leak += len(wrong)
+                want = [s for s in c["expected_sources"] if company_of[s] == name]
+                if want and not any(s in got for s in want):
+                    ok = False
             hit += ok
             total += 1
-            print(f"  [{'O' if ok else 'X'}] {v['video_id']} {c['expected_status']:21s} 기대 {c['expected_sources'][:2]} → Top3 {got}")
-    print(f"\n근거 문장 Top3 적중: {hit}/{total}" + ("  (fake 벡터 결과 — 실제 품질은 API 키로 다시 확인)" if fake else ""))
-    if strict and hit < total:
+            print(f"  [{'O' if ok else 'X'}] {v['video_id']} {'+'.join(c['companies']):18s} {c['expected_status']:21s}"
+                  f" 기대 {c['expected_sources'][:2]} → {got_all}")
+    print(f"\n근거 문장 적중(회사별 Top3): {hit}/{total} · 다른 회사 문서 섞임: {leak}건"
+          + ("  (fake 벡터 결과 — 실제 품질은 API 키로 다시 확인)" if fake else ""))
+    if strict and (hit < total or leak):
         raise SystemExit(1)
 
 
@@ -112,10 +130,11 @@ def main():
     ap.add_argument("--strict", action="store_true", help="기대 근거가 하나라도 Top3에 없으면 실패(CI용)")
     ap.add_argument("--query")
     ap.add_argument("--period")
+    ap.add_argument("--company", default="삼성전자", help="--query와 함께 쓰는 회사명 (companies.json의 company)")
     a = ap.parse_args()
     col = load(a.fake, a.reset)
     if a.query:
-        res = search(col, a.query, period=a.period, fake=a.fake)
+        res = search(col, a.query, company=a.company, period=a.period, fake=a.fake)
         for i, d, m, dist in zip(res["ids"][0], res["documents"][0], res["metadatas"][0], res["distances"][0]):
             print(f"- {i} (distance {dist:.3f}) [{m['period']}] {d}\n  {m['source_title']} {m['source_url']}")
     elif not a.no_check:

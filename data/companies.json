@@ -1,0 +1,63 @@
+[
+  {
+    "company": "삼성전자",
+    "company_code": "00126380",
+    "stock_code": "005930",
+    "sector": "반도체·전자",
+    "demo": true,
+    "aliases": [
+      "삼성전자",
+      "삼성",
+      "삼전",
+      "Samsung Electronics"
+    ]
+  },
+  {
+    "company": "SK하이닉스",
+    "company_code": "00164779",
+    "stock_code": "000660",
+    "sector": "반도체",
+    "demo": true,
+    "aliases": [
+      "SK하이닉스",
+      "하이닉스",
+      "SK hynix",
+      "닉스"
+    ]
+  },
+  {
+    "company": "현대자동차",
+    "company_code": "00164742",
+    "stock_code": "005380",
+    "sector": "자동차",
+    "demo": true,
+    "aliases": [
+      "현대자동차",
+      "현대차",
+      "Hyundai Motor"
+    ]
+  },
+  {
+    "company": "네이버",
+    "company_code": "00266961",
+    "stock_code": "035420",
+    "sector": "인터넷 플랫폼",
+    "demo": false,
+    "aliases": [
+      "네이버",
+      "NAVER",
+      "Naver"
+    ]
+  },
+  {
+    "company": "카카오",
+    "company_code": "00258801",
+    "stock_code": "035720",
+    "sector": "인터넷 플랫폼",
+    "demo": false,
+    "aliases": [
+      "카카오",
+      "Kakao"
+    ]
+  }
+]
