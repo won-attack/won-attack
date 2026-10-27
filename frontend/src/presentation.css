@@ -1,0 +1,38 @@
+/* Desktop frame only. The mobile UI and its component sizes live in style.css. */
+@media (min-width: 768px) {
+  .app-shell {
+    min-height: 100dvh;
+    padding: 16px;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  .phone {
+    flex: none;
+    width: min(420px, calc(100vw - 32px));
+    max-width: 420px;
+    min-height: 0;
+    height: min(900px, calc(100dvh - 32px));
+    max-height: none;
+    border: 6px solid #161719;
+    border-radius: 43px;
+    box-shadow: 0 24px 65px #25426b30, 0 0 0 1px #62666c;
+  }
+
+  .screen,
+  .results,
+  .loading-screen {
+    min-height: 0;
+  }
+
+  .yt-player {
+    height: auto;
+    aspect-ratio: 390 / 223;
+  }
+
+  .ios-share-sheet {
+    max-height: calc(100% - 80px);
+    overscroll-behavior: contain;
+  }
+}
