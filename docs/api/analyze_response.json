@@ -1,8 +1,8 @@
 {
   "video": {
-    "video_id": "WCdemoS1A01",
+    "video_id": "WCdemoS1V01",
     "title": "삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다",
-    "url": "https://www.youtube.com/watch?v=WCdemoS1A01",
+    "url": "https://www.youtube.com/watch?v=WCdemoS1V01",
     "transcript_source": "PRELOADED_DEMO"
   },
   "verification_results": [
@@ -49,6 +49,29 @@
       "status": "PREDICTION",
       "reason": "미래 주가에 대한 전망으로 공식 자료로 사실 여부를 판단할 수 없습니다.",
       "sources": []
+    }
+  ],
+  "risk_signals": [
+    {
+      "type": "URGENCY",
+      "level": "CAUTION",
+      "quote": "지금 안 사면 진짜 늦어요",
+      "reason": "매수를 재촉하는 표현입니다. 위법 기준은 아니지만 서두르지 말고 근거를 확인하세요.",
+      "sources": []
+    },
+    {
+      "type": "PAID_SIGNAL",
+      "level": "CAUTION",
+      "quote": "매수 타이밍은 유료 멤버십에서 알려드릴게요",
+      "reason": "유료로 매매 시점을 알려주는 서비스는 유사투자자문업 신고 대상이며, 1대1 투자 조언은 허용되지 않습니다. 금융소비자 정보포털 파인에서 신고 여부를 확인하세요.",
+      "sources": [
+        {
+          "document_id": "reg_005",
+          "title": "금감원, 유튜브 핀플루언서 불법행위 정황 포착(아시아경제 보도)",
+          "period": "2026",
+          "source_url": "https://view.asiae.co.kr/article/2026041215475771641"
+        }
+      ]
     }
   ],
   "personalized_analysis": {
