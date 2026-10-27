@@ -23,9 +23,13 @@ class EmbeddingProviderTest {
     @Test void teamEmbeddingModelVariableIsUsed() {
         var environment = new StandardEnvironment();
         environment.getPropertySources().addFirst(new MapPropertySource("team-settings", Map.of(
-                "EMBEDDING_MODEL", "team-selected-model")));
+                "EMBEDDING_MODEL", "team-selected-model",
+                "LLM_PROVIDER", "ollama",
+                "WONCHECK_INGEST_ENABLED", "true")));
         ConfigDataEnvironmentPostProcessor.applyTo(environment);
         assertEquals("team-selected-model", environment.getProperty("woncheck.openai.embedding-model"));
+        assertEquals("ollama", environment.getProperty("woncheck.llm.provider"));
+        assertEquals("true", environment.getProperty("woncheck.ingest.enabled"));
     }
 
     private EmbeddingSettings settings(String provider) {
@@ -70,7 +74,7 @@ class EmbeddingProviderTest {
             var builder = RestClient.builder();
             var server = MockRestServiceServer.bindTo(builder).build();
             String expected = provider.equals("ollama") ? "disclosures_ollama" : "disclosures";
-            server.expect(requestTo("http://localhost:8000/api/v1/collections"))
+            server.expect(requestTo("http://localhost:8000/api/v2/tenants/default_tenant/databases/default_database/collections"))
                     .andExpect(jsonPath("$.name").value(expected))
                     .andRespond(withSuccess("{\"id\":\"collection-id\"}", MediaType.APPLICATION_JSON));
             var chroma = new ChromaClient(builder.build(), settings(provider));

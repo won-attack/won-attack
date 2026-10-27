@@ -1,9 +1,9 @@
 services:
   chroma:
-    image: chromadb/chroma:0.6.3
+    image: chromadb/chroma:1.0.20
     ports:
       - "8000:8000"
     volumes:
-      - chroma_data:/chroma/chroma
+      - chroma_data:/data
 volumes:
   chroma_data:

@@ -1,6 +1,6 @@
 ﻿import {useEffect, useRef, useState} from 'react';
 import './mts-reference.css';
-import {AlertCircle, ArrowLeft, ArrowUpRight, BarChart3, Bell, Bookmark, BookmarkCheck, Captions, CarFront, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Copy, Cpu, Download, ExternalLink, Heart, HelpCircle, Home, Layers3, Mail, Maximize, Menu, MessageCircle, Mic, MoreHorizontal, Pause, Play, Plus, RefreshCw, RotateCcw, Search, Share2, ShieldCheck, Settings, Sparkles, SquarePen, ThumbsDown, ThumbsUp, TrendingUp, VolumeX, Wallet, X, XCircle} from 'lucide-react';
+import {AlertCircle, ArrowLeft, ArrowUpRight, BarChart3, Bell, Bookmark, BookmarkCheck, Captions, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Copy, Download, ExternalLink, Heart, HelpCircle, Home, Mail, Maximize, Menu, MessageCircle, Mic, MoreHorizontal, Pause, Play, Plus, RefreshCw, RotateCcw, Search, Share2, ShieldCheck, Settings, Sparkles, SquarePen, ThumbsDown, ThumbsUp, TrendingUp, VolumeX, Wallet, X, XCircle} from 'lucide-react';
 
 type Status = 'SUPPORTED'|'CONTRADICTED'|'INSUFFICIENT_EVIDENCE'|'PREDICTION';
 type ClaimType = 'FINANCIAL'|'DISCLOSURE'|'PREDICTION';
@@ -24,7 +24,13 @@ const videoFiles:Record<string,string>={
   WCdemoS2V02:new URL('../../video/out/hynix-30s-v2.mp4',import.meta.url).href,
   WCdemoS3V03:new URL('../../video/out/hyundai-30s-landscape-v1.mp4',import.meta.url).href,
 };
+const videoThumbnailFiles:Record<string,string>={
+  WCdemoS1V01:new URL('../../video/out/samsung-30s-landscape-v1.png',import.meta.url).href,
+  WCdemoS2V02:new URL('../../video/out/hynix-30s-v2.png',import.meta.url).href,
+  WCdemoS3V03:new URL('../../video/out/hyundai-30s-landscape-v1.png',import.meta.url).href,
+};
 const videoSrc=(video:DemoVideo)=>videoFiles[video.id]??'';
+const videoThumbnailSrc=(video:DemoVideo)=>videoThumbnailFiles[video.id]??'';
 const videoUrl=(video:DemoVideo)=>`https://www.youtube.com/watch?v=${video.id}`;
 const profiles=[
   {id:'demo_user_01',label:'박서연 님',detail:'공격투자형',allocation:'반도체 비중 80%',level:'주의',holdings:{samsung:45,hynix:35,hyundai:0}},
@@ -103,12 +109,8 @@ function DemoControls({user,busy,onSelect}:{user:string;busy:boolean;onSelect:(i
   </aside>;
 }
 function VideoThumbnail({video}:{video:DemoVideo}){
-  const Art=video.theme==='samsung'?Cpu:video.theme==='hynix'?Layers3:CarFront;
   return <div className={`demo-thumbnail demo-thumbnail--${video.theme}`} aria-hidden="true">
-    <div className="demo-thumbnail-shine"/><div className="demo-thumbnail-grid"/>
-    <div className="demo-thumbnail-art"><Art/></div>
-    <span className="demo-thumbnail-tag">WON CHECK · 시연 영상</span>
-    <div className="demo-thumbnail-copy"><span>{video.company}</span><strong>{video.eyebrow}</strong><em>{video.headline}</em></div>
+    <img src={videoThumbnailSrc(video)} alt="" loading="lazy"/>
     <span className="demo-thumbnail-duration">{video.duration}</span>
   </div>;
 }
@@ -135,7 +137,7 @@ function ShortsScreen({onShare,onHome}:{onShare:(video:DemoVideo)=>void;onHome:(
   return <div className="shorts-shell screen-enter"><div className="shorts-feed">{demoShorts.map(item=>{
     const isLiked=liked.includes(item.video.id);const isSaved=saved.includes(item.video.id);
     return <article className={`shorts-card shorts-card--${item.video.theme}`} key={item.video.id}>
-      <div className="shorts-scene"><video ref={playerRef} className="shorts-video-media" src={videoSrc(item.video)} playsInline preload="auto" autoPlay muted={muted} loop onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/><button type="button" className="shorts-play-toggle" aria-label={!playing?'영상 재생':muted?'소리 켜기':'영상 일시정지'} onClick={togglePlayback}>{!playing?<Play size={36} fill="currentColor"/>:muted?<VolumeX size={25}/>:<Pause size={28} fill="currentColor"/>}</button><div className="shorts-scene-shade"/></div>
+      <div className="shorts-scene"><video ref={playerRef} className="shorts-video-media" src={videoSrc(item.video)} poster={videoThumbnailSrc(item.video)} playsInline preload="auto" autoPlay muted={muted} loop onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)}/><button type="button" className="shorts-play-toggle" aria-label={!playing?'영상 재생':muted?'소리 켜기':'영상 일시정지'} onClick={togglePlayback}>{!playing?<Play size={36} fill="currentColor"/>:muted?<VolumeX size={25}/>:<Pause size={28} fill="currentColor"/>}</button><div className="shorts-scene-shade"/></div>
       <div className="shorts-topline"><strong>Shorts</strong><Search size={22}/><MoreHorizontal size={22}/></div>
       <div className="shorts-rail"><button type="button" aria-label="좋아요" aria-pressed={isLiked} onClick={()=>setLiked(current=>isLiked?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Heart size={29} fill={isLiked?'#ff3040':'none'}/><span>{item.likes}</span></button><button type="button" aria-label="댓글"><MessageCircle size={28}/><span>{item.comments}</span></button><button type="button" aria-label="저장" aria-pressed={isSaved} onClick={()=>setSaved(current=>isSaved?current.filter(id=>id!==item.video.id):[...current,item.video.id])}><Bookmark size={27} fill={isSaved?'white':'none'}/><span>{isSaved?'저장됨':'저장'}</span></button><button type="button" aria-label="공유" onClick={()=>{playerRef.current?.pause();onShare({...item.video,title:item.title,channel:item.channel})}}><Share2 size={29}/><span>공유</span></button><button type="button" aria-label="리믹스"><RefreshCw size={28}/><span>리믹스</span></button></div>
       <div className="shorts-info"><span className="shorts-channel-avatar">{item.video.company.slice(0,1)}</span><strong>@{item.channel}</strong><button type="button">구독</button><p>{item.title} · {item.caption}</p><div className="shorts-audio"><Play size={14} fill="currentColor"/><span>시연 영상 원본 오디오</span></div></div>
@@ -157,7 +159,7 @@ function YoutubeScreen({video,onShare,onBack,onChoose}:{video:DemoVideo;onShare:
   const formatTime=(seconds:number)=>`${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;
   return <div className="screen youtube-screen screen-enter">
     <div className="yt-player">
-      <video ref={playerRef} className="yt-video-media" src={videoSrc(video)} playsInline preload="auto" autoPlay muted={muted} onPlay={()=>{setPlaying(true);setPlaybackError('')}} onPause={()=>setPlaying(false)} onError={()=>{setPlaying(false);setPlaybackError('영상 파일을 불러오지 못했어요. 새로고침 후에도 같으면 파일 형식이나 경로를 확인해 주세요.')}} onTimeUpdate={event=>setPlayhead(event.currentTarget.currentTime)}/>
+      <video ref={playerRef} className="yt-video-media" src={videoSrc(video)} poster={videoThumbnailSrc(video)} playsInline preload="auto" autoPlay muted={muted} onPlay={()=>{setPlaying(true);setPlaybackError('')}} onPause={()=>setPlaying(false)} onError={()=>{setPlaying(false);setPlaybackError('영상 파일을 불러오지 못했어요. 새로고침 후에도 같으면 파일 형식이나 경로를 확인해 주세요.')}} onTimeUpdate={event=>setPlayhead(event.currentTarget.currentTime)}/>
       {playbackError&&<div className="yt-playback-error" role="alert">{playbackError}</div>}
       <button type="button" className="yt-video-toggle" aria-label={!playing?'영상 재생':muted?'소리 켜기':'영상 일시정지'} onClick={togglePlayback}>{!playing?<Play size={28} fill="currentColor"/>:muted?<VolumeX size={23}/>:<Pause size={28} fill="currentColor"/>}</button>
       <div className="yt-player-top"><button type="button" className="yt-watch-back" aria-label="영상 목록으로 돌아가기" onClick={onBack}><ChevronDown size={22}/></button><span/><Play size={19} fill="currentColor"/><Captions size={21}/><Settings size={22}/></div>
