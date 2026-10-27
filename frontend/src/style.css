@@ -156,6 +156,7 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #404
 .browse-list::-webkit-scrollbar{display:none}
 .browse-video{display:block;width:100%;padding:0 0 18px;border:0;background:#fff;color:#101010;text-align:left}
 .demo-thumbnail{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;isolation:isolate;background:#123968;color:#fff}
+.demo-thumbnail>img{display:block;width:100%;height:100%;object-fit:cover}
 .demo-thumbnail--samsung{background:radial-gradient(ellipse at 83% 60%,#1769d1 0,transparent 37%),linear-gradient(135deg,#071735 0%,#102d64 58%,#061128 100%)}
 .demo-thumbnail--hynix{background:radial-gradient(ellipse at 82% 34%,#e33e77 0,transparent 32%),linear-gradient(125deg,#241033 0%,#5b1c59 53%,#170d2b 100%)}
 .demo-thumbnail--hyundai{background:radial-gradient(ellipse at 81% 38%,#21b7a5 0,transparent 34%),linear-gradient(125deg,#062d35 0%,#0d5960 53%,#06242b 100%)}
