@@ -1,31 +1,31 @@
 # WON Check 시연 데이터 · 벡터 DB
 
 팀 확정안(노션 「개발 방향」 → 사전 확정안 v1.0)의 규격을 따릅니다.
-ChromaDB(백엔드 docker 서버, 점검용 로컬 `PersistentClient`) · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
+ChromaDB 로컬 서버(`chroma run`) · 컬렉션 `disclosures` · OpenAI `text-embedding-3-small`(1536) · cosine · Top 3.
 
 ## 실행
 
 ```bash
-pip install chromadb openai
+pip install -r data/requirements.txt      # chromadb 1.x · openai
 # 루트 .env 에 OPENAI_API_KEY=sk-... 한 줄 추가
 ```
 
-**시연용 벡터 DB = 백엔드의 ChromaDB 서버(docker)** 입니다. 데이터 담당이 여기에 적재하고, 백엔드는 검색만 합니다.
+**시연용 벡터 DB = 로컬 ChromaDB 서버**입니다(배포·Docker 없음). 데이터 담당이 적재하고, 백엔드(Spring Boot)는 HTTP로 검색만 합니다.
 
 ```bash
-cd backend && docker compose up -d && cd ..          # ChromaDB 서버(chromadb/chroma:0.6.3, :8000) 켜기
-python data/init_db.py --server --reset --strict     # 서버에 48문장 적재 + 근거 Top3 점검
-python data/init_db.py --server --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2
+# 1) 적재 + 점검 (ChromaDB 서버가 꺼진 상태에서)
+python data/init_db.py --reset --strict      # data/chroma_db 에 48문장 적재 → 근거 Top3 7/7 확인
+
+# 2) 서버로 띄우기 (켜 둔 채로 백엔드 실행)
+chroma run --path data/chroma_db --port 8000
 ```
 
-- 서버 주소가 다르면 `--server http://주소:포트` 또는 `.env`의 `CHROMA_URL`.
-- docker 볼륨에 저장돼 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.
-- **백엔드 서버를 띄우는 PC의 ChromaDB에 적재해야 합니다.** 내 PC 서버에 넣으면 다른 PC의 백엔드는 못 봅니다.
+- 서버가 이미 켜져 있으면 1) 대신 `python data/init_db.py --server --reset --strict` (서버에 바로 적재).
+- 검색 시험: `python data/init_db.py --query "하이닉스 2분기 매출 80조" --company SK하이닉스 --period 2026-Q2`
+- `data/chroma_db/`는 커밋하지 않습니다. **시연 노트북에서 한 번 실행**해 두면 서버를 껐다 켜도 남습니다. 데이터를 바꿨을 때만 다시 적재하세요.
 - 메타데이터에는 백엔드가 읽는 `title`(= `source_title`)도 함께 넣습니다.
-
-서버 없이 내 PC 폴더(`data/chroma_db/`)로 점검만: `python data/init_db.py --reset --strict`
-API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관, CI가 사용).
-데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
+- API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시 벡터라 검색 품질과 무관, CI가 사용).
+- 데이터를 고치면 `python data/build_data.py`로 JSON과 `scripts/`를 다시 만드세요.
 
 ## 파일
 
@@ -89,7 +89,7 @@ API 키 없이 경로만 시험: `python data/init_db.py --fake --reset` (해시
 
 같은 영상을 두 사용자로 돌리면 공통 판정은 같고 개인화 설명만 달라야 합니다(S2: 반도체 비중 80%인 01 vs 10%인 02, S3: 현대차 보유자 04 vs 주식이 없는 안정형 05).
 
-## 백엔드에 넘길 검색 규칙 (`init_db.py`의 `search()`)
+## 검색 규칙 (`init_db.py`의 `search()` — 백엔드 Java 구현의 기준)
 
 1. 회사명 필터(`company`)는 항상 건다. 주장에 회사가 둘 이상이면 **회사마다 따로 검색**한다(`search_claim()`).
 2. 기간이 확실하면(`2026-Q3`) 기간 필터를 걸고, 결과가 없으면 회사 필터로 다시 찾는다.

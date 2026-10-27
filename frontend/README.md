@@ -35,7 +35,7 @@ npm run dev
 기본값은 시연용 Mock 분석입니다. 실제 백엔드를 사용하려면 `frontend/.env`에
 `VITE_USE_MOCK=false`를 설정하고 Vite를 다시 시작하세요. 요청 형식은
 `POST /api/analyze`의 `{video_url,user_id}`이며, 기본 개발 프록시는
-`http://localhost:8000`을 가리킵니다. 백엔드 주소가 다르면
+`http://localhost:8080`(Spring Boot)을 가리킵니다. 백엔드 주소가 다르면
 `frontend/vite.config.ts`의 프록시 대상만 변경하면 됩니다.
 
 첫 화면에서 `../data/transcripts.json`에 등록된 삼성전자·SK하이닉스·현대자동차

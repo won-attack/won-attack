@@ -4,6 +4,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     watch: { ignored: ['**/.edge-presentation-test/**'] },
-    proxy: { '/api': { target: 'http://localhost:8000', changeOrigin: true } },
+    proxy: { '/api': { target: 'http://localhost:8080', changeOrigin: true } },
   },
 });
