@@ -237,11 +237,11 @@ export default function App(){
     catch(cause){setError(cause instanceof Error?cause.message:'알 수 없는 오류가 발생했습니다.')}
   }
   function selectDemoUser(id:string){
-    setUser(id);
+    if(id===user)return;
     const url=new URL(window.location.href);
     url.searchParams.set('demo_user',id);
     window.history.replaceState(null,'',url);
-    if(page==='results')void run(id);
+    window.location.reload();
   }
   function toggleSavedReport(report:Analysis,reportUser:string){
     const id=`${reportUser}:${report.video.video_id}:${report.analyzed_at}`;
