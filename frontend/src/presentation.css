@@ -1,13 +1,23 @@
 /* Desktop frame only. The mobile UI and its component sizes live in style.css. */
 .demo-controls{display:none}
 @media (min-width: 768px) {
+  .presentation-stage{
+    position:relative;
+    display:flex;
+    flex:none;
+    width:100%;
+    height:100dvh;
+    align-items:center;
+    justify-content:center;
+    transform-origin:center;
+  }
   .demo-controls{
-    position:fixed;
+    position:absolute;
     z-index:3;
     left:16px;
     top:16px;
     display:block;
-    width:clamp(140px,calc((100vw - 480px)/2 - 24px),175px);
+    width:175px;
     color:#17304f;
   }
   .demo-controls-menu{
@@ -34,19 +44,21 @@
   .demo-account-text small{font-size:10px;color:#72859a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .app-shell {
     min-height: 100dvh;
-    padding: 16px;
+    padding: 0;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   .phone {
     flex: none;
-    width: min(420px, calc(100vw - 32px));
+    width: auto;
     max-width: 420px;
     min-height: 0;
     height: min(900px, calc(100dvh - 32px));
     max-height: none;
+    aspect-ratio: 420 / 900;
     border: 6px solid #161719;
     border-radius: 43px;
     box-shadow: 0 24px 65px #25426b30, 0 0 0 1px #62666c;
@@ -66,5 +78,17 @@
   .ios-share-sheet {
     max-height: calc(100% - 80px);
     overscroll-behavior: contain;
+  }
+}
+@media (max-width: 767px) {
+  .presentation-stage{
+    position:relative;
+    display:flex;
+    width:100%;
+    height:100dvh;
+    min-height:0;
+    align-items:flex-start;
+    justify-content:center;
+    transform-origin:center;
   }
 }
