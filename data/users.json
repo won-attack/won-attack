@@ -16,7 +16,7 @@
         "weight_pct": 35
       },
       {
-        "company": "현금성 자산",
+        "company": "예수금(현금)",
         "weight_pct": 20
       }
     ],
@@ -47,15 +47,15 @@
         "weight_pct": 10
       },
       {
-        "company": "미국 S&P500 ETF",
+        "company": "TIGER 미국S&P500",
         "weight_pct": 40
       },
       {
-        "company": "국내 채권형 펀드",
+        "company": "KODEX 단기채권",
         "weight_pct": 15
       },
       {
-        "company": "현금성 자산",
+        "company": "예수금(현금)",
         "weight_pct": 10
       }
     ],
@@ -82,15 +82,15 @@
         "weight_pct": 10
       },
       {
-        "company": "미국 S&P500 ETF",
+        "company": "TIGER 미국S&P500",
         "weight_pct": 40
       },
       {
-        "company": "국내 채권형 펀드",
+        "company": "KODEX 단기채권",
         "weight_pct": 20
       },
       {
-        "company": "현금성 자산",
+        "company": "예수금(현금)",
         "weight_pct": 15
       }
     ],
@@ -113,11 +113,11 @@
         "weight_pct": 25
       },
       {
-        "company": "국내 채권형 펀드",
+        "company": "KODEX 단기채권",
         "weight_pct": 50
       },
       {
-        "company": "현금성 자산",
+        "company": "예수금(현금)",
         "weight_pct": 25
       }
     ],
@@ -132,15 +132,15 @@
     "name": "정영호(가상)",
     "risk_tolerance": "안정형",
     "investment_horizon": "장기",
-    "investment_style": "퇴직금 보전 우선, 예금·채권 중심",
+    "investment_style": "퇴직금 보전 우선, 파킹형·단기채권 ETF 중심",
     "scenario": "S3",
     "holdings": [
       {
-        "company": "정기예금·CMA",
+        "company": "TIGER 머니마켓액티브",
         "weight_pct": 70
       },
       {
-        "company": "국내 채권형 펀드",
+        "company": "KODEX 단기채권",
         "weight_pct": 30
       }
     ],
