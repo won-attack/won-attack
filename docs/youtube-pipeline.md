@@ -55,7 +55,7 @@ caption은 실제 화면 자막이 아니라 음성 요약입니다. 기업명�
 
 거절·불완전 응답, 빈 요약, 구간 누락·중복, 잘못된 시간은 실패 처리합니다. 여러 영상 중 하나라도 실패하면 최종 합본은 쓰지 않고 중간 자료와 run_report.json의 stage/error_type을 남깁니다.
 
-현재 체크아웃의 백엔드는 README만 제공되어 있어 새 JSON을 API 분석에 자동 연결하지 않았습니다. 기존 시연 경로를 유지하며, 후속 백엔드 구현에서 새 대본 파일의 조회를 추가해야 합니다.
+새 JSON의 API 분석 조회 연동은 다른 팀원이 별도로 진행합니다. 이 변경은 전사 결과 생성과 구간별 요약 보존에 한정합니다.
 
 ## 테스트
 
@@ -75,7 +75,9 @@ API 키 없이 URL·출력 형식·덮어쓰기 방지·구간 매핑·오류 �
 - 실제 won-check 체크아웃에서 오프라인 테스트 18개 전체 통과.
 - 기존 data/transcripts.json과 data/disclosures.json은 반영 전 SHA-256과 일치.
 - 확보한 SBS 뉴스 영상(48WVf1ijerc, 117초)의 실제 음성을 사용해 WAV 변환까지 재검증.
-- 프로젝트 루트 .env의 키로 실제 Whisper 호출을 시도했으나 OpenAI AuthenticationError로 실패.
-- 따라서 data/youtube_transcripts.json은 아직 생성되지 않았으며, 모의 전사로 대신 채우지 않았음.
-- 유효한 OpenAI API 키를 설정한 뒤 python pipeline.py를 실행하면 최종 결과를 생성할 수 있음.
-- 다운로드 음성과 중간 응답, 키는 커밋 대상에서 제외. 자동 커밋·스테이징·푸시는 수행하지 않음.
+- 최초 실행은 키의 음성 요청 권한(api.model.audio.request) 부족으로 AuthenticationError/missing_scope 발생.
+- 키를 All 권한으로 변경한 뒤 실제 whisper-1 전사와 Responses 요약까지 완료.
+- 실제 영상의 data/youtube_transcripts.json 생성 완료: 영상 ID 48WVf1ijerc, 24개 구간, 언급 기업 삼성전자. 모의 응답을 사용하지 않음.
+- 실제 응답에서 요약 모델이 구간을 합치는 문제를 확인해 배치별 요약 개수를 Structured Outputs 스키마의 minItems/maxItems로 강제하고 구간 보존 프롬프트를 보강. 기존 18개 테스트 통과 및 요약 배열 길이 제한 회귀 검사 포함.
+- 최종 실행 기록: runs/20261027T101359Z_d6aef0f5/run_report.json, status=completed. 기존 대본·공시 SHA-256 불변 확인.
+- 다운로드 음성과 중간 응답, 키는 커밋 대상에서 제외. 최종 생성 JSON과 처리 코드·테스트·안내 문서만 변경 대상으로 관리.

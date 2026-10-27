@@ -112,7 +112,10 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(captions, ["실적 전망", "향후 전망"])
         self.assertEqual(segments[1].text, "이는 전망입니다.")
         self.assertEqual(companies, ["삼성전자"])
-        self.assertIs(client.calls[0]["text_format"], p.Enrichment)
+        self.assertTrue(issubclass(client.calls[0]["text_format"], p.Enrichment))
+        schema = client.calls[0]["text_format"].model_json_schema()
+        self.assertEqual(schema["properties"]["captions"]["minItems"], len(segments))
+        self.assertEqual(schema["properties"]["captions"]["maxItems"], len(segments))
         self.assertFalse(client.calls[0]["store"])
 
     def test_refusal_incomplete_duplicate_missing_and_empty_captions(self):

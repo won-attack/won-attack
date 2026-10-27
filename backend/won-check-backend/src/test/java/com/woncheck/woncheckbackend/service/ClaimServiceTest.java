@@ -8,6 +8,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.mockito.ArgumentCaptor;
 
 import java.util.List;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -76,7 +77,7 @@ class ClaimServiceTest {
     @Test
     void rejectsReversedQuarterRange() throws Exception {
         when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree("""
-                {"claims":[{"claim":"현대차 매출","companies":["현대차"],"period":"2026-Q3~Q1"}]}
+                {"claims":[{"claim":"현대차 매출","claim_type":"FINANCIAL","companies":["현대차"],"period":"2026-Q3~Q1"}]}
                 """));
         assertNull(service.extract("현대차 매출").getFirst().period());
     }
@@ -123,6 +124,62 @@ class ClaimServiceTest {
     void noInvestmentClaimsIsAValidEmptyResult() throws Exception {
         when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree("{\"claims\":[]}"));
         assertTrue(service.extract("오늘 날씨와 행사 소식입니다.").isEmpty());
+    }
+
+    @Test
+    void rejectsCombinedAndUnknownTypesInsteadOfChangingThemToDisclosure() throws Exception {
+        for (String type : List.of("FINANCIAL|DISCLOSURE", "FINANCIAL|PREDICTION", "FINANCIAL,DISCLOSURE", "UNKNOWN", "")) {
+            when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree(
+                    "{\"claims\":[{\"claim\":\"삼성전자 매출 증가\",\"claim_type\":\"" + type + "\"}]}"));
+            assertThrows(IllegalStateException.class, () -> service.extract("삼성전자 매출 증가"), type);
+        }
+    }
+
+    @Test
+    void missingOrStructuredTypeIsNotSilentlyAccepted() throws Exception {
+        for (String response : List.of(
+                "{\"claims\":[{\"claim\":\"삼성전자 매출 증가\"}]}",
+                "{\"claims\":[{\"claim\":\"삼성전자 매출 증가\",\"claim_type\":[\"FINANCIAL\"]}]}",
+                "{\"claims\":[{\"claim\":\"삼성전자 매출 증가\",\"claim_type\":null}]}")) {
+            when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree(response));
+            assertThrows(IllegalStateException.class, () -> service.extract("삼성전자 매출 증가"));
+        }
+    }
+
+    @Test
+    void resolvesLastYearFromPublicationDateInsteadOfHistoricComparisons() throws Exception {
+        when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree("""
+                {"claims":[
+                  {"claim":"삼성전자 지난해 4분기 영업이익은 20조 원이다","claim_type":"FINANCIAL","period":"2023-Q4"},
+                  {"claim":"삼성전자 지난해 전체 매출은 332조 원이다","claim_type":"FINANCIAL","period":"2023-FY"}]}
+                """));
+        var result = service.extract("삼성전자 지난해 4분기와 연간 실적. 2018년과 2022년 비교.", LocalDate.of(2026, 1, 8));
+        assertEquals("2025-Q4", result.get(0).period());
+        assertEquals("2025-FY", result.get(1).period());
+        var prompt = ArgumentCaptor.forClass(String.class);
+        verify(ai).json(prompt.capture(), anyString());
+        assertTrue(prompt.getValue().contains("Video publication date: 2026-01-08"));
+    }
+
+    @Test
+    void dropsUnsupportedYearAndPreservesAnExplicitHistoricYear() throws Exception {
+        when(ai.json(anyString(), anyString())).thenReturn(mapper.readTree("""
+                {"claims":[
+                  {"claim":"삼성전자 부문별 이익 추정","claim_type":"PREDICTION","period":"2023-Q4"},
+                  {"claim":"삼성전자 2022년 연간 매출 비교","claim_type":"FINANCIAL","period":"2022-FY"}]}
+                """));
+        var result = service.extract("삼성전자 지난해 실적과 2022년 연간 매출 비교", LocalDate.of(2026, 1, 8));
+        assertNull(result.get(0).period());
+        assertEquals("2022-FY", result.get(1).period());
+    }
+
+    @Test
+    void mockAlsoUsesPublicationYearForRelativeQuarters() {
+        ReflectionTestUtils.setField(service, "mode", "mock");
+        var result = service.extract("현대차 작년 4분기 실적입니다. 올해 1분기 실적입니다.", LocalDate.of(2026, 1, 8));
+        assertEquals("2025-Q4", result.get(0).period());
+        assertEquals("2026-Q1", result.get(1).period());
+        verifyNoInteractions(ai);
     }
 
     @Test

@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -111,6 +113,16 @@ public class DataService {
         }
         if (transcript.isBlank()) throw new IllegalStateException("Transcript missing for video: " + id);
         return transcript;
+    }
+
+    public LocalDate publishedDate(String id) {
+        String value = text(videoRecord(id), "published_at");
+        if (value.isBlank()) return null;
+        try {
+            return LocalDate.parse(value);
+        } catch (DateTimeParseException ex) {
+            throw new IllegalStateException("Invalid video publication date: " + id, ex);
+        }
     }
 
     private JsonNode videoRecord(String id) {

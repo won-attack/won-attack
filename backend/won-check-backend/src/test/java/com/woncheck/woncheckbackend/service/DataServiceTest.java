@@ -8,6 +8,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,5 +66,22 @@ class DataServiceTest {
         Files.writeString(directory.resolve("youtube_transcripts.json"), "{broken");
         writeVideo("transcripts.json", "PIPEtest001", "시연 영상", "시연 대본입니다.");
         assertThrows(IllegalStateException.class, () -> service().transcript("PIPEtest001"));
+    }
+
+    @Test void readsPublicationDateFromTheSelectedTranscriptFile() throws Exception {
+        mapper.writeValue(directory.resolve("youtube_transcripts.json").toFile(), Map.of("PIPEtest001", Map.of(
+                "published_at", "2026-01-08", "transcript", "실제 전사문")));
+        assertEquals(LocalDate.of(2026, 1, 8), service().publishedDate("PIPEtest001"));
+    }
+
+    @Test void missingPublicationDateDoesNotAssumeToday() throws Exception {
+        writeVideo("transcripts.json", "DEMOtest001", "기존 영상", "기존 대본");
+        assertNull(service().publishedDate("DEMOtest001"));
+    }
+
+    @Test void invalidPublicationDateIsReported() throws Exception {
+        mapper.writeValue(directory.resolve("youtube_transcripts.json").toFile(), Map.of("PIPEtest001", Map.of(
+                "published_at", "not-a-date", "transcript", "실제 전사문")));
+        assertThrows(IllegalStateException.class, () -> service().publishedDate("PIPEtest001"));
     }
 }
