@@ -1,0 +1,149 @@
+{
+  "videoId": "WCdemoS1V01",
+  "kind": "samsung",
+  "presenter": "정대리",
+  "character": "jeong",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationInFrames": 900,
+  "durationSeconds": 30,
+  "voice": {
+    "engine": "macOS say (offline)",
+    "name": "Reed (한국어(대한민국))",
+    "rate": 175
+  },
+  "transcriptSha256": "e7d13dd253c441b32b33e588cba1613a59254eb06784d5b63e2e1468ace71b57",
+  "paidApiCalls": 0,
+  "scenes": [
+    {
+      "id": 0,
+      "from": 0,
+      "durationInFrames": 129,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-01.wav",
+      "audioSeconds": 3.9025,
+      "text": "삼성전자, 영업이익 100조 시대입니다!",
+      "spokenText": "삼성전자, 영업이익 백조 시대입니다!",
+      "caption": "영업이익 100조 시대",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 122,
+          "lines": [
+            "삼성전자, 영업이익 100조 시대입니다!"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "from": 129,
+      "durationInFrames": 195,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-02.wav",
+      "audioSeconds": 5.5985,
+      "text": "2026년 3분기 영업이익이 107조 원을 넘었습니다.",
+      "spokenText": "이천이십육 년 삼 분기 영업이익이 백칠조 원을 넘었습니다.",
+      "caption": "2026 3Q 영업이익 107조 ↑",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 172,
+          "lines": [
+            "2026년 3분기 영업이익이",
+            "107조 원을 넘었습니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "from": 324,
+      "durationInFrames": 141,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-03.wav",
+      "audioSeconds": 3.9822,
+      "text": "매출도 한 분기에 200조 원을 돌파했어요.",
+      "spokenText": "매출도 한 분기에 이백조 원을 돌파했어요.",
+      "caption": "분기 매출 200조 돌파",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 124,
+          "lines": [
+            "매출도 한 분기에",
+            "200조 원을 돌파했어요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "from": 465,
+      "durationInFrames": 163,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-04.wav",
+      "audioSeconds": 4.3836,
+      "text": "제 생각엔 내년 주가 두 배, 그냥 갑니다.",
+      "spokenText": "제 생각엔 내년 주가 두 배, 그냥 갑니다.",
+      "caption": "내년 주가 2배",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 136,
+          "lines": [
+            "제 생각엔 내년 주가 두 배, 그냥 갑니다."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "from": 628,
+      "durationInFrames": 159,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-05.wav",
+      "audioSeconds": 4.9596,
+      "text": "지금 안 사면 늦어요. 나중에 후회하지 마세요.",
+      "spokenText": "지금 안 사면 늦어요. 나중에 후회하지 마세요.",
+      "caption": "지금 안 사면 늦는다",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 76,
+          "lines": [
+            "지금 안 사면 늦어요."
+          ]
+        },
+        {
+          "from": 76,
+          "to": 153,
+          "lines": [
+            "나중에 후회하지 마세요."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "from": 787,
+      "durationInFrames": 113,
+      "audioFrom": 4,
+      "audio": "assets/audio/samsung/scene-06.wav",
+      "audioSeconds": 3.4317,
+      "text": "구독하고 다음 소식도 받아보세요.",
+      "spokenText": "구독하고 다음 소식도 받아보세요.",
+      "caption": "구독 · 알림",
+      "subtitles": [
+        {
+          "from": 4,
+          "to": 107,
+          "lines": [
+            "구독하고 다음 소식도 받아보세요."
+          ]
+        }
+      ]
+    }
+  ]
+}

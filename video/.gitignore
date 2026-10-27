@@ -1,0 +1,9 @@
+out/
+.cache/
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Rendered videos are shared separately; keep local copies only.
+*.mp4
