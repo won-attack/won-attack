@@ -192,3 +192,9 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #404
 .ios-preview-thumb .demo-thumbnail{height:100%;aspect-ratio:auto}
 .ios-preview-thumb .demo-thumbnail-copy{left:7px;bottom:8px}.ios-preview-thumb .demo-thumbnail-copy span{font-size:10px}.ios-preview-thumb .demo-thumbnail-copy strong,.ios-preview-thumb .demo-thumbnail-copy em,.ios-preview-thumb .demo-thumbnail-tag,.ios-preview-thumb .demo-thumbnail-duration{display:none}
 @media(max-width:360px){.browse-search-row{gap:8px}.browse-filters button{font-size:12px}.demo-thumbnail-copy strong{font-size:27px}.demo-thumbnail-copy em{font-size:20px}}
+
+.signed-in-account{display:flex;align-items:center;gap:10px;padding:12px;margin-bottom:12px;border:1px solid #dce8f6;border-radius:12px;background:#fff;box-shadow:0 3px 10px #19457e07}
+.signed-in-account>div{min-width:0}
+.signed-in-account small,.signed-in-account strong{display:block}
+.signed-in-account small{color:#718baa;font-size:10px;margin-bottom:3px}
+.signed-in-account strong{color:#233e5f;font-size:12px}

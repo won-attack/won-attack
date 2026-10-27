@@ -1,4 +1,4 @@
-﻿import {useEffect, useState} from 'react';
+﻿import {useEffect, useRef, useState} from 'react';
 import {AlertCircle, ArrowLeft, ArrowUpRight, Captions, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, Copy, Download, ExternalLink, HelpCircle, Home, Mail, Maximize, MessageCircle, Mic, MoreHorizontal, Pause, Play, Plus, RefreshCw, RotateCcw, Share2, ShieldCheck, Settings, Sparkles, SquarePen, ThumbsDown, ThumbsUp, TrendingUp, X, XCircle} from 'lucide-react';
 
 type Status = 'SUPPORTED'|'CONTRADICTED'|'INSUFFICIENT_EVIDENCE'|'PREDICTION';
@@ -7,19 +7,19 @@ type Source = {document_id:string;title:string;period:string;source_url:string};
 type Verification = {claim_id:string;claim:string;claim_type:ClaimType;status:Status;reason:string;sources:Source[]};
 type Analysis = {video:{video_id:string;title:string;url:string};verification_results:Verification[];personalized_analysis:{summary:string;risk_factors:string[]};analyzed_at:string};
 type Page = 'browse'|'youtube'|'loading'|'results';
-type DemoVideo = {id:string;title:string;channel:string;company:string;theme:string;eyebrow:string;headline:string;duration:string;views:string;published:string;userIds:string[]};
+type DemoVideo = {id:string;title:string;channel:string;company:string;theme:'samsung'|'hynix'|'hyundai';eyebrow:string;headline:string;duration:string;views:string;published:string};
 const videos:DemoVideo[]=[
-  {id:'WCdemoS1V01',title:'삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다',channel:'주식왕 데이빗(가상)',company:'삼성전자',theme:'samsung',eyebrow:'3분기 영업이익 107조?',headline:'지금 안 사면 늦습니다',duration:'0:36',views:'18만',published:'2주 전',userIds:['demo_user_03']},
-  {id:'WCdemoS2V02',title:'SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요',channel:'실적으로 말하는 주식(가상)',company:'SK하이닉스',theme:'hynix',eyebrow:'3분기 77조 확정?',headline:'지금 비중 늘리세요',duration:'0:27',views:'26만',published:'6일 전',userIds:['demo_user_01','demo_user_02']},
-  {id:'WCdemoS3V03',title:'현대차 관세 직격탄, 보유자는 지금 파세요',channel:'팩트폭격 주식(가상)',company:'현대자동차',theme:'hyundai',eyebrow:'관세 직격탄?',headline:'보유자는 지금 파세요',duration:'0:20',views:'11만',published:'2개월 전',userIds:['demo_user_04','demo_user_05']},
+  {id:'WCdemoS1V01',title:'삼성전자 영업이익 100조 시대, 지금 안 사면 늦습니다',channel:'주식왕 데이빗(가상)',company:'삼성전자',theme:'samsung',eyebrow:'3분기 영업이익 107조?',headline:'지금 안 사면 늦습니다',duration:'0:36',views:'18만',published:'2주 전'},
+  {id:'WCdemoS2V02',title:'SK하이닉스 3분기 77조 확정! 지금 비중 늘리세요',channel:'실적으로 말하는 주식(가상)',company:'SK하이닉스',theme:'hynix',eyebrow:'3분기 77조 확정?',headline:'지금 비중 늘리세요',duration:'0:27',views:'26만',published:'6일 전'},
+  {id:'WCdemoS3V03',title:'현대차 관세 직격탄, 보유자는 지금 파세요',channel:'팩트폭격 주식(가상)',company:'현대자동차',theme:'hyundai',eyebrow:'관세 직격탄?',headline:'보유자는 지금 파세요',duration:'0:20',views:'11만',published:'2개월 전'},
 ];
 const videoUrl=(video:DemoVideo)=>`https://www.youtube.com/watch?v=${video.id}`;
 const profiles=[
-  {id:'demo_user_01',label:'박서연 님',detail:'반도체 집중 투자',allocation:'반도체 비중 80%',level:'주의'},
-  {id:'demo_user_02',label:'김도현 님',detail:'분산 투자 중',allocation:'SK하이닉스 비중 10%',level:'보통'},
-  {id:'demo_user_03',label:'이도윤 님',detail:'삼성전자 신규 검토',allocation:'SK하이닉스 비중 15%',level:'보통'},
-  {id:'demo_user_04',label:'한지은 님',detail:'현대차 보유 점검',allocation:'현대자동차 비중 25%',level:'주의'},
-  {id:'demo_user_05',label:'정영호 님',detail:'안정형 투자',allocation:'주식 보유 없음',level:'보통'},
+  {id:'demo_user_01',label:'박서연 님',detail:'공격투자형',allocation:'반도체 비중 80%',level:'주의',holdings:{samsung:45,hynix:35,hyundai:0}},
+  {id:'demo_user_02',label:'김도현 님',detail:'적극투자형',allocation:'SK하이닉스 비중 10%',level:'보통',holdings:{samsung:0,hynix:10,hyundai:15}},
+  {id:'demo_user_03',label:'이도윤 님',detail:'위험중립형',allocation:'SK하이닉스 비중 15%',level:'보통',holdings:{samsung:0,hynix:15,hyundai:0}},
+  {id:'demo_user_04',label:'한지은 님',detail:'안정추구형',allocation:'현대자동차 비중 25%',level:'주의',holdings:{samsung:0,hynix:0,hyundai:25}},
+  {id:'demo_user_05',label:'정영호 님',detail:'안정형',allocation:'주식 보유 없음',level:'보통',holdings:{samsung:0,hynix:0,hyundai:0}},
 ];
 const source=(document_id:string,title:string,period:string,source_url:string):Source=>({document_id,title,period,source_url});
 const samsungSource=source('samsung_024','삼성전자 2026년 3분기 잠정실적 발표','2026-Q3','https://news.samsungsemiconductor.com/kr/?p=37675');
@@ -36,7 +36,7 @@ const demoClaims:Record<string,Verification[]>={
   WCdemoS2V02:[
     {claim_id:'claim_001',claim:'SK하이닉스의 2026년 2분기 영업이익은 60조 원을 넘었고 영업이익률은 76%다.',claim_type:'FINANCIAL',status:'SUPPORTED',reason:'발표된 2분기 영업이익은 약 60.5조 원, 영업이익률은 76.3%입니다.',sources:[hynixSource]},
     {claim_id:'claim_002',claim:'SK하이닉스의 2026년 2분기 매출은 80조 원을 돌파했다.',claim_type:'FINANCIAL',status:'CONTRADICTED',reason:'2분기 매출은 약 79.3조 원으로 80조 원에 미치지 않습니다.',sources:[hynixSource]},
-    {claim_id:'claim_003',claim:'SK하이닉스의 2026년 3분기 영업이익 77조 원이 확정됐다.',claim_type:'FINANCIAL',status:'INSUFFICIENT_EVIDENCE',reason:'3분기 실적은 10월 29일 발표 예정으로, 현재 확정 수치를 확인할 수 없습니다.',sources:[hynixNotice]},
+    {claim_id:'claim_003',claim:'SK하이닉스의 2026년 3분기 영업이익 77조 원이 확정됐다.',claim_type:'FINANCIAL',status:'INSUFFICIENT_EVIDENCE',reason:'영상 게시일에는 3분기 실적이 아직 발표되지 않아 확정 수치를 확인할 수 없습니다.',sources:[hynixNotice]},
   ],
   WCdemoS3V03:[
     {claim_id:'claim_001',claim:'현대자동차의 2026년 1분기 영업이익은 전년 동기보다 30% 넘게 줄었다.',claim_type:'FINANCIAL',status:'SUPPORTED',reason:'공식 발표에 따르면 1분기 영업이익은 전년 동기 대비 30.8% 감소했습니다.',sources:[hyundaiQ1]},
@@ -45,15 +45,23 @@ const demoClaims:Record<string,Verification[]>={
   ],
 };
 function sample(video:DemoVideo,id:string):Analysis{
-  const personalized_analysis=video.id==='WCdemoS1V01'
+  const profile=profiles.find(item=>item.id===id)??profiles[2];
+  const holding=profile.holdings[video.theme];
+  const fallback={summary:holding>0
+    ?`${profile.label}은 현재 ${video.company}를 포트폴리오의 ${holding}% 보유하고 있습니다. 영상의 사실 판정과 보유 비중을 함께 살펴보세요.`
+    :`${profile.label}은 현재 ${video.company}를 보유하지 않습니다. 영상의 사실 판정과 투자 성향을 함께 살펴보세요.`,
+    risk_factors:[holding>0?`${video.company} 보유 비중 ${holding}%`:`${video.company} 신규 투자 검토`,profile.allocation,'영상 속 과장되거나 미확정인 주장에 유의']};
+  const personalized_analysis=video.id==='WCdemoS1V01'&&id==='demo_user_03'
     ?{summary:'삼성전자는 아직 보유하지 않았지만 SK하이닉스를 보유하고 있어 신규 매수 시 반도체 업종 비중이 커집니다.',risk_factors:['반도체 업종 집중도 증가','3분기 수치는 잠정 실적','영상의 매출 주장 불일치']}
-    :video.id==='WCdemoS2V02'
+    :video.id==='WCdemoS2V02'&&(id==='demo_user_01'||id==='demo_user_02')
       ?id==='demo_user_01'
         ?{summary:'반도체 비중이 이미 80%입니다. 추가 매수 전 집중 위험과 미발표 3분기 실적을 함께 살펴보세요.',risk_factors:['반도체 비중 80%','3분기 실적 미발표','영상의 매출 주장 불일치']}
         :{summary:'SK하이닉스 비중은 10%입니다. 영상의 과장된 매출 주장과 미확정 3분기 실적을 확인하세요.',risk_factors:['2분기 매출 주장 불일치','3분기 실적 미발표']}
-      :id==='demo_user_04'
+      :video.id==='WCdemoS3V03'&&id==='demo_user_04'
         ?{summary:'현대자동차를 보유하고 있습니다. 2분기 적자라는 주장은 공식 실적과 다르므로 사실을 확인한 뒤 판단하세요.',risk_factors:['현대자동차 비중 25%','2분기 적자 주장 불일치','내년 이익 전망은 미확정']}
-        :{summary:'현재 주식 보유가 없는 안정형 투자자입니다. 영상의 단정적 전망보다 공식 실적과 투자 성향을 먼저 살펴보세요.',risk_factors:['2분기 적자 주장 불일치','미래 이익 전망은 미확정']};
+        :video.id==='WCdemoS3V03'&&id==='demo_user_05'
+          ?{summary:'현재 주식 보유가 없는 안정형 투자자입니다. 영상의 단정적 전망보다 공식 실적과 투자 성향을 먼저 살펴보세요.',risk_factors:['2분기 적자 주장 불일치','미래 이익 전망은 미확정']}
+          :fallback;
   return {video:{video_id:video.id,title:video.title,url:videoUrl(video)},verification_results:demoClaims[video.id],personalized_analysis,analyzed_at:new Date().toISOString()};
 }
 const USE_MOCK=import.meta.env.VITE_USE_MOCK!=='false';
@@ -72,6 +80,23 @@ const statusMap={
   PREDICTION:{label:'미래 예측',short:'예측',icon:TrendingUp,tone:'prediction'},
 } satisfies Record<Status,{label:string;short:string;icon:typeof CheckCircle2;tone:string}>;
 
+function DemoControls({user,busy,onSelect}:{user:string;busy:boolean;onSelect:(id:string)=>void}){
+  const [open,setOpen]=useState(false);
+  const controlsRef=useRef<HTMLElement>(null);
+  const selected=profiles.find(profile=>profile.id===user)??profiles[2];
+  useEffect(()=>{
+    if(!open)return;
+    const closeOnOutside=(event:PointerEvent)=>{if(event.target instanceof Node&&!controlsRef.current?.contains(event.target))setOpen(false)};
+    const closeOnEscape=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false)};
+    document.addEventListener('pointerdown',closeOnOutside);
+    document.addEventListener('keydown',closeOnEscape);
+    return()=>{document.removeEventListener('pointerdown',closeOnOutside);document.removeEventListener('keydown',closeOnEscape)};
+  },[open]);
+  return <aside ref={controlsRef} className="demo-controls" aria-label="발표자용 시연 계정 선택">
+    <button type="button" className="demo-controls-toggle" aria-expanded={open} aria-controls="demo-account-menu" onClick={()=>setOpen(current=>!current)}><span><strong>시연 계정</strong><small>{selected.label}</small></span><ChevronDown size={18}/></button>
+    {open&&<div id="demo-account-menu" className="demo-controls-menu"><strong className="demo-controls-title">시연 계정 선택</strong><div className="demo-account-list">{profiles.map((profile,index)=><button type="button" key={profile.id} className={user===profile.id?'selected':''} aria-pressed={user===profile.id} disabled={busy} onClick={()=>{onSelect(profile.id);setOpen(false)}}><span className="demo-account-number">{String(index+1).padStart(2,'0')}</span><span className="demo-account-text"><strong>{profile.label}</strong><small>{profile.detail}</small></span></button>)}</div></div>}
+  </aside>;
+}
 function VideoThumbnail({video}:{video:DemoVideo}){
   return <div className={`demo-thumbnail demo-thumbnail--${video.theme}`} aria-hidden="true">
     <div className="demo-thumbnail-shine"/><div className="demo-thumbnail-grid"/>
@@ -121,21 +146,40 @@ function LoadingScreen({error,onRetry}:{error:string;onRetry:()=>void}){
   const steps=[['영상 정보 분석 중','유튜브 영상의 주요 주장을 추출하고 있어요.'],['공식 자료 검색 중','DART 등 공식 자료를 기반으로 확인하고 있어요.'],['사실 여부 검증 중','AI가 근거를 비교하고 검증하고 있어요.'],['개인화 분석 중','나의 투자 성향에 맞춰 위험을 분석하고 있어요.']];
   return <main className="loading-screen screen-enter" aria-live="polite">{error?<><div className="error-icon"><AlertCircle size={34}/></div><span className="overline">분석을 완료하지 못했어요</span><h1>잠시 후 다시 시도해 주세요</h1><p>{error}</p><button type="button" className="primary-button" onClick={onRetry}><RotateCcw size={18}/> 다시 분석하기</button></>:<><div className="loading-orbit"><span className="orbit-ring ring-one"/><span className="orbit-ring ring-two"/><span className="loading-core"/><span className="orbit-spark spark-one">✦</span><span className="orbit-spark spark-two">✦</span><span className="orbit-spark spark-three">✦</span></div><h1>WON Check</h1><p>유튜브 속 투자 정보를<br/>AI가 공식 자료로 확인하고,<br/>나의 포트폴리오에 맞춰 분석해드려요.</p><div className="progress-list">{steps.map(([name,description],index)=><div key={name} className={`progress-item ${index<step?'done':index===step?'active':''}`}><span className="progress-symbol">{index<step?<Check size={16}/>:null}</span><span className="progress-copy"><strong>{name}</strong><small>{description}</small></span>{index===step&&<MoreHorizontal className="progress-pulse" size={22}/>}</div>)}</div><div className="loading-note"><span><ShieldCheck size={20}/></span><p>WON Check는 공식 자료에 기반하여<br/>객관적으로 분석합니다.</p></div></>}</main>;
 }
-function ResultScreen({result,video,user,onProfileChange,onBack}:{result:Analysis;video:DemoVideo;user:string;onProfileChange:(id:string)=>void;onBack:()=>void}){
-  const profile=profiles.find(item=>item.id===user)??profiles[0];
+function ResultScreen({result,user,onBack}:{result:Analysis;user:string;onBack:()=>void}){
+  const profile=profiles.find(item=>item.id===user)??profiles[2];
   const date=new Date(result.analyzed_at);
   const formattedDate=Number.isNaN(date.getTime())?'':new Intl.DateTimeFormat('ko-KR',{month:'long',day:'numeric',hour:'numeric',minute:'2-digit'}).format(date);
   return <main className="results screen-enter"><section className="result-hero"><div className="hero-glow"/><div className="hero-content"><span className="hero-eyebrow"><Sparkles size={15}/> AI FACT CHECK</span><h1>이 영상의 투자 정보,<br/><strong>확인해 봤어요</strong></h1><p>주장마다 근거를 살펴보고<br/>내 투자 상황에 맞춰 정리했어요.</p><div className="hero-meta"><Clock3 size={14}/> {formattedDate} 분석 {USE_MOCK&&<span className="mock-badge">DEMO</span>}</div></div><div className="hero-illustration"><ShieldCheck size={51}/></div></section>
     <div className="result-body"><div className="context-card"><span className="context-icon"><Play size={14} fill="currentColor"/></span><div><small>분석한 영상</small><strong>{result.video.title}</strong></div><ChevronRight size={18}/></div>{USE_MOCK&&<div className="demo-notice"><AlertCircle size={18}/><span>등록된 시연 데이터로 구성한 예시 결과입니다. 실제 분석 API 응답은 아닙니다.</span></div>}
       <section className="result-section" aria-labelledby="verification-title"><div className="section-title"><div><span className="section-kicker">01 · FACT CHECK</span><h2 id="verification-title">주장별 사실 검증</h2></div><span className="count-badge">{result.verification_results.length}건</span></div><p className="section-description">결과 상태에 따라 구분해 확인할 수 있어요.</p><div className="status-legend">{(['SUPPORTED','CONTRADICTED','INSUFFICIENT_EVIDENCE','PREDICTION'] as const).map(status=>{const entry=statusMap[status];return <span className={`legend-item ${entry.tone}`} key={status}><span/>{entry.short}</span>})}</div><div className="claims-list">{result.verification_results.map((item,index)=>{const status=statusMap[item.status];const Icon=status.icon;return <article className={`claim-card ${status.tone}`} key={item.claim_id}><div className="claim-heading"><span className="claim-number">CLAIM {String(index+1).padStart(2,'0')}</span><span className={`status-pill ${status.tone}`}><Icon size={15}/>{status.label}</span></div><h3>{item.claim}</h3><div className="claim-reason"><span>검증 내용</span><p>{item.reason}</p></div>{item.sources.length>0?<div className="source-list"><span>공식 근거</span>{item.sources.map(source=><a key={source.document_id} href={source.source_url} target="_blank" rel="noopener noreferrer"><span className="source-link-icon"><ExternalLink size={15}/></span><span><strong>{source.title}</strong><small>{source.period}</small></span><ArrowUpRight size={18}/></a>)}</div>:<div className="source-empty"><HelpCircle size={16}/>{item.status==='PREDICTION'?'미래 전망에는 확인 가능한 공시 근거가 없습니다.':'판단에 필요한 공식 문서가 연결되지 않았습니다.'}</div>}</article>})}</div></section>
-      <section className="result-section risk-section" aria-labelledby="risk-title"><div className="section-title"><div><span className="section-kicker">02 · PERSONAL RISK</span><h2 id="risk-title">나에게 맞는 위험 분석</h2></div></div><p className="section-description">같은 영상도 투자 상황에 따라 다르게 살펴봐야 해요.</p><label className="profile-label" htmlFor="profile-select">분석 프로필</label><div className="profile-select-wrap"><span className="profile-avatar">{profile.label.charAt(0)}</span><select id="profile-select" value={user} onChange={event=>onProfileChange(event.target.value)}>{profiles.filter(item=>video.userIds.includes(item.id)).map(item=><option key={item.id} value={item.id}>{item.label} · {item.detail}</option>)}</select><ChevronDown size={19}/></div><div className="risk-card"><div className="risk-card-top"><span className="risk-icon"><ShieldCheck size={22}/></span><div><small>{profile.label}의 투자 상황</small><strong>{profile.allocation}</strong></div><span className={`risk-level ${profile.level==='주의'?'caution':''}`}>{profile.level}</span></div><div className="risk-divider"/><h3>이 영상을 볼 때 살펴보세요</h3><p>{result.personalized_analysis.summary}</p><ul>{result.personalized_analysis.risk_factors.map((factor,index)=><li key={`${index}-${factor}`}><span><Check size={13}/></span>{factor}</li>)}</ul></div></section>
+      <section className="result-section risk-section" aria-labelledby="risk-title"><div className="section-title"><div><span className="section-kicker">02 · PERSONAL RISK</span><h2 id="risk-title">나에게 맞는 위험 분석</h2></div></div><p className="section-description">같은 영상도 투자 상황에 따라 다르게 살펴봐야 해요.</p><div className="signed-in-account"><span className="profile-avatar">{profile.label.charAt(0)}</span><div><small>로그인된 WON MTS 사용자</small><strong>{profile.label} · {profile.detail}</strong></div></div><div className="risk-card"><div className="risk-card-top"><span className="risk-icon"><ShieldCheck size={22}/></span><div><small>{profile.label}의 투자 상황</small><strong>{profile.allocation}</strong></div><span className={`risk-level ${profile.level==='주의'?'caution':''}`}>{profile.level}</span></div><div className="risk-divider"/><h3>이 영상을 볼 때 살펴보세요</h3><p>{result.personalized_analysis.summary}</p><ul>{result.personalized_analysis.risk_factors.map((factor,index)=><li key={`${index}-${factor}`}><span><Check size={13}/></span>{factor}</li>)}</ul></div></section>
       <div className="footer-disclaimer"><ShieldCheck size={18}/><p>WON Check는 투자 판단을 돕기 위한 정보 서비스입니다. 분석 결과는 투자 권유나 수익 보장이 아니며, 투자 결정 전 공식 공시와 상품 설명서를 확인해 주세요.</p></div><button type="button" className="back-to-video" onClick={onBack}>영상으로 돌아가기 <ArrowUpRight size={18}/></button></div>
   </main>;
 }
+function initialDemoUser(){
+  const requested=new URLSearchParams(window.location.search).get('demo_user');
+  return profiles.find(profile=>profile.id===requested)?.id??'demo_user_03';
+}
 export default function App(){
-  const [page,setPage]=useState<Page>('browse');const [share,setShare]=useState(false);const [video,setVideo]=useState<DemoVideo>(videos[0]);const [user,setUser]=useState(videos[0].userIds[0]);const [result,setResult]=useState<Analysis|null>(null);const [error,setError]=useState('');
-  function chooseVideo(selected:DemoVideo){setVideo(selected);setUser(selected.userIds[0]);setResult(null);setShare(false);setPage('youtube')}
-  async function run(id=user){setShare(false);setError('');setPage('loading');try{const data=await analyze(video,id);setResult(data);setPage('results')}catch(cause){setError(cause instanceof Error?cause.message:'알 수 없는 오류가 발생했습니다.')}}
-  function changeProfile(id:string){setUser(id);void run(id)}
-  return <div className="app-shell"><div className="phone"><div className={`system-bar ${page==='youtube'?'yt-system-bar':''}`} aria-hidden="true"><strong>9:41</strong><div className="system-icons"><span className="signal-icon"/><span className="wifi-icon"/><span className="battery-icon"/></div></div>{page==='browse'?<BrowseScreen onSelect={chooseVideo}/>:page==='youtube'?<YoutubeScreen key={video.id} video={video} onShare={()=>setShare(true)} onBack={()=>setPage('browse')} onChoose={chooseVideo}/>:<><header className="mts-header"><div className="mts-brand"><span className="mts-mark"><i/><i/></span><span>우리<strong>WON</strong> MTS</span></div><button className="back-button" type="button" aria-label="영상으로 돌아가기" onClick={()=>{setPage('youtube');setError('')}}><X size={24}/></button></header>{page==='loading'?<LoadingScreen error={error} onRetry={()=>void run()}/>:result&&<ResultScreen result={result} video={video} user={user} onProfileChange={changeProfile} onBack={()=>setPage('youtube')}/>}</>}<div className={`home-bar ${page==='youtube'?'yt-home-bar':''}`} aria-hidden="true"><span/></div>{share&&<ShareSheet video={video} onClose={()=>setShare(false)} onSelect={()=>void run()}/>}</div></div>;
+  const [page,setPage]=useState<Page>('browse');
+  const [share,setShare]=useState(false);
+  const [video,setVideo]=useState<DemoVideo>(videos[0]);
+  const [user,setUser]=useState(initialDemoUser);
+  const [result,setResult]=useState<Analysis|null>(null);
+  const [error,setError]=useState('');
+  function chooseVideo(selected:DemoVideo){setVideo(selected);setResult(null);setShare(false);setPage('youtube')}
+  async function run(id=user){
+    setShare(false);setError('');setPage('loading');
+    try{const data=await analyze(video,id);setResult(data);setPage('results')}
+    catch(cause){setError(cause instanceof Error?cause.message:'알 수 없는 오류가 발생했습니다.')}
+  }
+  function selectDemoUser(id:string){
+    setUser(id);
+    const url=new URL(window.location.href);
+    url.searchParams.set('demo_user',id);
+    window.history.replaceState(null,'',url);
+    if(page==='results')void run(id);
+  }
+  return <div className="app-shell"><DemoControls user={user} busy={page==='loading'} onSelect={selectDemoUser}/><div className="phone"><div className={`system-bar ${page==='youtube'?'yt-system-bar':''}`} aria-hidden="true"><strong>9:41</strong><div className="system-icons"><span className="signal-icon"/><span className="wifi-icon"/><span className="battery-icon"/></div></div>{page==='browse'?<BrowseScreen onSelect={chooseVideo}/>:page==='youtube'?<YoutubeScreen key={video.id} video={video} onShare={()=>setShare(true)} onBack={()=>setPage('browse')} onChoose={chooseVideo}/>:<><header className="mts-header"><div className="mts-brand"><span className="mts-mark"><i/><i/></span><span>우리<strong>WON</strong> MTS</span></div><button className="back-button" type="button" aria-label="영상으로 돌아가기" onClick={()=>{setPage('youtube');setError('')}}><X size={24}/></button></header>{page==='loading'?<LoadingScreen error={error} onRetry={()=>void run()}/>:result&&<ResultScreen result={result} user={user} onBack={()=>setPage('youtube')}/>}</>}<div className={`home-bar ${page==='youtube'?'yt-home-bar':''}`} aria-hidden="true"><span/></div>{share&&<ShareSheet video={video} onClose={()=>setShare(false)} onSelect={()=>void run()}/>}</div></div>;
 }

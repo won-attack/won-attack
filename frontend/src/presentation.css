@@ -1,5 +1,54 @@
 /* Desktop frame only. The mobile UI and its component sizes live in style.css. */
+.demo-controls{display:none}
 @media (min-width: 768px) {
+  .demo-controls{
+    position:fixed;
+    z-index:3;
+    left:16px;
+    top:16px;
+    display:block;
+    width:clamp(140px,calc((100vw - 480px)/2 - 24px),230px);
+    color:#17304f;
+  }
+  .demo-controls-toggle{
+    width:100%;
+    min-height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:9px 12px;
+    border:1px solid #d5e3f5;
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 6px 20px #24416d1f;
+    color:#17304f;
+    text-align:left;
+  }
+  .demo-controls-toggle span{min-width:0;display:flex;flex-direction:column;gap:2px}
+  .demo-controls-toggle strong{font-size:12px;white-space:nowrap}
+  .demo-controls-toggle small{font-size:11px;color:#62758e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .demo-controls-toggle svg{flex:none;transition:transform .18s ease}
+  .demo-controls-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+  .demo-controls-menu{
+    max-height:calc(100dvh - 88px);
+    overflow-y:auto;
+    margin-top:8px;
+    padding:12px;
+    border:1px solid #d5e3f5;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 16px 45px #24416d24;
+  }
+  .demo-controls-title{display:block;margin:0 0 10px;font-size:12px}
+  .demo-account-list{display:grid;gap:6px}
+  .demo-account-list button{width:100%;display:flex;align-items:center;gap:8px;min-height:49px;padding:7px 8px;border:1px solid #e2e9f2;border-radius:10px;background:#f9fbff;color:#243954;text-align:left}
+  .demo-account-list button.selected{border-color:#3c82de;background:#eaf3ff;box-shadow:inset 0 0 0 1px #3c82de}
+  .demo-account-list button:disabled{opacity:.55;cursor:wait}
+  .demo-account-number{flex:none;color:#5d8bc2;font:800 11px Manrope,sans-serif}
+  .demo-account-text{min-width:0;display:flex;flex-direction:column;gap:2px}
+  .demo-account-text strong{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .demo-account-text small{font-size:10px;color:#72859a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .app-shell {
     min-height: 100dvh;
     padding: 16px;
