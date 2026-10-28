@@ -97,16 +97,20 @@
 
 /* The wide desktop canvas surrounds the existing phone without resizing it. */
 @media (min-width: 768px) and (max-width: 1279px) {
-  .desktop-intro{position:absolute;inset:0 auto auto 0;width:175px}
-  .desktop-intro-copy,.desktop-intro-footer,.desktop-flow{display:none}
+  .desktop-intro,.desktop-flow{display:none}
+  .presentation-stage{width:100%;max-width:100vw;overflow:hidden}
+  .app-shell{width:100%;max-width:100vw;overflow:hidden}
+  .phone{max-width:calc(100vw - 24px)}
 }
 @media (min-width: 1280px) {
   .app-shell{background:radial-gradient(circle at 10% 15%,#fff 0,#fff0 30%),radial-gradient(circle at 91% 87%,#a8d3ff99 0,#a8d3ff00 33%),linear-gradient(130deg,#e1efff 0%,#f7fbff 46%,#e2efff 100%)}
-  .presentation-stage{display:grid;grid-template-columns:minmax(270px,1fr) auto minmax(315px,1fr);gap:clamp(26px,3vw,56px);max-width:1600px;margin:auto;padding:20px clamp(32px,4vw,70px)}
+  .presentation-stage{display:grid;grid-template-columns:minmax(250px,1fr) auto minmax(340px,1fr);gap:clamp(28px,3vw,52px);width:100%;max-width:none;margin:0;padding:20px clamp(32px,4vw,70px)}
   .presentation-stage::before,.presentation-stage::after{content:'';position:absolute;pointer-events:none;border-radius:50%;background:#fff8}
   .presentation-stage::before{width:510px;height:510px;left:-270px;top:-320px}
   .presentation-stage::after{width:560px;height:560px;right:-330px;bottom:-430px}
-  .desktop-intro,.desktop-flow{z-index:1;min-width:0;display:flex;flex-direction:column;height:min(900px,calc(100dvh - 32px))}
+  .desktop-intro{display:contents}
+  .phone{grid-column:2;grid-row:1;justify-self:center}
+  .desktop-intro .demo-controls{grid-column:1;grid-row:1;align-self:center;justify-self:start;transform:none}
   .desktop-intro{position:relative;align-items:flex-start;justify-content:center;padding-left:0}
   .desktop-logo{position:fixed;z-index:2;top:28px;left:clamp(24px,4vw,70px);display:flex;align-items:center;color:#0a3072;font:800 clamp(27px,2.7vw,36px)/1 Manrope,'Noto Sans KR',sans-serif;letter-spacing:-.055em;white-space:nowrap}
   .desktop-logo strong{color:#2589ed;font-weight:800}
@@ -124,7 +128,7 @@
   .desktop-intro .demo-account-text{gap:5px;white-space:normal}
   .desktop-intro .demo-account-text strong{font-size:16px}
   .desktop-intro .demo-account-text small{font-size:13px;line-height:1.55;white-space:normal;overflow:visible;text-overflow:clip;color:#536b88}
-  .desktop-intro-actions{position:absolute;left:0;bottom:16px;display:grid;width:min(100%,340px);gap:11px;margin:0;transform:none}
+  .desktop-intro-actions{position:relative;grid-column:1;grid-row:1;align-self:end;justify-self:start;display:grid;width:min(100%,340px);gap:11px;margin:0 0 16px;transform:none}
   .desktop-intro-actions::before{content:'시연 시작';margin:0 0 1px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;letter-spacing:-.045em}
   .desktop-intro-actions .desktop-real-link-cta{width:100%;min-height:84px;margin:0;padding:12px;border-radius:17px}
   .desktop-intro-actions .desktop-real-link-copy strong{font-size:14px}
@@ -172,3 +176,23 @@
   .desktop-step-body p{margin:4px 0 0;color:#7186a3;font-size:11px;line-height:1.45;word-break:keep-all}
   .desktop-flow-footer{width:min(100%,320px);margin:24px 0 0 auto;text-align:center;color:#427fca;font-size:12px;font-weight:700}
 }
+.profile-popover-backdrop{position:fixed;inset:0;z-index:20;pointer-events:none}
+.profile-popover{position:fixed;top:18px;left:12px;right:auto;transform:none;width:340px;max-width:calc(100vw - 24px);max-height:calc(100vh - 36px);overflow-y:auto;padding:16px;border:1px solid #dce8f7;border-radius:22px;background:#fff;box-shadow:0 18px 48px #071b3730;color:#183658;pointer-events:auto}
+.profile-popover-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:#f0f5fb;color:#3d5877;font-size:25px;line-height:1;cursor:pointer}
+.profile-portrait{width:100%;height:132px;margin-bottom:11px;border-radius:15px;background-color:#f4f5f7;background-repeat:no-repeat;background-size:200% auto;background-position:left center}
+.profile-portrait.portrait-right{background-position:right center}
+.profile-popover-kicker{color:#4382c6;font-size:12px;font-weight:800;letter-spacing:.08em}
+.profile-popover h3{margin:4px 0;color:#123872;font-size:25px;letter-spacing:-.04em}
+.profile-popover-type{display:inline-block;padding:6px 10px;border-radius:20px;background:#eaf3ff;color:#1768c4;font-size:14px}
+.profile-popover-info{margin-top:12px;padding:12px;border-radius:15px;background:#f4f8fd}
+.profile-popover-info>b{color:#173d73;font-size:15px}
+.profile-popover-info>p{margin:5px 0 10px;color:#546d89;font-size:14px}
+.profile-popover-info ul{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.portfolio-visual{display:flex;align-items:center;gap:11px;margin:10px 0}
+.portfolio-donut{width:76px;height:76px;flex:none;border-radius:50%;background:conic-gradient(#1769c2 0 45%,#36b7a3 45% 80%,#e6edf6 80% 100%);position:relative}
+.portfolio-donut::after{content:'';position:absolute;inset:16px;border-radius:50%;background:#f4f8fd}
+.portfolio-donut.portfolio-active{background:conic-gradient(#1769c2 0 10%,#7967d9 10% 25%,#e6edf6 25% 100%)}
+.portfolio-visual ul{flex:1;min-width:145px}
+.profile-popover-info li{display:flex;justify-content:space-between;color:#3b536f;font-size:14px}
+.profile-popover-info li strong{color:#146bc8}
+.profile-popover-info small{display:block;margin-top:12px;color:#7187a2;font-size:12px;line-height:1.5}
