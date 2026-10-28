@@ -25,15 +25,7 @@ DART 공시를 직접 찾아 회사·기간·기준까지 맞춰 비교해야 �
 
 배포 없이 **노트북 한 대에서 로컬로 실행**합니다. Docker·Supabase는 쓰지 않습니다.
 
-```mermaid
-flowchart LR
-    FE["프론트엔드<br/>React + Vite<br/>:5173"] -- "① 분석 요청" --> BE["백엔드<br/>Spring Boot<br/>:8080"]
-    BE -- "⑤ 리포트" --> FE
-    BE -- "② 주장 추출 · ④ 판정·설명" --> LLM["대화 모델<br/>OpenAI gpt-4o-mini<br/>또는 Ollama(로컬)"]
-    BE -- "③ 근거 검색 (회사·기간 필터, Top 3)" --> DB[("ChromaDB<br/>:8000<br/>공시 근거 48문장")]
-    BE -. "대본·사용자·회사 별칭" .- JSON["data/*.json"]
-    INIT["data/init_db.py<br/>(시연 전 1회 적재)"] --> DB
-```
+![WON ATTACK 시스템 아키텍처](docs/architecture.png)
 
 | 구성 | 주소 | 역할 |
 |---|---|---|
@@ -43,13 +35,18 @@ flowchart LR
 | 대화 모델 | OpenAI 또는 `http://localhost:11434` | `LLM_PROVIDER=openai`(기본, `gpt-4o-mini`) 또는 `ollama`(로컬 LLM) |
 | 임베딩 모델 | OpenAI | `text-embedding-3-small` — 적재와 검색에 반드시 같은 모델 |
 
-**분석 흐름**
+**분석 흐름** (그림의 번호)
 
-1. 프론트가 유튜브 URL과 사용자 ID로 분석을 요청합니다.
-2. 백엔드가 영상 대본을 찾습니다. `data/youtube_transcripts.json`(실제 영상 전사)을 먼저 보고, 없으면 `data/transcripts.json`(시연 대본)을 봅니다. 대화 모델로 검증할 주장을 뽑고, 회사·기간(예: "이번 3분기" → `2026-Q3`)까지 정리합니다.
-3. 주장을 임베딩해 ChromaDB에서 **회사 → 기간 필터**를 건 뒤 비슷한 공시 근거 Top 3를 찾습니다. 공시 근거는 시연 전에 `data/init_db.py`로 미리 적재해 둡니다.
-4. 대화 모델이 주장과 근거를 대조해 판정하고(유사도는 판정이 아닙니다), `data/users.json`의 보유 비중·투자 성향에 맞춰 위험 설명을 만듭니다.
-5. 주장별 판정 · 근거 출처 · 개인화 설명을 JSON으로 돌려주고, 프론트가 MTS 리포트 카드로 보여 줍니다.
+1. 프론트가 영상 URL과 사용자 ID로 분석을 요청합니다.
+2. 백엔드가 영상 대본을 찾고(`data/youtube_transcripts.json`을 먼저, 없으면 `data/transcripts.json`), 대화 모델로 검증 가능한 주장을 뽑습니다. 회사·기간(예: "이번 3분기" → `2026-Q3`)까지 정리합니다.
+3. 주장 문장을 `text-embedding-3-small`로 임베딩합니다.
+4. ChromaDB에 **회사 → 기간 필터**를 건 검색을 요청합니다. 공시 근거는 시연 전에 `data/init_db.py`로 미리 적재해 둡니다.
+5. 관련 공시 근거 Top 3와 출처를 돌려받습니다.
+6. 대화 모델이 주장과 공시 근거를 대조해 판정합니다. 유사도는 판정이 아닙니다.
+7. `data/users.json`의 보유 비중·투자 성향에 맞춰 위험 설명을 만듭니다.
+8. 주장별 판정 · 근거 출처 · 맞춤 설명을 JSON으로 돌려주고, 프론트가 MTS 리포트로 보여 줍니다.
+
+점선으로 표시한 Ollama는 로컬 모델 연동 구간입니다. `.env`의 `LLM_PROVIDER=ollama`로 ②⑥⑦의 대화 모델을 로컬 모델로 바꿀 수 있습니다.
 
 공통 판정은 사용자와 무관하게 같고, 개인화 설명만 사용자마다 달라집니다.
 
