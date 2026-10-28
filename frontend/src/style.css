@@ -132,6 +132,17 @@
 .mts-header{height:61px;border:0;background:transparent;padding:0 20px;justify-content:space-between}.mts-brand{display:flex;align-items:center;gap:7px;font:400 15px 'Noto Sans KR',sans-serif;color:#0b328f;letter-spacing:-.6px}.mts-brand>span:last-child{color:#143d9b}.mts-brand strong{color:#0730a4;font-weight:900}.mts-mark{position:relative;width:29px;height:20px;flex:none}.mts-mark i{position:absolute;width:19px;height:19px;border-radius:50%;top:0}.mts-mark i:first-child{left:0;background:#5ed9f7}.mts-mark i:last-child{right:0;background:#0928a9;mix-blend-mode:multiply}.mts-header .back-button{margin:0;color:#28394d}.loading-screen{padding:31px 20px 25px;background:radial-gradient(ellipse at 50% 44%,#e7f1ff 0%,#f6faff 42%,#fff 84%);overflow-x:hidden}.loading-orbit{width:146px;height:146px;margin:0 0 11px}.orbit-ring{inset:16px;border:11px solid #e1eaff;box-shadow:inset 4px 5px 8px #779af331,4px 8px 15px #b1c7ee69;animation:breathe 2.5s ease-in-out infinite}.ring-two{inset:33px;border:0;background:linear-gradient(145deg,#5a72ff,#0b43f1 57%,#248bff);box-shadow:inset 6px 8px 11px #ffffff59,0 0 22px #3672ff7a;animation:float 2.4s ease-in-out infinite}.loading-core{position:absolute;inset:53px;border-radius:50%;background:#3972fcad;filter:blur(10px)}.orbit-spark{position:absolute;background:none;color:#8bbaff;font-size:24px}.spark-one{top:4px;left:23px}.spark-two{right:-6px;top:61px;font-size:18px}.spark-three{left:-5px;top:70px;font-size:17px}.loading-screen h1{font:800 29px Manrope,sans-serif;color:#104ab7;margin:0 0 8px}.loading-screen>p{font-size:16px;line-height:1.52;color:#1b3665;margin:0 0 24px;font-weight:500}.progress-list{max-width:none;background:#fff;border-radius:17px;padding:14px 18px;box-shadow:0 6px 26px #a7bedc20}.progress-item{position:relative;min-height:70px;gap:12px;font-weight:400}.progress-item:not(:last-child)::after{content:'';position:absolute;width:2px;background:#e1e5eb;top:47px;bottom:-19px;left:12px}.progress-symbol{width:25px;height:25px;border:2px solid #d8dce1;background:#fff;color:#fff}.progress-item.active .progress-symbol{border:7px solid #3484fd;background:#fff;box-shadow:0 0 0 4px #e8f2ff}.progress-item.done .progress-symbol{border:0;background:#3484fd;color:#fff}.progress-copy{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}.progress-copy strong{font-size:13px;color:#a6a6a6}.progress-copy small{font-size:11px;color:#b8b8b8;line-height:1.4}.progress-item.active .progress-copy strong{color:#123e95}.progress-item.active .progress-copy small{color:#69768a}.progress-item.done .progress-copy strong{color:#5377b6}.progress-pulse{color:#2c78f4;animation:breathe 1.1s infinite}.loading-note{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:14px 17px;border-radius:15px;background:#e8f2ff;color:#2b5797;font-size:11px;margin-top:20px}.loading-note span{width:37px;height:37px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;color:#2171d5}.loading-note p{margin:0;line-height:1.5}.home-bar{height:22px}.home-bar span{background:#000;width:120px;height:5px}
 @media(max-width:480px){.phone{max-width:none;max-height:none;width:100%;height:100dvh}.loading-screen{justify-content:flex-start}.yt-player{height:auto;aspect-ratio:390/223}}
 @media(max-height:740px){.loading-screen{padding-top:12px}.loading-orbit{width:105px;height:105px}.loading-screen>p{margin-bottom:12px}.progress-item{min-height:60px}.loading-note{margin-top:10px}}
+.loading-screen>*{flex-shrink:0}
+.loading-screen{scrollbar-width:none}
+.loading-screen::-webkit-scrollbar{display:none}
+.loading-orbit{width:122px;height:88px}
+.loading-orbit .orbit-ring{inset:9px;border-width:9px}
+.loading-orbit .ring-two{inset:20px 24px;border-width:0}
+.loading-orbit .loading-core{inset:31px 38px;filter:blur(9px)}
+.loading-orbit .orbit-spark{font-size:18px}
+.loading-orbit .spark-one{top:-2px;left:19px}
+.loading-orbit .spark-two{right:-5px;top:38px;font-size:14px}
+.loading-orbit .spark-three{left:-4px;top:48px;font-size:13px}
 
 /* Keep controls visually plain; show a neutral indicator for keyboard focus. */
 button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #404040;outline-offset:2px}
@@ -239,7 +250,9 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #404
 .stock-handoff-copy small{font-size:10px;color:#7b8da5;margin-bottom:2px}
 .stock-handoff-copy strong{font-size:13px;color:#1d3556}
 .stock-handoff>p{margin:12px 0 14px;color:#74849a;font-size:10px;line-height:1.6}
-.stock-handoff>button{width:100%;height:45px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border:1px solid #d5e1f0;border-radius:10px;background:#fff;color:#235da8;font-size:11px;font-weight:800;text-align:left}
+.stock-handoff>button{width:100%;height:45px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border:1px solid #0b5fc4;border-radius:10px;background:linear-gradient(110deg,#0756b8,#2583e8);color:#fff;font-size:11px;font-weight:800;text-align:left;box-shadow:0 6px 14px #0b63c83d;transition:background .2s ease,box-shadow .2s ease,transform .2s ease}
+.stock-handoff>button:hover{background:linear-gradient(110deg,#064a9d,#126fd4);box-shadow:0 8px 18px #0b63c850;transform:translateY(-1px)}
+.stock-handoff>button:active{transform:translateY(0)}
 
 /* Brokerage style stock detail prototype, based on the supplied WON app captures. */
 .stock-detail{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:#fff;color:#202b3c;overflow:hidden}

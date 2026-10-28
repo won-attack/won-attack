@@ -1,5 +1,6 @@
 /* Desktop frame only. The mobile UI and its component sizes live in style.css. */
 .demo-controls{display:none}
+.desktop-logo{display:none}
 @media (min-width: 768px) {
   .presentation-stage{
     position:relative;
@@ -81,6 +82,7 @@
   }
 }
 @media (max-width: 767px) {
+  .desktop-intro,.desktop-flow{display:none}
   .presentation-stage{
     position:relative;
     display:flex;
@@ -91,4 +93,82 @@
     justify-content:center;
     transform-origin:center;
   }
+}
+
+/* The wide desktop canvas surrounds the existing phone without resizing it. */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .desktop-intro{position:absolute;inset:0 auto auto 0;width:175px}
+  .desktop-intro-copy,.desktop-intro-footer,.desktop-flow{display:none}
+}
+@media (min-width: 1280px) {
+  .app-shell{background:radial-gradient(circle at 10% 15%,#fff 0,#fff0 30%),radial-gradient(circle at 91% 87%,#a8d3ff99 0,#a8d3ff00 33%),linear-gradient(130deg,#e1efff 0%,#f7fbff 46%,#e2efff 100%)}
+  .presentation-stage{display:grid;grid-template-columns:minmax(270px,1fr) auto minmax(315px,1fr);gap:clamp(26px,3vw,56px);max-width:1600px;margin:auto;padding:20px clamp(32px,4vw,70px)}
+  .presentation-stage::before,.presentation-stage::after{content:'';position:absolute;pointer-events:none;border-radius:50%;background:#fff8}
+  .presentation-stage::before{width:510px;height:510px;left:-270px;top:-320px}
+  .presentation-stage::after{width:560px;height:560px;right:-330px;bottom:-430px}
+  .desktop-intro,.desktop-flow{z-index:1;min-width:0;display:flex;flex-direction:column;height:min(900px,calc(100dvh - 32px))}
+  .desktop-intro{position:relative;align-items:flex-start;justify-content:center;padding-left:0}
+  .desktop-logo{position:fixed;z-index:2;top:28px;left:clamp(24px,4vw,70px);display:flex;align-items:center;color:#0a3072;font:800 clamp(27px,2.7vw,36px)/1 Manrope,'Noto Sans KR',sans-serif;letter-spacing:-.055em;white-space:nowrap}
+  .desktop-logo strong{color:#2589ed;font-weight:800}
+  .desktop-intro-copy{position:fixed;z-index:2;top:77px;left:clamp(24px,4vw,70px);margin:0}
+  .desktop-eyebrow{color:#163a73;font-size:clamp(12px,1vw,15px);font-weight:800;letter-spacing:-.04em}
+  .desktop-intro-copy p{margin:4px 0 0;color:#5f7695;font-size:clamp(11px,.9vw,13px);font-weight:600;line-height:1.55;letter-spacing:-.04em}
+  .desktop-intro .demo-controls{position:static;width:min(100%,340px);color:#17304f;transform:translateY(clamp(-88px,-8vh,-64px))}
+  .desktop-intro .demo-controls-menu{position:relative;max-height:none;overflow:visible;margin-top:42px;padding:22px;border:1px solid #dfeafb;border-radius:22px;box-shadow:0 14px 40px #28548316;background:#fffd}
+  .desktop-intro .demo-controls-title{display:block;width:100%;margin:0 0 12px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;line-height:1.25;letter-spacing:-.045em;text-align:left;white-space:normal;word-break:keep-all}
+  .desktop-intro .demo-controls-subtitle{display:block;margin:0 0 4px;color:#7c91aa;font-size:13px;font-weight:650;letter-spacing:-.025em}
+  .desktop-intro .demo-account-list{gap:2px}
+  .desktop-intro .demo-account-list button{min-height:82px;padding:13px 11px;align-items:flex-start}
+  .desktop-intro .demo-account-list button.selected{background:#eef6ff;border-radius:9px}
+  .desktop-intro .demo-account-radio{width:17px;height:17px}
+  .desktop-intro .demo-account-text{gap:5px;white-space:normal}
+  .desktop-intro .demo-account-text strong{font-size:16px}
+  .desktop-intro .demo-account-text small{font-size:13px;line-height:1.55;white-space:normal;overflow:visible;text-overflow:clip;color:#536b88}
+  .desktop-intro-actions{position:absolute;left:0;bottom:16px;display:grid;width:min(100%,340px);gap:11px;margin:0;transform:none}
+  .desktop-intro-actions::before{content:'시연 시작';margin:0 0 1px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;letter-spacing:-.045em}
+  .desktop-intro-actions .desktop-real-link-cta{width:100%;min-height:84px;margin:0;padding:12px;border-radius:17px}
+  .desktop-intro-actions .desktop-real-link-copy strong{font-size:14px}
+  .desktop-intro-actions .desktop-real-link-copy small{font-size:10px}
+  .desktop-intro-actions .desktop-mock-link-cta{background:linear-gradient(118deg,#176fc8,#1550a6 72%,#123d83);border-color:#1550a6;box-shadow:0 12px 25px #1a5cad35}
+  .desktop-intro-actions .desktop-mock-link-cta .desktop-real-link-icon{color:#155db1}
+  .demo-account-note{display:grid;gap:5px;margin:0 0 12px;padding:13px 14px;border:0;border-radius:14px;background:linear-gradient(120deg,#edf6ff,#f6faff);color:#49627f;line-height:1.45;word-break:keep-all}
+  .demo-account-note strong{color:#1768c6;font-size:15px;font-weight:850;letter-spacing:-.025em}
+  .demo-account-note span{font-size:13px;font-weight:650}
+  .demo-account-note b{display:flex;align-items:center;gap:4px;margin-top:2px;color:#145bb0;font-size:12px;font-weight:800}
+  .demo-account-note b svg{transform:rotate(-90deg)}
+  .demo-account-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:12px 9px;border:0;border-top:1px solid #e7eef8;background:transparent;color:#2869b8;font-size:14px;font-weight:700;text-align:left;cursor:pointer}
+  .demo-account-toggle svg{transition:transform .18s ease}
+  .demo-account-toggle svg.expanded{transform:rotate(180deg)}
+  .desktop-flow{justify-content:center}
+  .desktop-real-link-cta{width:min(100%,320px);min-height:92px;display:flex;align-items:center;gap:11px;margin:0 0 15px auto;padding:13px;border:1px solid #ed5532;border-radius:18px;background:linear-gradient(118deg,#f96830,#f3423c 72%,#dc2949);color:#fff;text-align:left;box-shadow:0 14px 29px #ee593c5c;transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}
+  .desktop-real-link-cta:hover{transform:translateY(-3px);box-shadow:0 19px 35px #e94c3f70;filter:saturate(1.08)}
+  .desktop-real-link-icon{width:43px;height:43px;display:grid;place-items:center;flex:none;border-radius:13px;background:#fff;color:#ed5135;box-shadow:0 5px 11px #a821242e}
+  .desktop-real-link-copy{display:grid;gap:3px;flex:1;min-width:0}
+  .desktop-real-link-copy strong{font-size:15px;letter-spacing:-.05em;white-space:nowrap}
+  .desktop-real-link-copy small{font-size:10px;color:#fff3ef;line-height:1.3}
+  .desktop-real-link-copy .desktop-real-link-kicker{color:#ffefd1;font:800 9px Manrope,'Noto Sans KR',sans-serif;letter-spacing:.03em}
+  .desktop-real-link-arrow{width:27px;height:27px;display:grid;place-items:center;flex:none;border-radius:50%;background:#ffffff30}
+  .desktop-flow-card{width:min(100%,320px);min-height:520px;margin-left:auto;padding:22px;border:1px solid #e4edfb;border-radius:24px;background:#ffffffd6;box-shadow:0 16px 45px #33669b10}
+  .desktop-flow-kicker{font:800 10px Manrope,sans-serif;letter-spacing:.25em;color:#7caeea}
+  .desktop-flow h2{margin:8px 0 22px;color:#103876;font-size:clamp(18px,1.6vw,24px);letter-spacing:-.055em}
+  .desktop-flow ol{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+  .desktop-flow li{display:flex;align-items:center;gap:10px}
+  .desktop-step-number{flex:none;width:33px;color:#0c418e;font:800 15px Manrope,sans-serif}
+  .desktop-step-body{display:flex;align-items:center;gap:13px;flex:1;min-width:0;min-height:83px;padding:13px;border:1px solid #e3ecf8;border-radius:17px;background:#fff;box-shadow:0 5px 16px #2356930b}
+  .desktop-step-icon{position:relative;display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:14px;background:#fff;color:#126be2;box-shadow:0 5px 14px #12386b1a,inset 0 0 0 1px #e5edf8}
+  .desktop-step-icon::before{content:'';position:absolute;width:36px;height:36px;border-radius:11px;background:#eaf3ff}
+  .desktop-step-icon svg{position:relative;stroke-width:2.6}
+  .desktop-flow li:first-child .desktop-step-icon{color:#fff}
+  .desktop-flow li:first-child .desktop-step-icon::before{display:none}
+  .desktop-flow li:nth-child(3) .desktop-step-icon{color:#0caa9b}
+  .desktop-flow li:nth-child(3) .desktop-step-icon::before{background:#e5f8f4}
+  .desktop-flow li:nth-child(4) .desktop-step-icon{color:#7058d6}
+  .desktop-flow li:nth-child(4) .desktop-step-icon::before{background:#f0ecff}
+  .desktop-flow li:nth-child(5) .desktop-step-icon{color:#2057a8}
+  .desktop-flow li:nth-child(5) .desktop-step-icon::before{background:#e8f1ff}
+  .desktop-youtube-mark{display:grid;place-items:center;width:35px;height:25px;border-radius:8px;background:#ff0033;box-shadow:0 3px 8px #ff003344}
+  .desktop-youtube-mark svg{margin-left:2px;stroke-width:0}
+  .desktop-step-body strong{color:#153b77;font-size:14px}
+  .desktop-step-body p{margin:4px 0 0;color:#7186a3;font-size:11px;line-height:1.45;word-break:keep-all}
+  .desktop-flow-footer{width:min(100%,320px);margin:24px 0 0 auto;text-align:center;color:#427fca;font-size:12px;font-weight:700}
 }
