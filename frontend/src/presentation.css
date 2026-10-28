@@ -110,37 +110,42 @@
   .presentation-stage::after{width:560px;height:560px;right:-330px;bottom:-430px}
   .desktop-intro{display:contents}
   .phone{grid-column:2;grid-row:1;justify-self:center}
-  .desktop-intro .demo-controls{grid-column:1;grid-row:1;align-self:center;justify-self:start;transform:none}
+  .desktop-intro .demo-controls{grid-column:1;grid-row:1;align-self:center;justify-self:start}
   .desktop-intro{position:relative;align-items:flex-start;justify-content:center;padding-left:0}
   .desktop-logo{position:fixed;z-index:2;top:28px;left:clamp(24px,4vw,70px);display:flex;align-items:center;color:#0a3072;font:800 clamp(27px,2.7vw,36px)/1 Manrope,'Noto Sans KR',sans-serif;letter-spacing:-.055em;white-space:nowrap}
   .desktop-logo strong{color:#2589ed;font-weight:800}
   .desktop-intro-copy{position:fixed;z-index:2;top:77px;left:clamp(24px,4vw,70px);margin:0}
   .desktop-eyebrow{color:#163a73;font-size:clamp(12px,1vw,15px);font-weight:800;letter-spacing:-.04em}
   .desktop-intro-copy p{margin:4px 0 0;color:#5f7695;font-size:clamp(11px,.9vw,13px);font-weight:600;line-height:1.55;letter-spacing:-.04em}
-  .desktop-intro .demo-controls{position:static;width:min(100%,340px);color:#17304f;transform:translateY(clamp(-88px,-8vh,-64px))}
-  .desktop-intro .demo-controls-menu{position:relative;max-height:none;overflow:visible;margin-top:42px;padding:22px;border:1px solid #dfeafb;border-radius:22px;box-shadow:0 14px 40px #28548316;background:#fffd}
-  .desktop-intro .demo-controls-title{display:block;width:100%;margin:0 0 12px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;line-height:1.25;letter-spacing:-.045em;text-align:left;white-space:normal;word-break:keep-all}
+  .desktop-intro .demo-controls{position:static;width:min(100%,340px);color:#17304f;transform:translateY(clamp(-36px,-3vh,-24px))}
+  .desktop-intro .demo-controls-menu{position:relative;max-height:calc(100dvh - 110px);overflow-y:auto;margin-top:42px;padding:16px;border:1px solid #dfeafb;border-radius:22px;box-shadow:0 14px 40px #28548316;background:#fffd}
+  .desktop-intro .demo-controls-title{display:block;width:100%;margin:0 0 8px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;line-height:1.25;letter-spacing:-.045em;text-align:left;white-space:normal;word-break:keep-all}
   .desktop-intro .demo-controls-subtitle{display:block;margin:0 0 4px;color:#7c91aa;font-size:13px;font-weight:650;letter-spacing:-.025em}
   .desktop-intro .demo-account-list{gap:2px}
-  .desktop-intro .demo-account-list button{min-height:82px;padding:13px 11px;align-items:flex-start}
+  .desktop-intro .demo-account-list button{min-height:64px;padding:9px 10px;align-items:flex-start}
   .desktop-intro .demo-account-list button.selected{background:#eef6ff;border-radius:9px}
-  .desktop-intro .demo-account-radio{width:17px;height:17px}
-  .desktop-intro .demo-account-text{gap:5px;white-space:normal}
-  .desktop-intro .demo-account-text strong{font-size:16px}
-  .desktop-intro .demo-account-text small{font-size:13px;line-height:1.55;white-space:normal;overflow:visible;text-overflow:clip;color:#536b88}
-  .desktop-intro-actions{position:relative;grid-column:1;grid-row:1;align-self:end;justify-self:start;display:grid;width:min(100%,340px);gap:11px;margin:0 0 16px;transform:none}
-  .desktop-intro-actions::before{content:'시연 시작';margin:0 0 1px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;letter-spacing:-.045em}
+  .desktop-intro .demo-account-radio{width:15px;height:15px}
+  .desktop-intro .demo-account-text{gap:3px;white-space:normal}
+  .desktop-intro .demo-account-text strong{font-size:14px}
+  .desktop-intro .demo-account-text small{font-size:11px;line-height:1.4;white-space:normal;overflow:visible;text-overflow:clip;color:#536b88}
+  .desktop-intro .demo-account-list--more button{min-height:46px;padding:6px 9px}
+  .desktop-intro .demo-account-list--more .demo-account-text{gap:2px}
+  .desktop-intro .demo-account-list--more .demo-account-text strong{font-size:12px}
+  .desktop-intro .demo-account-list--more .demo-account-text small{font-size:10px;line-height:1.35}
+  .desktop-intro .demo-account-list--more .demo-account-radio{width:13px;height:13px}
+  .desktop-intro-actions{position:relative;grid-column:1;grid-row:1;align-self:end;justify-self:start;display:grid;width:min(100%,340px);gap:11px;margin:0;transform:none}
+  .desktop-intro-actions::before{content:'시연 방식 선택';margin:0 0 1px;color:#123b78;font-size:clamp(22px,1.9vw,27px);font-weight:850;letter-spacing:-.045em}
   .desktop-intro-actions .desktop-real-link-cta{width:100%;min-height:84px;margin:0;padding:12px;border-radius:17px}
   .desktop-intro-actions .desktop-real-link-copy strong{font-size:14px}
   .desktop-intro-actions .desktop-real-link-copy small{font-size:10px}
   .desktop-intro-actions .desktop-mock-link-cta{background:linear-gradient(118deg,#176fc8,#1550a6 72%,#123d83);border-color:#1550a6;box-shadow:0 12px 25px #1a5cad35}
   .desktop-intro-actions .desktop-mock-link-cta .desktop-real-link-icon{color:#155db1}
-  .demo-account-note{display:grid;gap:5px;margin:0 0 12px;padding:13px 14px;border:0;border-radius:14px;background:linear-gradient(120deg,#edf6ff,#f6faff);color:#49627f;line-height:1.45;word-break:keep-all}
+  .demo-account-note{display:grid;gap:4px;margin:0 0 8px;padding:10px 12px;border:0;border-radius:14px;background:linear-gradient(120deg,#edf6ff,#f6faff);color:#49627f;line-height:1.4;word-break:keep-all}
   .demo-account-note strong{color:#1768c6;font-size:15px;font-weight:850;letter-spacing:-.025em}
   .demo-account-note span{font-size:13px;font-weight:650}
   .demo-account-note b{display:flex;align-items:center;gap:4px;margin-top:2px;color:#145bb0;font-size:12px;font-weight:800}
   .demo-account-note b svg{transform:rotate(-90deg)}
-  .demo-account-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:12px 9px;border:0;border-top:1px solid #e7eef8;background:transparent;color:#2869b8;font-size:14px;font-weight:700;text-align:left;cursor:pointer}
+  .demo-account-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;margin-top:5px;padding:9px;border:0;border-top:1px solid #e7eef8;background:transparent;color:#2869b8;font-size:13px;font-weight:700;text-align:left;cursor:pointer}
   .demo-account-toggle svg{transition:transform .18s ease}
   .demo-account-toggle svg.expanded{transform:rotate(180deg)}
   .desktop-flow{justify-content:center}
@@ -193,6 +198,30 @@
 .portfolio-donut::after{content:'';position:absolute;inset:16px;border-radius:50%;background:#f4f8fd}
 .portfolio-donut.portfolio-active{background:conic-gradient(#1769c2 0 10%,#7967d9 10% 25%,#e6edf6 25% 100%)}
 .portfolio-visual ul{flex:1;min-width:145px}
-.profile-popover-info li{display:flex;justify-content:space-between;color:#3b536f;font-size:14px}
+.portfolio-visual li{display:grid;grid-template-columns:8px minmax(0,1fr) auto;align-items:center;gap:6px}
+.portfolio-visual li i{width:8px;height:8px;border-radius:50%}
+.profile-popover-info li{color:#3b536f;font-size:14px}
 .profile-popover-info li strong{color:#146bc8}
 .profile-popover-info small{display:block;margin-top:12px;color:#7187a2;font-size:12px;line-height:1.5}
+.desktop-navigation{display:none}
+@media (min-width:1280px){
+  .desktop-navigation{position:fixed;z-index:5;top:clamp(100px,calc(50% - 320px),170px);left:clamp(32px,4vw,70px);width:min(340px,calc(50vw - 230px));display:flex;justify-content:flex-end;gap:8px}
+  .desktop-navigation button{display:flex;align-items:center;gap:7px;padding:10px 16px;border:1px solid #1763bb;border-radius:12px;background:linear-gradient(135deg,#2688ed,#1459b2);color:#fff;font-size:14px;font-weight:800;box-shadow:0 7px 18px #1459b244;cursor:pointer}
+  .desktop-navigation button:hover{background:linear-gradient(135deg,#3998fa,#0d4e9f);box-shadow:0 9px 22px #1459b255}
+}
+.tour-overlay{position:fixed;inset:0;z-index:1000;pointer-events:none}
+.tour-backdrop{position:absolute;inset:0}
+.tour-spotlight{position:fixed;z-index:1;border:2px solid #fff;border-radius:18px;box-shadow:0 0 0 5px #58a6ff88,0 0 0 9999px #081b3899;pointer-events:none}
+.tour-guide{position:fixed;z-index:2;box-sizing:border-box;width:300px;padding:20px;border:1px solid #d5e6ff;border-radius:18px;background:#fff;color:#19395f;box-shadow:0 20px 56px #061b3c55;pointer-events:auto}
+.tour-guide-top,.tour-guide-actions,.tour-guide-actions>div{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tour-guide-top{margin-bottom:13px;color:#2674ce;font-size:12px;font-weight:800}
+.tour-guide-top button{display:grid;place-items:center;padding:3px;border:0;background:transparent;color:#6682a5;cursor:pointer}
+.tour-guide>strong{display:block;font-size:18px;line-height:1.35;word-break:keep-all}
+.tour-guide>p{margin:10px 0 16px;color:#536b88;font-size:13px;line-height:1.65;word-break:keep-all}
+.tour-click-hint{display:block;margin:-4px 0 15px;color:#176bc7;font-size:12px;font-weight:800}
+.tour-guide-progress{display:flex;gap:5px;margin-bottom:18px}
+.tour-guide-progress i{width:19px;height:5px;border-radius:5px;background:#d9e7f7}
+.tour-guide-progress i.active{background:#217ee0}
+.tour-guide-actions button{padding:8px 11px;border:0;border-radius:8px;background:#edf4fc;color:#305d8d;font-size:12px;font-weight:800;cursor:pointer}
+.tour-guide-actions .tour-next{background:#176bc7;color:#fff}
+@media (max-width:1279px){.tour-overlay{display:none}}
