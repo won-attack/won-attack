@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # WON Check 시연 한 번에 실행 (macOS / Linux)
-#   ./start-demo.sh          (DB 있으면 그대로 사용)
-#   ./start-demo.sh reset    (근거 DB 다시 적재)
+#   ./start-demo.sh          (실행할 때 모델을 고름)
+#   ./start-demo.sh openai   (OpenAI 로 바로 실행)
+#   ./start-demo.sh ollama   (Ollama 로 바로 실행)
+#   ./start-demo.sh reset    (근거 DB 다시 적재, 위와 함께 써도 됨)
 # ChromaDB(:8000) / 백엔드(:8080) / 프론트(:5173)를 이 터미널에서 함께 띄우고, Ctrl+C 한 번에 모두 끕니다.
 # 로그: logs/chroma.log, logs/backend.log, logs/frontend.log
 set -euo pipefail
@@ -11,32 +13,83 @@ mkdir -p logs
 
 fail() { echo; echo "실행을 멈췄습니다: $1"; exit 1; }
 
+RESET=0; ARG_MODEL=""
+for a in "$@"; do
+  case "$(echo "$a" | tr '[:upper:]' '[:lower:]')" in
+    reset) RESET=1 ;;
+    openai|ollama) ARG_MODEL=$(echo "$a" | tr '[:upper:]' '[:lower:]') ;;
+  esac
+done
+
+# .env 의 KEY=값 한 줄 바꾸기 (없으면 추가)
+set_env() {
+  local tmp; tmp=$(mktemp)
+  awk -v k="$1" -v v="$2" 'BEGIN { f = 0 } index($0, k "=") == 1 { print k "=" v; f = 1; next } { print } END { if (!f) print k "=" v }' .env > "$tmp" \
+    && cat "$tmp" > .env && rm -f "$tmp" || fail ".env 를 저장하지 못했습니다: $1"
+}
+
 echo "[0/5] 준비물 확인"
-open_env() { if [[ "$(uname)" == "Darwin" ]]; then open -t .env; else xdg-open .env; fi >/dev/null 2>&1 || true; }
 if [[ ! -f .env ]]; then
-  cp .env.example .env; open_env
-  fail ".env 를 만들었습니다. 테스트(Ollama)는 그대로 저장, 시연(OpenAI)은 LLM_PROVIDER=openai 와 OPENAI_API_KEY 를 넣고 저장한 뒤 다시 실행하세요."
+  cp .env.example .env
+  echo "  .env 가 없어 .env.example 로 만들었습니다."
 fi
 set -a; # .env 값을 환경 변수로 (아래에서 띄우는 프로세스가 물려받음)
 # shellcheck disable=SC1091
 source <(grep -v '^\s*#' .env | grep '=' | sed 's/\r$//')
 set +a
+OLLAMA_CHAT_MODEL="${OLLAMA_CHAT_MODEL:-qwen3:4b-instruct}"
+OLLAMA_EMBEDDING_MODEL="${OLLAMA_EMBEDDING_MODEL:-embeddinggemma}"
+OPENAI_CHAT_MODEL="${OPENAI_CHAT_MODEL:-gpt-4o-mini}"
+EMBEDDING_MODEL="${EMBEDDING_MODEL:-text-embedding-3-small}"
 
-# AI 모델: .env 의 LLM_PROVIDER 하나로 대화 모델과 임베딩을 함께 맞춤
-#   openai → GPT + OpenAI 임베딩 (시연용, OPENAI_API_KEY 필요)
-#   ollama → 로컬 LLM + Ollama 임베딩 (테스트용, 키 불필요)
-LLM_PROVIDER=$(echo "${LLM_PROVIDER:-openai}" | tr '[:upper:]' '[:lower:]')
-case "$LLM_PROVIDER" in
-  openai)
-    [[ -n "${OPENAI_API_KEY:-}" ]] || { open_env; fail "OpenAI 모드인데 .env 에 OPENAI_API_KEY 가 비어 있습니다. 키를 넣고 저장한 뒤 다시 실행하세요."; }
-    echo "  AI 모델: OpenAI (대화 ${OPENAI_CHAT_MODEL:-gpt-4o-mini}, 임베딩 ${EMBEDDING_MODEL:-text-embedding-3-small})" ;;
-  ollama)
-    OLLAMA_CHAT_MODEL="${OLLAMA_CHAT_MODEL:-qwen3:4b-instruct}"
-    OLLAMA_EMBEDDING_MODEL="${OLLAMA_EMBEDDING_MODEL:-embeddinggemma}"
-    echo "  AI 모델: Ollama (대화 $OLLAMA_CHAT_MODEL, 임베딩 $OLLAMA_EMBEDDING_MODEL)" ;;
-  *) fail ".env 의 LLM_PROVIDER 는 openai 또는 ollama 여야 합니다 (지금 값: $LLM_PROVIDER)." ;;
-esac
-export LLM_PROVIDER OLLAMA_CHAT_MODEL OLLAMA_EMBEDDING_MODEL
+# ---------- AI 모델 고르기: 대화 모델과 임베딩을 함께 맞춤 ----------
+#   1 ollama → 로컬 LLM + Ollama 임베딩 (테스트용, 무료)
+#   2 openai → GPT + OpenAI 임베딩 (시연용, 유료, OPENAI_API_KEY 필요)
+if [[ -n "$ARG_MODEL" ]]; then
+  LLM_PROVIDER="$ARG_MODEL"
+elif [[ -t 0 ]]; then
+  def=1; [[ "$(echo "${LLM_PROVIDER:-}" | tr '[:upper:]' '[:lower:]')" == "openai" ]] && def=2
+  while true; do
+    echo
+    echo "어떤 모델을 사용하시겠습니까?"
+    echo "  1> Ollama (로컬 실행, $OLLAMA_CHAT_MODEL, 무료)"
+    echo "  2> OpenAI ($OPENAI_CHAT_MODEL, 유료)"
+    read -r -p "입력 [Enter = $def]: " pick
+    case "${pick:-$def}" in
+      1) LLM_PROVIDER=ollama; break ;;
+      2) LLM_PROVIDER=openai; break ;;
+      *) echo "  1 또는 2 를 입력하세요." ;;
+    esac
+  done
+else
+  # 터미널이 아닌 곳에서 실행하면 묻지 않고 .env 값을 씀
+  LLM_PROVIDER=$(echo "${LLM_PROVIDER:-openai}" | tr '[:upper:]' '[:lower:]')
+  [[ "$LLM_PROVIDER" == "openai" || "$LLM_PROVIDER" == "ollama" ]] \
+    || fail ".env 의 LLM_PROVIDER 는 openai 또는 ollama 여야 합니다 (지금 값: $LLM_PROVIDER)."
+fi
+if [[ "$LLM_PROVIDER" == "openai" ]]; then
+  if [[ -z "${OPENAI_API_KEY:-}" ]]; then
+    [[ -t 0 ]] || fail ".env 에 OPENAI_API_KEY 가 없습니다. 키를 넣거나 터미널에서 실행해 입력하세요."
+    echo
+    echo "  .env 에 OpenAI API 키가 없습니다. 키를 붙여 넣고 Enter 를 누르세요 (sk- 로 시작, 화면에 보이지 않음, .env 에만 저장됨)."
+    while true; do
+      read -r -s -p "OpenAI API 키: " key; echo
+      key="${key// /}"
+      if [[ "$key" == sk-* ]]; then break; fi
+      echo "  OpenAI API 키는 sk- 로 시작합니다. 다시 입력하세요. (그만두려면 Ctrl+C)"
+    done
+    OPENAI_API_KEY="$key"
+    set_env OPENAI_API_KEY "$OPENAI_API_KEY"
+    echo "  키를 .env 에 저장했습니다."
+  fi
+  echo "  AI 모델: OpenAI (대화 $OPENAI_CHAT_MODEL, 임베딩 $EMBEDDING_MODEL)"
+else
+  echo "  AI 모델: Ollama (대화 $OLLAMA_CHAT_MODEL, 임베딩 $OLLAMA_EMBEDDING_MODEL)"
+fi
+# 고른 모델을 .env 에 저장 (다음 실행의 기본값)
+set_env LLM_PROVIDER "$LLM_PROVIDER"
+set_env EMBEDDING_PROVIDER "$LLM_PROVIDER"
+export LLM_PROVIDER OPENAI_API_KEY OPENAI_CHAT_MODEL EMBEDDING_MODEL OLLAMA_CHAT_MODEL OLLAMA_EMBEDDING_MODEL
 export EMBEDDING_PROVIDER="$LLM_PROVIDER"
 
 # ---------- 준비물 자동 설치 (macOS: Homebrew) ----------
@@ -144,7 +197,7 @@ echo; echo "[1/5] 근거 DB 적재 ($EMBEDDING_PROVIDER 임베딩)"
 # OpenAI·Ollama 근거는 data/chroma_db 안에 컬렉션을 나눠 저장 (disclosures / disclosures_ollama)
 # 지금 모델용 컬렉션이 비었거나 임베딩 설정이 바뀌었으면 적재
 has_db() { "$PY" -c "import sys; sys.path.insert(0, 'data'); from init_db import open_collection; sys.exit(0 if open_collection()[0].count() else 1)" >/dev/null 2>&1; }
-if [[ "${1:-}" == "reset" ]] || ! has_db; then "$PY" data/init_db.py --reset || fail "근거 DB 적재 실패"
+if [[ "$RESET" == 1 ]] || ! has_db; then "$PY" data/init_db.py --reset || fail "근거 DB 적재 실패"
 else echo "  이미 적재된 근거 DB 를 그대로 씁니다. 다시 적재: ./start-demo.sh reset"; fi
 
 echo; echo "[2/5] ChromaDB 서버 (:8000)"

@@ -103,40 +103,49 @@ won-attack/
 
 ### 시연용이면 OpenAI, 테스트용이면 Ollama
 
-`.env`의 `LLM_PROVIDER` **한 줄**로 정합니다. 대화 모델과 임베딩이 함께 바뀝니다.
+실행 파일을 켜면 먼저 모델을 묻습니다. 고른 모델에 맞춰 대화 모델과 임베딩이 함께 바뀝니다.
 
-| 용도 | `.env` 설정 | 쓰는 모델 | 특징 |
+```
+어떤 모델을 사용하시겠습니까?
+  1> Ollama (로컬 실행, qwen3:4b-instruct, 무료)
+  2> OpenAI (gpt-4o-mini, 유료)
+입력 [Enter = 1]:
+```
+
+| 용도 | 고를 번호 | 쓰는 모델 | 특징 |
 |---|---|---|---|
-| **실제 시연·발표** | `LLM_PROVIDER=openai`<br>`OPENAI_API_KEY=sk-...` | 대화 `gpt-4o-mini` · 임베딩 `text-embedding-3-small` | 빠르고 판정이 정확함. 근거 검색 7/7이 아니면 실행을 멈춤. API 요금이 듦 |
-| **개발·테스트** (`.env.example` 기본값) | `LLM_PROVIDER=ollama` | 대화 `qwen3:4b-instruct` · 임베딩 `embeddinggemma` | 키·요금 없음, PC 안에서만 동작. 처음에 모델 약 3GB를 내려받고, 분석이 느리고 판정이 덜 정확할 수 있음 |
+| **실제 시연·발표** | `2` OpenAI | 대화 `gpt-4o-mini` · 임베딩 `text-embedding-3-small` | 빠르고 판정이 정확함. 근거 검색 7/7이 아니면 실행을 멈춤. API 요금이 듦 |
+| **개발·테스트** | `1` Ollama | 대화 `qwen3:4b-instruct` · 임베딩 `embeddinggemma` | 키·요금 없음, PC 안에서만 동작. 처음에 모델 약 3GB를 내려받고, 분석이 느리고 판정이 덜 정확할 수 있음 |
 
-- **발표 전에는 꼭 `openai`로 바꾸고** 실행 파일을 다시 실행하세요. 시연 화면과 대본의 판정 결과는 OpenAI 기준으로 확인했습니다.
+- **발표할 때는 꼭 `2`(OpenAI)를 고르세요.** 시연 화면과 대본의 판정 결과는 OpenAI 기준으로 확인했습니다.
+- `2`를 골랐는데 `.env`에 OpenAI 키가 없으면 그 자리에서 키를 물어봅니다. 붙여 넣으면 `.env`에 저장되어 다음부터는 묻지 않습니다. 키는 `sk-`로 시작해야 하며, macOS에서는 입력한 키가 화면에 보이지 않습니다.
+- 고른 번호는 `.env`의 `LLM_PROVIDER`에 저장되어, 다음 실행 때 `Enter`만 누르면 같은 모델로 실행됩니다.
+- 묻지 않고 바로 실행하려면 `start-demo.bat openai` / `start-demo.bat ollama`(macOS `./start-demo.sh openai`)처럼 붙입니다. 터미널이 아닌 곳에서 실행하면 묻지 않고 `.env`의 `LLM_PROVIDER`를 씁니다.
 - 두 모드의 근거 DB는 `data/chroma_db` 안에 따로 저장됩니다(`disclosures` / `disclosures_ollama`). 모드를 바꿔도 지울 필요 없이, 처음 한 번만 그 모드용으로 적재합니다.
-- Ollama 관련 설치·서버 켜기·모델 내려받기는 `LLM_PROVIDER=ollama`일 때만 합니다. `openai`면 Ollama는 건드리지 않습니다.
+- Ollama 관련 설치·서버 켜기·모델 내려받기는 Ollama를 골랐을 때만 합니다. OpenAI를 고르면 Ollama는 건드리지 않습니다.
 
 ### 한 번에 실행 (권장)
 
-실행 파일 하나로 시연 환경 전체를 띄웁니다. 처음 실행하면 `.env`가 없으므로 `.env.example`을 복사해 `.env`를 만들고 편집기로 열어 줍니다. 위 표대로 `LLM_PROVIDER`(시연이면 `openai` + `OPENAI_API_KEY`)를 정해 저장한 뒤 다시 실행하세요.
+실행 파일 하나로 시연 환경 전체를 띄웁니다. `.env`가 없으면 `.env.example`을 복사해 만들고, 위처럼 모델을 물은 뒤 바로 이어서 실행합니다.
 
 첫 실행은 프로그램 설치와 Gradle·npm 다운로드 때문에 10분 이상 걸릴 수 있습니다. 백엔드는 최대 15분까지 기다립니다.
 
 | 파일 | 쓰는 법 |
 |---|---|
-| `start-demo.bat` | Windows. 더블클릭 → ChromaDB · 백엔드 · 프론트 창 3개가 열림(Ollama 서버가 꺼져 있었다면 Ollama 창도). 근거 DB 다시 적재: `start-demo.bat reset` |
+| `start-demo.bat` | Windows. 더블클릭 → 모델 선택 → ChromaDB · 백엔드 · 프론트 창 3개가 열림(Ollama 서버가 꺼져 있었다면 Ollama 창도). 근거 DB 다시 적재: `start-demo.bat reset` (`start-demo.bat openai reset`처럼 함께 써도 됨) |
 | `stop-demo.bat` | Windows. 더블클릭 → 위 창들을 한 번에 종료 (따로 켜 둔 Ollama 앱은 그대로) |
-| `start-demo.sh` | macOS. `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) → 한 터미널에서 실행, `Ctrl+C`로 모두 종료, 로그는 `logs/` |
+| `start-demo.sh` | macOS. `./start-demo.sh` → 모델 선택 → 한 터미널에서 실행, `Ctrl+C`로 모두 종료, 로그는 `logs/`. 다시 적재: `./start-demo.sh reset` |
 | `stop-demo.sh` | macOS. 터미널을 그냥 닫았거나 포트가 남아 있을 때 `./stop-demo.sh` → 8000·8080·5173 포트 프로세스 종료 |
 
-실행 파일은 `.env`의 값을 백엔드에 넘기고, `EMBEDDING_PROVIDER`는 `LLM_PROVIDER`와 같은 값으로 맞춰 넘깁니다.
+실행 파일은 `.env`의 값을 백엔드에 넘기고, 고른 모델을 `LLM_PROVIDER`·`EMBEDDING_PROVIDER`에 같은 값으로 저장해 넘깁니다.
 
 실행 순서
 
-1. `.env`의 키를 읽고 Python 3.10+ · Node.js 18+ · Java 21이 있는지 확인합니다. 없거나 버전이 낮으면 설치합니다.
+1. 모델을 고르고(OpenAI인데 키가 없으면 입력받아 `.env`에 저장), Python 3.10+ · Node.js 18+ · Java 21이 있는지 확인합니다. 없거나 버전이 낮으면 설치합니다.
    - Windows: winget으로 Python 3.12(사용자 설치), Node.js LTS, Eclipse Temurin 21을 설치합니다. Node.js와 Java는 관리자 승인 창이 뜰 수 있습니다.
    - macOS: Homebrew로 `python@3.12`, `node`, `openjdk@21`을 설치합니다. Homebrew가 없으면 Homebrew부터 설치하며, 이때 Mac 로그인 비밀번호를 물을 수 있습니다.
    - chromadb·openai가 없으면 `data/requirements.txt`로 설치합니다. macOS는 레포 안 `.venv` 가상환경에 설치합니다.
-   - `LLM_PROVIDER=openai`이면 `OPENAI_API_KEY`가 있는지 확인합니다.
-   - `LLM_PROVIDER=ollama`이면 Ollama가 없을 때 설치하고(Windows winget, macOS Homebrew), 서버(`:11434`)가 꺼져 있으면 켜고, 대화·임베딩 모델이 없으면 내려받습니다(처음 한 번, 약 3GB).
+   - Ollama를 골랐으면 Ollama가 없을 때 설치하고(Windows winget, macOS Homebrew), 서버(`:11434`)가 꺼져 있으면 켜고, 대화·임베딩 모델이 없으면 내려받습니다(처음 한 번, 약 3GB).
 2. 지금 모드용 근거 DB가 비어 있거나 `reset`을 붙였을 때만 `init_db.py`로 적재합니다.
 3. ChromaDB 서버를 켭니다 (`:8000`).
 4. `check_db.py --server`로 근거 검색을 점검합니다. OpenAI 모드는 **7/7이 아니면 여기서 멈춥니다** — 데이터 문제를 백엔드보다 먼저 잡기 위해서입니다. Ollama 모드는 결과만 보여 주고 계속 진행합니다.
@@ -151,8 +160,9 @@ won-attack/
 | "백엔드 코드(gradlew)가 없습니다" | `git pull`로 최신 main을 받았는지. macOS에서 실행 권한이 없으면 `chmod +x backend/won-check-backend/gradlew` |
 | 4단계 점검 실패 | 데이터 쪽 문제 → `reset`을 붙여 다시 적재 |
 | 화면에서 판정이 이상함 | 점검(7/7)은 통과했으니 백엔드 쪽(회사명 추출·검색 필터·대화 모델 설정)을 확인 |
-| Ollama 분석이 실패하거나 너무 느림 | Ollama 서버가 켜져 있는지(`ollama list`), 모델을 다 받았는지. 메모리가 부족한 PC는 `.env`를 `LLM_PROVIDER=openai`로 |
-| "LLM_PROVIDER 는 openai 또는 ollama 여야 합니다" | `.env`의 `LLM_PROVIDER` 값 오타 확인 |
+| Ollama 분석이 실패하거나 너무 느림 | Ollama 서버가 켜져 있는지(`ollama list`), 모델을 다 받았는지. 메모리가 부족한 PC는 실행할 때 `2`(OpenAI)를 고르세요 |
+| "LLM_PROVIDER 는 openai 또는 ollama 여야 합니다" | 터미널이 아닌 곳에서 실행할 때만 나옴. `.env`의 `LLM_PROVIDER` 값 오타 확인 |
+| OpenAI 키를 잘못 넣었음 | `.env`의 `OPENAI_API_KEY=` 줄을 고치거나 비우고 다시 실행 (비우면 다시 물어봄) |
 | 설치 직후 "찾지 못했습니다"로 멈춤 | 새로 설치한 프로그램이 이 창에 아직 안 잡힌 것 → 창(터미널)을 닫고 실행 파일을 다시 실행 |
 | 포트가 이미 사용 중 | `stop-demo.bat`(macOS `./stop-demo.sh`)으로 이전 실행을 끄고 다시 실행 |
 
