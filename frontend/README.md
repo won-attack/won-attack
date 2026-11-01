@@ -1,9 +1,9 @@
 # frontend
 
-React 웹 — 스크롤 가능한 시연 영상 목록, 유튜브 영상 화면, 공유 모달(WON MTS 선택), WON MTS 결과 화면.
+React 웹 — 시연 영상 목록·쇼츠·유튜브 화면, 공유 시트(WON MTS 선택), 링크 붙여넣기 분석, WON MTS 리포트·종목 상세·리포트 보관함.
 
 - API 기준: `../docs/api/analyze_request.json`, `analyze_response.json`, `analyze_error.json`
-- 백엔드 완성 전에는 세 시연 영상에 맞춘 프론트엔드 Mock 결과를 사용
+- `VITE_USE_MOCK`이 `false`가 아니면 세 시연 영상에 맞춘 프론트엔드 Mock 결과를 사용
 - 상태: 로딩 · 성공(검증 카드 · 출처 링크 · 개인화 카드) · 오류/재시도 · 대본 없음
 - API 전환: `frontend/.env`의 `VITE_USE_MOCK=false`와 Vite의 `/api` 프록시
 
@@ -39,5 +39,6 @@ npm run dev
 `frontend/vite.config.ts`의 프록시 대상만 변경하면 됩니다.
 
 첫 화면에서 `../data/transcripts.json`에 등록된 삼성전자·SK하이닉스·현대자동차
-시연 영상 3개 중 하나를 선택합니다. 현재 URL의 영상 ID는 사전 준비 대본 조회용
-시연 ID입니다. 실제 영상 업로드 후에는 해당 영상의 URL과 데이터의 ID를 함께 갱신해야 합니다.
+시연 영상 3개 중 하나를 선택합니다. 영상 파일과 썸네일은 `../video/out/`의 MP4·PNG를 그대로 씁니다.
+링크 화면에서는 실제 YouTube 영상(`48WVf1ijerc`, `../data/youtube_transcripts.json`)을 붙여 넣어 분석할 수 있습니다.
+저장한 리포트는 브라우저(localStorage)에만 남습니다.
