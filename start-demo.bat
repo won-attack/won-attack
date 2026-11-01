@@ -14,7 +14,9 @@ set "ROOT=%CD%"
 echo.
 echo [0/5] 준비물 확인
 if not exist ".env" (
-  echo   .env 파일이 없습니다. .env.example 을 복사해 .env 를 만들고 OPENAI_API_KEY 를 넣으세요.
+  copy /y ".env.example" ".env" >nul
+  start "" notepad ".env"
+  echo   .env 를 만들었습니다. 열린 메모장의 OPENAI_API_KEY= 뒤에 키를 넣고 저장한 뒤 다시 실행하세요.
   goto :fail
 )
 rem .env 의 값을 환경 변수로 읽기 (# 줄은 건너뜀). 이 창에서 연 창들이 그대로 물려받음
@@ -22,7 +24,8 @@ for /f "usebackq eol=# tokens=1,* delims==" %%a in (".env") do (
   if not "%%b"=="" set "%%a=%%b"
 )
 if "%OPENAI_API_KEY%"=="" (
-  echo   .env 에 OPENAI_API_KEY 가 비어 있습니다.
+  start "" notepad ".env"
+  echo   .env 에 OPENAI_API_KEY 가 비어 있습니다. 열린 메모장에서 키를 넣고 저장한 뒤 다시 실행하세요.
   goto :fail
 )
 rem 준비물 자동 설치 (winget): 없거나 버전이 낮으면 Python 3.10+, Node.js 18+, Java 21 을 설치
@@ -90,12 +93,13 @@ set "VITE_USE_MOCK=false"
 start "WON Check - Frontend :5173" cmd /k "cd /d "%ROOT%\frontend" && (if not exist node_modules npm install) && npm run dev"
 
 echo.
-echo 백엔드가 뜰 때까지 기다린 뒤 브라우저를 엽니다 ^(최대 2분^)...
+echo 백엔드가 뜰 때까지 기다린 뒤 브라우저를 엽니다 ^(최대 15분^).
+echo 첫 실행은 Gradle·라이브러리 다운로드로 5분 넘게 걸릴 수 있습니다. 진행 상황은 백엔드 창에서 보세요.
 set /a TRY=0
 :wait_backend
 set /a TRY+=1
 curl -s -o nul http://localhost:8080 >nul 2>nul && goto :open
-if !TRY! GEQ 120 goto :open
+if !TRY! GEQ 900 goto :open
 timeout /t 1 /nobreak >nul
 goto :wait_backend
 :open

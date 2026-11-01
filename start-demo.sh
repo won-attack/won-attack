@@ -12,12 +12,16 @@ mkdir -p logs
 fail() { echo; echo "실행을 멈췄습니다: $1"; exit 1; }
 
 echo "[0/5] 준비물 확인"
-[[ -f .env ]] || fail ".env 가 없습니다. cp .env.example .env 후 OPENAI_API_KEY 를 넣으세요."
+open_env() { if [[ "$(uname)" == "Darwin" ]]; then open -t .env; else xdg-open .env; fi >/dev/null 2>&1 || true; }
+if [[ ! -f .env ]]; then
+  cp .env.example .env; open_env
+  fail ".env 를 만들었습니다. 열린 파일의 OPENAI_API_KEY= 뒤에 키를 넣고 저장한 뒤 다시 실행하세요."
+fi
 set -a; # .env 값을 환경 변수로 (아래에서 띄우는 프로세스가 물려받음)
 # shellcheck disable=SC1091
 source <(grep -v '^\s*#' .env | grep '=' | sed 's/\r$//')
 set +a
-[[ -n "${OPENAI_API_KEY:-}" ]] || fail ".env 에 OPENAI_API_KEY 가 비어 있습니다."
+[[ -n "${OPENAI_API_KEY:-}" ]] || { open_env; fail ".env 에 OPENAI_API_KEY 가 비어 있습니다. 키를 넣고 저장한 뒤 다시 실행하세요."; }
 
 # ---------- 준비물 자동 설치 (macOS: Homebrew) ----------
 # 없거나 버전이 낮으면 설치합니다: Python 3.10+, Node.js 18+, Java 21
@@ -113,8 +117,9 @@ echo; echo "[4/5] 백엔드 (:8080, live)"
 echo; echo "[5/5] 프론트 (:5173, 실제 백엔드 사용)"
 ( cd frontend && [[ -d node_modules ]] || npm install; VITE_USE_MOCK=false npm run dev ) > logs/frontend.log 2>&1 & PIDS+=($!)
 
-wait_for http://localhost:8080 180 백엔드
-wait_for http://localhost:5173 60 프론트
+echo; echo "백엔드를 기다립니다 (첫 실행은 Gradle·라이브러리 다운로드로 5분 넘게 걸릴 수 있음, 진행 상황: logs/backend.log)"
+wait_for http://localhost:8080 900 백엔드
+wait_for http://localhost:5173 300 프론트
 ( command -v open >/dev/null && open http://localhost:5173 ) || ( command -v xdg-open >/dev/null && xdg-open http://localhost:5173 ) || true
 echo; echo "완료! http://localhost:5173  (끄려면 Ctrl+C)"
 wait

@@ -104,11 +104,9 @@ won-attack/
 
 ### 한 번에 실행 (권장)
 
-루트 `.env`에 `OPENAI_API_KEY`를 넣은 뒤 실행 파일 하나로 시연 환경 전체를 띄웁니다.
+실행 파일 하나로 시연 환경 전체를 띄웁니다. 처음 실행하면 `.env`가 없으므로 `.env.example`을 복사해 `.env`를 만들고 편집기로 열어 줍니다. `OPENAI_API_KEY=` 뒤에 키를 넣고 저장한 뒤 다시 실행하세요.
 
-```bash
-copy .env.example .env    # macOS: cp .env.example .env → OPENAI_API_KEY 입력
-```
+첫 실행은 프로그램 설치와 Gradle·npm 다운로드 때문에 10분 이상 걸릴 수 있습니다. 백엔드는 최대 15분까지 기다립니다.
 
 | 파일 | 쓰는 법 |
 |---|---|
