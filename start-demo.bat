@@ -25,13 +25,18 @@ if "%OPENAI_API_KEY%"=="" (
   echo   .env 에 OPENAI_API_KEY 가 비어 있습니다.
   goto :fail
 )
-where python >nul 2>nul || (echo   python 이 없습니다. Python 3.10 이상을 설치하세요. & goto :fail)
-where npm >nul 2>nul || (echo   npm 이 없습니다. Node.js 18 이상을 설치하세요. & goto :fail)
-where java >nul 2>nul || (echo   java 가 없습니다. Java 21 을 설치하세요. & goto :fail)
+rem 준비물 자동 설치 (winget): 없거나 버전이 낮으면 Python 3.10+, Node.js 18+, Java 21 을 설치
+call :ensure_python || goto :fail
+call :ensure_node || goto :fail
+call :ensure_java || goto :fail
 python -c "import chromadb, openai" >nul 2>nul || (
   echo   chromadb·openai 가 없어 설치합니다: pip install -r data\requirements.txt
   python -m pip install -r data\requirements.txt || goto :fail
 )
+call :java_major
+for /f "delims=" %%v in ('python --version') do set "PYV=%%v"
+for /f "delims=" %%v in ('node -v') do set "NODEV=%%v"
+echo   준비 완료: %PYV%, Node %NODEV%, Java %JMAJ%
 
 rem 백엔드 폴더 찾기 (backend\ 또는 backend\won-check-backend\)
 set "BACKEND="
@@ -107,3 +112,64 @@ echo.
 echo 실행을 멈췄습니다. 위 메시지를 확인하세요.
 pause
 exit /b 1
+
+rem ======================================================================
+rem  준비물 자동 설치 (winget)
+rem ======================================================================
+:need_winget
+where winget >nul 2>nul && exit /b 0
+echo   winget^(앱 설치 관리자^)이 없어 자동 설치를 할 수 없습니다.
+echo   Microsoft Store 에서 '앱 설치 관리자'를 설치하거나, Python 3.10+ / Node.js 18+ / Java 21 을 직접 설치하세요.
+exit /b 1
+
+:ensure_python
+python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)" >nul 2>nul && exit /b 0
+call :need_winget || exit /b 1
+echo   Python 3.10 이상이 없어 설치합니다 ^(winget: Python 3.12^)
+winget install -e --id Python.Python.3.12 --scope user --silent --accept-package-agreements --accept-source-agreements --override "/quiet InstallAllUsers=0 PrependPath=1 Include_launcher=0"
+set "PATH=%LOCALAPPDATA%\Programs\Python\Python312;%LOCALAPPDATA%\Programs\Python\Python312\Scripts;%PATH%"
+python -c "import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)" >nul 2>nul && exit /b 0
+echo   Python 설치 후에도 python 을 찾지 못했습니다. 이 창을 닫고 다시 실행하세요.
+exit /b 1
+
+:ensure_node
+node -e "process.exit(+process.versions.node.split('.')[0] >= 18 ? 0 : 1)" >nul 2>nul && where npm >nul 2>nul && exit /b 0
+call :need_winget || exit /b 1
+echo   Node.js 18 이상이 없어 설치합니다 ^(winget: Node.js LTS, 관리자 승인 창이 뜰 수 있음^)
+winget install -e --id OpenJS.NodeJS.LTS --silent --accept-package-agreements --accept-source-agreements
+set "PATH=%ProgramFiles%\nodejs;%PATH%"
+node -e "process.exit(+process.versions.node.split('.')[0] >= 18 ? 0 : 1)" >nul 2>nul && where npm >nul 2>nul && exit /b 0
+echo   Node.js 설치 후에도 node/npm 을 찾지 못했습니다. 이 창을 닫고 다시 실행하세요.
+exit /b 1
+
+:ensure_java
+call :java_major
+if defined JMAJ if !JMAJ! GEQ 21 exit /b 0
+rem 기본 java 가 다른 버전이면, 이미 설치된 JDK 21 을 먼저 찾음
+call :find_jdk21 && goto :java_set
+call :need_winget || exit /b 1
+echo   Java 21 이 없어 설치합니다 ^(winget: Eclipse Temurin 21 JDK, 관리자 승인 창이 뜰 수 있음^)
+winget install -e --id EclipseAdoptium.Temurin.21.JDK --silent --accept-package-agreements --accept-source-agreements
+call :find_jdk21 || (echo   Java 21 설치 후에도 JDK 폴더를 찾지 못했습니다. 이 창을 닫고 다시 실행하세요.& exit /b 1)
+:java_set
+set "PATH=%JAVA_HOME%\bin;%PATH%"
+call :java_major
+if defined JMAJ if !JMAJ! GEQ 21 exit /b 0
+echo   Java 21 을 찾지 못했습니다 ^(JAVA_HOME=%JAVA_HOME%^)
+exit /b 1
+
+:find_jdk21
+set "JAVA_HOME="
+for /d %%d in ("%ProgramFiles%\Eclipse Adoptium\jdk-21*" "%ProgramFiles%\Java\jdk-21*" "%ProgramFiles%\Microsoft\jdk-21*" "%ProgramFiles%\Zulu\zulu-21*") do set "JAVA_HOME=%%~d"
+if not defined JAVA_HOME exit /b 1
+if exist "%JAVA_HOME%\bin\java.exe" exit /b 0
+set "JAVA_HOME="
+exit /b 1
+
+:java_major
+set "JV="
+set "JMAJ="
+for /f "tokens=3" %%v in ('java -version 2^>^&1 ^| findstr /i "version"') do set "JV=%%~v"
+if not defined JV exit /b 0
+for /f "delims=." %%m in ("%JV%") do set "JMAJ=%%m"
+exit /b 0

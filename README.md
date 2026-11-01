@@ -100,7 +100,7 @@ won-attack/
 
 ## 실행 방법 (로컬)
 
-필요한 것: Python 3.10+, Java 21, Node.js 18+, OpenAI API 키 (Ollama를 쓸 때도 임베딩에 필요)
+필요한 것: OpenAI API 키(Ollama를 쓸 때도 임베딩에 필요)와 인터넷 연결. Python 3.10+, Node.js 18+, Java 21은 없으면 실행 파일이 설치합니다 (Windows는 winget, macOS는 Homebrew). Linux는 셋을 직접 설치하세요.
 
 ### 한 번에 실행 (권장)
 
@@ -128,7 +128,10 @@ copy .env.example .env    # macOS: cp .env.example .env → OPENAI_API_KEY 입�
 
 실행 순서
 
-1. `.env`의 키를 읽고 Python · Node.js · Java 설치 여부를 확인합니다. chromadb·openai가 없으면 `data/requirements.txt`로 설치합니다.
+1. `.env`의 키를 읽고 Python 3.10+ · Node.js 18+ · Java 21이 있는지 확인합니다. 없거나 버전이 낮으면 설치합니다.
+   - Windows: winget으로 Python 3.12(사용자 설치), Node.js LTS, Eclipse Temurin 21을 설치합니다. Node.js와 Java는 관리자 승인 창이 뜰 수 있습니다.
+   - macOS: Homebrew로 `python@3.12`, `node`, `openjdk@21`을 설치합니다. Homebrew가 없으면 Homebrew부터 설치하며, 이때 Mac 로그인 비밀번호를 물을 수 있습니다.
+   - chromadb·openai가 없으면 `data/requirements.txt`로 설치합니다. macOS는 레포 안 `.venv` 가상환경에 설치합니다.
 2. 근거 DB(`data/chroma_db`)가 없거나 `reset`을 붙였을 때만 `init_db.py`로 적재합니다.
 3. ChromaDB 서버를 켭니다 (`:8000`).
 4. `check_db.py --server`로 근거 검색을 점검합니다. **7/7이 아니면 여기서 멈춥니다** — 데이터 문제를 백엔드보다 먼저 잡기 위해서입니다.
@@ -144,6 +147,7 @@ copy .env.example .env    # macOS: cp .env.example .env → OPENAI_API_KEY 입�
 | 4단계 점검 실패 | 데이터 쪽 문제 → `reset`을 붙여 다시 적재 |
 | 화면에서 판정이 이상함 | 점검(7/7)은 통과했으니 백엔드 쪽(회사명 추출·검색 필터·대화 모델 설정)을 확인 |
 | Ollama로 바꿨더니 분석 실패 | Ollama가 켜져 있는지, `OLLAMA_CHAT_MODEL`이 비어 있지 않은지 |
+| 설치 직후 "찾지 못했습니다"로 멈춤 | 새로 설치한 프로그램이 이 창에 아직 안 잡힌 것 → 창(터미널)을 닫고 실행 파일을 다시 실행 |
 | 포트가 이미 사용 중 | `stop-demo.bat`(macOS `./stop-demo.sh`)으로 이전 실행을 끄고 다시 실행 |
 
 ### 직접 실행할 때
