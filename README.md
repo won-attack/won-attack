@@ -250,4 +250,33 @@ PR을 올리면 CI가 커밋 메시지, `.env`·API 키·`chroma_db` 커밋 여�
 
 ## 팀
 
-B반 4팀 — 박소정 · 서현진 · 이채원 · 정영준 · 최윤하
+B반 4팀 · 역할은 GitHub 커밋·PR 기록을 기준으로 정리했습니다.
+
+<table>
+  <tr><th>프로필</th><th>팀원</th><th>역할</th></tr>
+  <tr>
+    <td align="center"><a href="https://github.com/GOSERA0204"><img src="https://github.com/GOSERA0204.png?size=120" width="72" height="72" alt="박소정"/></a></td>
+    <td align="center"><b>박소정</b><br><a href="https://github.com/GOSERA0204">@GOSERA0204</a></td>
+    <td><b>백엔드 · AI 연동</b><br>OpenAI·Ollama 임베딩과 ChromaDB 검색 검증, 실제 YouTube 대본 연동, 주장 추출 개선, Ollama 테스트, 백엔드 브랜치 통합</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Seo0101"><img src="https://github.com/Seo0101.png?size=120" width="72" height="72" alt="서현진"/></a></td>
+    <td align="center"><b>서현진</b><br><a href="https://github.com/Seo0101">@Seo0101</a></td>
+    <td><b>백엔드</b><br>Spring Boot 서버 구성과 <code>/api/analyze</code>, OpenAI·Ollama 대화 모델 선택, 여러 기업 동시 검증, ChromaDB v2 연동</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/cheiwonlee"><img src="https://github.com/cheiwonlee.png?size=120" width="72" height="72" alt="이채원"/></a></td>
+    <td align="center"><b>이채원</b><br><a href="https://github.com/cheiwonlee">@cheiwonlee</a></td>
+    <td><b>데이터 · 벡터 DB · 실행 환경</b><br>DART 공시 근거 데이터와 시연 시나리오, ChromaDB 적재·검색 점검, 시연 실행 스크립트, README·아키텍처 문서</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/JeongYeongJun-eddie"><img src="https://github.com/JeongYeongJun-eddie.png?size=120" width="72" height="72" alt="정영준"/></a></td>
+    <td align="center"><b>정영준</b><br><a href="https://github.com/JeongYeongJun-eddie">@JeongYeongJun-eddie</a></td>
+    <td><b>시연 영상 · 영상 전사</b><br>Remotion으로 캐릭터 시연 영상 3편 제작, YouTube 음성 → Whisper 대본 추출 파이프라인(<code>pipeline.py</code>)</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/yunha21"><img src="https://github.com/yunha21.png?size=120" width="72" height="72" alt="최윤하"/></a></td>
+    <td align="center"><b>최윤하</b><br><a href="https://github.com/yunha21">@yunha21</a></td>
+    <td><b>프론트엔드</b><br>React WON MTS 시연 화면, 쇼츠 공유 시트, 시연 계정·프로필 전환, 리포트 보관함, 가이드 투어</td>
+  </tr>
+</table>
