@@ -32,7 +32,7 @@ DART 공시를 직접 찾아 회사·기간·기준까지 맞춰 비교해야 �
 | 프론트엔드 (React + Vite) | `http://localhost:5173` | 유튜브·쇼츠 화면 → 공유 시트 → WON MTS 리포트. `/api` 요청을 백엔드로 프록시 |
 | 백엔드 (Spring Boot) | `http://localhost:8080` | `POST /api/analyze` — 주장 추출 → 근거 검색 → 판정 → 개인화 |
 | ChromaDB (로컬 서버) | `http://localhost:8000` | 공시 근거 문장 임베딩 저장 · 유사도 검색. 데이터는 `data/chroma_db/` (커밋 금지) |
-| 대화 모델 | OpenAI 또는 `http://localhost:11434` | `LLM_PROVIDER=openai`(기본, `gpt-4o-mini`) 또는 `ollama`(로컬 LLM) |
+| 대화 모델 | Ollama `http://localhost:11434` 또는 OpenAI | `LLM_PROVIDER=ollama`(기본, `qwen3:4b-instruct`) 또는 `openai`(`gpt-4o-mini`) |
 | 임베딩 모델 | OpenAI | `text-embedding-3-small` — 적재와 검색에 반드시 같은 모델 |
 
 **분석 흐름** (그림의 번호)
@@ -46,7 +46,7 @@ DART 공시를 직접 찾아 회사·기간·기준까지 맞춰 비교해야 �
 7. `data/users.json`의 보유 비중·투자 성향에 맞춰 위험 설명을 만듭니다.
 8. 주장별 판정 · 근거 출처 · 맞춤 설명을 JSON으로 돌려주고, 프론트가 MTS 리포트로 보여 줍니다.
 
-점선으로 표시한 Ollama는 로컬 모델 연동 구간입니다. `.env`의 `LLM_PROVIDER=ollama`로 ②⑥⑦의 대화 모델을 로컬 모델로 바꿀 수 있습니다.
+②⑥⑦의 대화 모델은 기본으로 PC 안에서 도는 Ollama 로컬 모델을 씁니다. `.env`의 `LLM_PROVIDER=openai`로 바꾸면 OpenAI GPT를 씁니다. 임베딩(③)은 어느 쪽이든 OpenAI입니다.
 
 공통 판정은 사용자와 무관하게 같고, 개인화 설명만 사용자마다 달라집니다.
 
@@ -100,7 +100,7 @@ won-attack/
 
 ## 실행 방법 (로컬)
 
-필요한 것: OpenAI API 키(Ollama를 쓸 때도 임베딩에 필요)와 인터넷 연결. Python 3.10+, Node.js 18+, Java 21은 없으면 실행 파일이 설치합니다 (Windows는 winget, macOS는 Homebrew). Linux는 셋을 직접 설치하세요.
+필요한 것: OpenAI API 키(근거 임베딩에 필요)와 인터넷 연결. Python 3.10+, Node.js 18+, Java 21, Ollama와 대화 모델은 없으면 실행 파일이 설치합니다 (Windows는 winget, macOS는 Homebrew). Linux는 직접 설치하세요.
 
 ### 한 번에 실행 (권장)
 
@@ -110,8 +110,8 @@ won-attack/
 
 | 파일 | 쓰는 법 |
 |---|---|
-| `start-demo.bat` | Windows. 더블클릭 → ChromaDB · 백엔드 · 프론트 창 3개가 열림. 근거 DB 다시 적재: `start-demo.bat reset` |
-| `stop-demo.bat` | Windows. 더블클릭 → 위 창 3개를 한 번에 종료 |
+| `start-demo.bat` | Windows. 더블클릭 → ChromaDB · 백엔드 · 프론트 창 3개가 열림(Ollama 서버가 꺼져 있었다면 Ollama 창도). 근거 DB 다시 적재: `start-demo.bat reset` |
+| `stop-demo.bat` | Windows. 더블클릭 → 위 창들을 한 번에 종료 (따로 켜 둔 Ollama 앱은 그대로) |
 | `start-demo.sh` | macOS. `./start-demo.sh` (다시 적재: `./start-demo.sh reset`) → 한 터미널에서 실행, `Ctrl+C`로 모두 종료, 로그는 `logs/` |
 | `stop-demo.sh` | macOS. 터미널을 그냥 닫았거나 포트가 남아 있을 때 `./stop-demo.sh` → 8000·8080·5173 포트 프로세스 종료 |
 
@@ -119,8 +119,8 @@ won-attack/
 
 | 쓰고 싶은 모델 | `.env` 설정 |
 |---|---|
-| OpenAI (시연 기본) | `LLM_PROVIDER=openai` |
-| Ollama (로컬 LLM) | `LLM_PROVIDER=ollama`, `OLLAMA_CHAT_MODEL=<설치한 모델 이름>` — Ollama를 먼저 켜 두세요 |
+| Ollama 로컬 LLM (기본) | `LLM_PROVIDER=ollama`, `OLLAMA_CHAT_MODEL=qwen3:4b-instruct` — 실행 파일이 설치·서버 켜기·모델 내려받기까지 함 |
+| OpenAI GPT | `LLM_PROVIDER=openai` — Ollama 설치를 건너뜀. 분석이 더 빠르고 정확함 |
 
 임베딩은 `EMBEDDING_PROVIDER=openai`로 둡니다. 근거 DB 점검(`check_db.py`)이 OpenAI 임베딩 기준이기 때문입니다.
 
@@ -130,6 +130,7 @@ won-attack/
    - Windows: winget으로 Python 3.12(사용자 설치), Node.js LTS, Eclipse Temurin 21을 설치합니다. Node.js와 Java는 관리자 승인 창이 뜰 수 있습니다.
    - macOS: Homebrew로 `python@3.12`, `node`, `openjdk@21`을 설치합니다. Homebrew가 없으면 Homebrew부터 설치하며, 이때 Mac 로그인 비밀번호를 물을 수 있습니다.
    - chromadb·openai가 없으면 `data/requirements.txt`로 설치합니다. macOS는 레포 안 `.venv` 가상환경에 설치합니다.
+   - `LLM_PROVIDER=ollama`이면 Ollama가 없을 때 설치하고(Windows winget, macOS Homebrew), 서버(`:11434`)가 꺼져 있으면 켜고, `OLLAMA_CHAT_MODEL` 모델이 없으면 내려받습니다(처음 한 번, 약 2.5GB).
 2. 근거 DB(`data/chroma_db`)가 없거나 `reset`을 붙였을 때만 `init_db.py`로 적재합니다.
 3. ChromaDB 서버를 켭니다 (`:8000`).
 4. `check_db.py --server`로 근거 검색을 점검합니다. **7/7이 아니면 여기서 멈춥니다** — 데이터 문제를 백엔드보다 먼저 잡기 위해서입니다.
@@ -144,9 +145,28 @@ won-attack/
 | "백엔드 코드(gradlew)가 없습니다" | `git pull`로 최신 main을 받았는지. macOS에서 실행 권한이 없으면 `chmod +x backend/won-check-backend/gradlew` |
 | 4단계 점검 실패 | 데이터 쪽 문제 → `reset`을 붙여 다시 적재 |
 | 화면에서 판정이 이상함 | 점검(7/7)은 통과했으니 백엔드 쪽(회사명 추출·검색 필터·대화 모델 설정)을 확인 |
-| Ollama로 바꿨더니 분석 실패 | Ollama가 켜져 있는지, `OLLAMA_CHAT_MODEL`이 비어 있지 않은지 |
+| Ollama 분석이 실패하거나 너무 느림 | Ollama 서버가 켜져 있는지(`ollama list`), 모델을 다 받았는지. 메모리가 부족한 PC는 `.env`를 `LLM_PROVIDER=openai`로 |
 | 설치 직후 "찾지 못했습니다"로 멈춤 | 새로 설치한 프로그램이 이 창에 아직 안 잡힌 것 → 창(터미널)을 닫고 실행 파일을 다시 실행 |
 | 포트가 이미 사용 중 | `stop-demo.bat`(macOS `./stop-demo.sh`)으로 이전 실행을 끄고 다시 실행 |
+
+### Ollama 직접 설치하기
+
+실행 파일이 알아서 설치하지만, 직접 설치하거나 Linux에서 쓸 때는 아래처럼 합니다.
+
+| OS | 설치 |
+|---|---|
+| Windows | [ollama.com/download](https://ollama.com/download)에서 설치 파일을 받아 실행, 또는 `winget install Ollama.Ollama` |
+| macOS | [ollama.com/download](https://ollama.com/download)에서 앱을 받아 설치, 또는 `brew install ollama` |
+| Linux | `curl -fsSL https://ollama.com/install.sh \| sh` |
+
+```bash
+ollama serve                      # 서버 켜기 (Windows·macOS 앱은 설치하면 자동으로 켜짐)
+ollama pull qwen3:4b-instruct     # 대화 모델 내려받기 (약 2.5GB, 처음 한 번)
+ollama list                       # 받은 모델 확인
+```
+
+- 4B 모델이라 메모리 8GB 이상인 PC를 권장합니다. GPU가 없으면 분석이 OpenAI보다 몇 배 느릴 수 있습니다.
+- 다른 모델을 쓰려면 `.env`의 `OLLAMA_CHAT_MODEL`만 바꾸면 됩니다. 주장 추출·판정은 JSON으로 답해야 하므로 한국어와 지시 따르기가 되는 instruct 모델을 쓰세요.
 
 ### 직접 실행할 때
 

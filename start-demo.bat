@@ -50,6 +50,11 @@ if not defined BACKEND (
   goto :fail
 )
 
+rem Ollama (LLM_PROVIDER=ollama 일 때: 설치 → 서버 켜기 → 모델 내려받기)
+if /i "%LLM_PROVIDER%"=="ollama" (
+  call :ensure_ollama || goto :fail
+)
+
 echo.
 echo [1/5] 근거 DB 적재
 if /i "%~1"=="reset" (
@@ -176,4 +181,36 @@ set "JMAJ="
 for /f "tokens=3" %%v in ('java -version 2^>^&1 ^| findstr /i "version"') do set "JV=%%~v"
 if not defined JV exit /b 0
 for /f "delims=." %%m in ("%JV%") do set "JMAJ=%%m"
+exit /b 0
+
+:ensure_ollama
+if not defined OLLAMA_CHAT_MODEL set "OLLAMA_CHAT_MODEL=qwen3:4b-instruct"
+echo.
+echo [0/5] Ollama 준비 ^(대화 모델: %OLLAMA_CHAT_MODEL%^)
+where ollama >nul 2>nul || set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
+where ollama >nul 2>nul && goto :ollama_serve
+call :need_winget || exit /b 1
+echo   Ollama 가 없어 설치합니다 ^(winget: Ollama^)
+winget install -e --id Ollama.Ollama --silent --accept-package-agreements --accept-source-agreements
+set "PATH=%LOCALAPPDATA%\Programs\Ollama;%PATH%"
+where ollama >nul 2>nul && goto :ollama_serve
+echo   Ollama 설치 후에도 ollama 를 찾지 못했습니다. 이 창을 닫고 다시 실행하세요.
+exit /b 1
+:ollama_serve
+curl -s -o nul http://localhost:11434/api/version >nul 2>nul && goto :ollama_pull
+echo   Ollama 서버 켜기 ^(새 창, :11434^)
+start "WON Check - Ollama :11434" /min cmd /k ollama serve
+set /a OTRY=0
+:wait_ollama
+set /a OTRY+=1
+curl -s -o nul http://localhost:11434/api/version >nul 2>nul && goto :ollama_pull
+if !OTRY! GEQ 30 (echo   Ollama 서버가 30초 안에 켜지지 않았습니다. Ollama 창의 오류를 확인하세요.& exit /b 1)
+timeout /t 1 /nobreak >nul
+goto :wait_ollama
+:ollama_pull
+set "OMODEL=%OLLAMA_CHAT_MODEL%"
+echo %OMODEL%| find ":" >nul || set "OMODEL=%OMODEL%:latest"
+ollama list 2>nul | findstr /b /i /c:"%OMODEL% " >nul && exit /b 0
+echo   모델 내려받기: %OLLAMA_CHAT_MODEL% ^(수 GB, 처음 한 번만^)
+ollama pull %OLLAMA_CHAT_MODEL% || (echo   모델을 내려받지 못했습니다: %OLLAMA_CHAT_MODEL%& exit /b 1)
 exit /b 0

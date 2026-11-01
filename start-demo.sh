@@ -100,6 +100,27 @@ wait_for() { # url 초 이름
   fail "$3 가 $2초 안에 켜지지 않았습니다. logs/ 를 확인하세요."
 }
 
+# ---------- Ollama (LLM_PROVIDER=ollama 일 때: 설치 → 서버 켜기 → 모델 내려받기) ----------
+if [[ "${LLM_PROVIDER:-openai}" == "ollama" ]]; then
+  export OLLAMA_CHAT_MODEL="${OLLAMA_CHAT_MODEL:-qwen3:4b-instruct}"
+  echo; echo "[0/5] Ollama 준비 (대화 모델: $OLLAMA_CHAT_MODEL)"
+  if ! command -v ollama >/dev/null; then
+    [[ "$(uname)" == "Darwin" ]] || fail "Ollama 가 없습니다. https://ollama.com/download 에서 설치하세요."
+    echo "  Ollama 가 없어 설치합니다 (brew install ollama)"
+    ensure_brew; brew install ollama || fail "Ollama 설치 실패"
+  fi
+  if ! curl -s -o /dev/null http://localhost:11434/api/version; then
+    echo "  Ollama 서버 켜기 (:11434, 로그: logs/ollama.log)"
+    ollama serve > logs/ollama.log 2>&1 & PIDS+=($!)
+    wait_for http://localhost:11434/api/version 30 Ollama
+  fi
+  m="$OLLAMA_CHAT_MODEL"; [[ "$m" == *:* ]] || m="$m:latest"
+  if ! ollama list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -qxF "$m"; then
+    echo "  모델 내려받기: $OLLAMA_CHAT_MODEL (수 GB, 처음 한 번만)"
+    ollama pull "$OLLAMA_CHAT_MODEL" || fail "모델을 내려받지 못했습니다: $OLLAMA_CHAT_MODEL"
+  fi
+fi
+
 echo; echo "[1/5] 근거 DB 적재"
 if [[ "${1:-}" == "reset" || ! -d data/chroma_db ]]; then "$PY" data/init_db.py --reset
 else echo "  data/chroma_db 가 이미 있어 그대로 씁니다. 다시 적재: ./start-demo.sh reset"; fi

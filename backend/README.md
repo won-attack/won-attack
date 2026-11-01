@@ -24,9 +24,9 @@ gradlew.bat bootRun                # macOS: ./gradlew bootRun → http://localho
 |---|---|---|
 | `OPENAI_API_KEY` | `sk-...` | 팀 키 (커밋 금지). Ollama를 써도 임베딩에 필요 |
 | `WONCHECK_MODE` | `live` | `mock`은 응답 형식 확인용 — 판정이 전부 근거 부족으로 나옴. **시연은 live** |
-| `LLM_PROVIDER` | `openai` (기본) / `ollama` | 주장 추출 · 판정 · 개인화에 쓸 대화 모델 |
+| `LLM_PROVIDER` | `ollama` (루트 `.env.example` 기본) / `openai` | 주장 추출 · 판정 · 개인화에 쓸 대화 모델. 이 값 없이 백엔드만 직접 켜면 `openai` |
 | `OPENAI_CHAT_MODEL` | `gpt-4o-mini` (기본) | OpenAI 대화 모델 |
-| `OLLAMA_BASE_URL` · `OLLAMA_CHAT_MODEL` | `http://localhost:11434/v1` · 설치한 모델 | `LLM_PROVIDER=ollama`일 때. 모델 이름은 꼭 채우기 |
+| `OLLAMA_BASE_URL` · `OLLAMA_CHAT_MODEL` | `http://localhost:11434/v1` · `qwen3:4b-instruct` | `LLM_PROVIDER=ollama`일 때. 모델 이름은 꼭 채우기 (`ollama pull`로 받아 둔 모델) |
 | `EMBEDDING_PROVIDER` | `openai` (기본) | 적재(`data/init_db.py`)와 같은 값. `ollama`면 컬렉션 이름에 `_ollama`가 붙음 |
 | `CHROMA_URL` | `http://localhost:8000` (기본) | ChromaDB 로컬 서버 |
 | `WONCHECK_DATA_PATH` | `../../data` | 실행 폴더 기준 루트 `data/`. 기본값 `../data`는 이 폴더 구조와 맞지 않으니 꼭 지정 |
