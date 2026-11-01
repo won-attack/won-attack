@@ -172,7 +172,7 @@ wait_for() { # url 초 이름
 # ---------- Ollama (LLM_PROVIDER=ollama 일 때만: 설치 → 서버 켜기 → 모델 내려받기) ----------
 pull_model() { # 이름
   local m="$1"; [[ "$m" == *:* ]] || m="$m:latest"
-  if ! ollama list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -qxF -e "$m" -e "$1"; then
+  if ! ollama list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -xF -e "$m" -e "$1" >/dev/null; then
     echo "  모델 내려받기: $1 (처음 한 번만)"
     ollama pull "$1" || fail "모델을 내려받지 못했습니다: $1"
   fi
