@@ -15,13 +15,29 @@ echo "[0/5] 준비물 확인"
 open_env() { if [[ "$(uname)" == "Darwin" ]]; then open -t .env; else xdg-open .env; fi >/dev/null 2>&1 || true; }
 if [[ ! -f .env ]]; then
   cp .env.example .env; open_env
-  fail ".env 를 만들었습니다. 열린 파일의 OPENAI_API_KEY= 뒤에 키를 넣고 저장한 뒤 다시 실행하세요."
+  fail ".env 를 만들었습니다. 테스트(Ollama)는 그대로 저장, 시연(OpenAI)은 LLM_PROVIDER=openai 와 OPENAI_API_KEY 를 넣고 저장한 뒤 다시 실행하세요."
 fi
 set -a; # .env 값을 환경 변수로 (아래에서 띄우는 프로세스가 물려받음)
 # shellcheck disable=SC1091
 source <(grep -v '^\s*#' .env | grep '=' | sed 's/\r$//')
 set +a
-[[ -n "${OPENAI_API_KEY:-}" ]] || { open_env; fail ".env 에 OPENAI_API_KEY 가 비어 있습니다. 키를 넣고 저장한 뒤 다시 실행하세요."; }
+
+# AI 모델: .env 의 LLM_PROVIDER 하나로 대화 모델과 임베딩을 함께 맞춤
+#   openai → GPT + OpenAI 임베딩 (시연용, OPENAI_API_KEY 필요)
+#   ollama → 로컬 LLM + Ollama 임베딩 (테스트용, 키 불필요)
+LLM_PROVIDER=$(echo "${LLM_PROVIDER:-openai}" | tr '[:upper:]' '[:lower:]')
+case "$LLM_PROVIDER" in
+  openai)
+    [[ -n "${OPENAI_API_KEY:-}" ]] || { open_env; fail "OpenAI 모드인데 .env 에 OPENAI_API_KEY 가 비어 있습니다. 키를 넣고 저장한 뒤 다시 실행하세요."; }
+    echo "  AI 모델: OpenAI (대화 ${OPENAI_CHAT_MODEL:-gpt-4o-mini}, 임베딩 ${EMBEDDING_MODEL:-text-embedding-3-small})" ;;
+  ollama)
+    OLLAMA_CHAT_MODEL="${OLLAMA_CHAT_MODEL:-qwen3:4b-instruct}"
+    OLLAMA_EMBEDDING_MODEL="${OLLAMA_EMBEDDING_MODEL:-embeddinggemma}"
+    echo "  AI 모델: Ollama (대화 $OLLAMA_CHAT_MODEL, 임베딩 $OLLAMA_EMBEDDING_MODEL)" ;;
+  *) fail ".env 의 LLM_PROVIDER 는 openai 또는 ollama 여야 합니다 (지금 값: $LLM_PROVIDER)." ;;
+esac
+export LLM_PROVIDER OLLAMA_CHAT_MODEL OLLAMA_EMBEDDING_MODEL
+export EMBEDDING_PROVIDER="$LLM_PROVIDER"
 
 # ---------- 준비물 자동 설치 (macOS: Homebrew) ----------
 # 없거나 버전이 낮으면 설치합니다: Python 3.10+, Node.js 18+, Java 21
@@ -100,10 +116,16 @@ wait_for() { # url 초 이름
   fail "$3 가 $2초 안에 켜지지 않았습니다. logs/ 를 확인하세요."
 }
 
-# ---------- Ollama (LLM_PROVIDER=ollama 일 때: 설치 → 서버 켜기 → 모델 내려받기) ----------
-if [[ "${LLM_PROVIDER:-openai}" == "ollama" ]]; then
-  export OLLAMA_CHAT_MODEL="${OLLAMA_CHAT_MODEL:-qwen3:4b-instruct}"
-  echo; echo "[0/5] Ollama 준비 (대화 모델: $OLLAMA_CHAT_MODEL)"
+# ---------- Ollama (LLM_PROVIDER=ollama 일 때만: 설치 → 서버 켜기 → 모델 내려받기) ----------
+pull_model() { # 이름
+  local m="$1"; [[ "$m" == *:* ]] || m="$m:latest"
+  if ! ollama list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -qxF -e "$m" -e "$1"; then
+    echo "  모델 내려받기: $1 (처음 한 번만)"
+    ollama pull "$1" || fail "모델을 내려받지 못했습니다: $1"
+  fi
+}
+if [[ "$LLM_PROVIDER" == "ollama" ]]; then
+  echo; echo "[0/5] Ollama 준비"
   if ! command -v ollama >/dev/null; then
     [[ "$(uname)" == "Darwin" ]] || fail "Ollama 가 없습니다. https://ollama.com/download 에서 설치하세요."
     echo "  Ollama 가 없어 설치합니다 (brew install ollama)"
@@ -114,23 +136,28 @@ if [[ "${LLM_PROVIDER:-openai}" == "ollama" ]]; then
     ollama serve > logs/ollama.log 2>&1 & PIDS+=($!)
     wait_for http://localhost:11434/api/version 30 Ollama
   fi
-  m="$OLLAMA_CHAT_MODEL"; [[ "$m" == *:* ]] || m="$m:latest"
-  if ! ollama list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -qxF "$m"; then
-    echo "  모델 내려받기: $OLLAMA_CHAT_MODEL (수 GB, 처음 한 번만)"
-    ollama pull "$OLLAMA_CHAT_MODEL" || fail "모델을 내려받지 못했습니다: $OLLAMA_CHAT_MODEL"
-  fi
+  pull_model "$OLLAMA_CHAT_MODEL"
+  pull_model "$OLLAMA_EMBEDDING_MODEL"
 fi
 
-echo; echo "[1/5] 근거 DB 적재"
-if [[ "${1:-}" == "reset" || ! -d data/chroma_db ]]; then "$PY" data/init_db.py --reset
-else echo "  data/chroma_db 가 이미 있어 그대로 씁니다. 다시 적재: ./start-demo.sh reset"; fi
+echo; echo "[1/5] 근거 DB 적재 ($EMBEDDING_PROVIDER 임베딩)"
+# OpenAI·Ollama 근거는 data/chroma_db 안에 컬렉션을 나눠 저장 (disclosures / disclosures_ollama)
+# 지금 모델용 컬렉션이 비었거나 임베딩 설정이 바뀌었으면 적재
+has_db() { "$PY" -c "import sys; sys.path.insert(0, 'data'); from init_db import open_collection; sys.exit(0 if open_collection()[0].count() else 1)" >/dev/null 2>&1; }
+if [[ "${1:-}" == "reset" ]] || ! has_db; then "$PY" data/init_db.py --reset || fail "근거 DB 적재 실패"
+else echo "  이미 적재된 근거 DB 를 그대로 씁니다. 다시 적재: ./start-demo.sh reset"; fi
 
 echo; echo "[2/5] ChromaDB 서버 (:8000)"
 "$PY" -c "from chromadb.cli.cli import app; app()" run --path "$ROOT/data/chroma_db" --port 8000 > logs/chroma.log 2>&1 & PIDS+=($!)
 wait_for http://localhost:8000/api/v2/heartbeat 30 ChromaDB
 
-echo; echo "[3/5] 근거 검색 점검 (7/7 이어야 정상)"
-"$PY" data/check_db.py --server || fail "점검 실패: 데이터 쪽 문제입니다. ./start-demo.sh reset 으로 다시 적재해 보세요."
+if [[ "$LLM_PROVIDER" == "openai" ]]; then
+  echo; echo "[3/5] 근거 검색 점검 (7/7 이어야 정상)"
+  "$PY" data/check_db.py --server --strict || fail "점검 실패: 데이터 쪽 문제입니다. ./start-demo.sh reset 으로 다시 적재해 보세요."
+else
+  echo; echo "[3/5] 근거 검색 점검 (Ollama 테스트 모드: 7/7 이 아니어도 계속 진행)"
+  "$PY" data/check_db.py --server || fail "점검 실패: ./start-demo.sh reset 으로 다시 적재해 보세요."
+fi
 
 echo; echo "[4/5] 백엔드 (:8080, live)"
 ( cd "$BACKEND" && WONCHECK_MODE=live WONCHECK_DATA_PATH="$ROOT/data" CHROMA_URL=http://localhost:8000 ./gradlew bootRun ) > logs/backend.log 2>&1 & PIDS+=($!)
